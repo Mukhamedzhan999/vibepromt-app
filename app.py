@@ -49,7 +49,7 @@ def protect_web():
         origin=request.headers.get('Origin', '')
         if origin and urlsplit(origin).netloc.lower() != request.host.lower():
             return Response('Cross-origin request denied', 403)
-    if request.path == '/login':
+    if request.path == '/login' or (request.method == 'GET' and request.path in ('/static/vibepromt-logo.svg', '/static/vibepromt-icon-192.png', '/static/vibepromt-icon-512.png', '/static/manifest.webmanifest')):
         return None
     if request.path.startswith('/api/chrome-'):
         return Response('Local Chrome extension is unavailable on hosted deployments.', 404)
