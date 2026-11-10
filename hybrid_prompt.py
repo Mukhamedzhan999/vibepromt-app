@@ -33,6 +33,10 @@ def build_hybrid_prompt(kind,goal,assessment,meta,css=''):
     if kind=='URL' and any(term in subject for term in ('той','шақыру','шакыру','үйлену','свадьб','wedding','invitation')):
         name,bg,surface,accent,secondary,heading,body,heading_font,body_font=('Warm Wedding Editorial','#F2E7D7','#FBF5EC','#A67C45','#A65E4B','#34251F','#34251F','Lora','Noto Sans')
 
+    if kind == 'PDF':
+        context = (str(goal or '') + ' ' + str(editorial.get('title') or '') + ' ' + ' '.join(str(p.get('source_text') or p.get('excerpt') or '')[:3000] for p in pages[:12])).lower()
+        if any(x in context for x in ('қазақстан', 'казахстан', 'kazakhstan', 'желтоқсан', 'желтоксан', 'алаш', 'қазақ хандығы')) and (domain == 'HISTORY_CULTURE' or any(x in context for x in ('тарих', 'истори', 'history', 'желтоқсан', 'желтоксан', 'алаш', 'хандығы'))):
+            name,bg,surface,accent,secondary,heading,body,heading_font,body_font=('Kazakhstan History Editorial','#F9F6F0','#EFECE6','#9A7419','#8C3B2B','#1C252C','#1C252C','Lora','Noto Sans')
     metrics=[]; details=[]; source=[]; image_plan=[]; remaining=240000
     if kind=='PDF':
         for page in pages:
@@ -52,18 +56,30 @@ def build_hybrid_prompt(kind,goal,assessment,meta,css=''):
             if page.get('image_count'):patterns.append('a dedicated image-and-caption area')
             subject=page.get('heading') or next(iter(page.get('headings') or []),'') or editorial.get('title') or ''
             subject=' '.join(str(subject).split())[:90]
-            if subject and raw:
-                query=quote_plus(subject)
-                position=('cover: a large editorial photograph occupying the right 40–50% with the title and introduction on the left' if n==1 else ('right side: large 35–45% width thematic image; leave readable text in the left column' if n%2==0 else 'left side: large 35–45% width thematic image; place the main text in the right column'))
-                image_plan.append(f'Page {n} — topic: «{subject}». Layout: {position}. Search references: https://unsplash.com/s/photos/{query} or https://www.pexels.com/search/{query}/ or https://commons.wikimedia.org/wiki/Special:MediaSearch?type=image&search={query}. Select a relevant image only after verifying its individual license and attribution; do not claim a specific image was found. If search is unavailable, generate a high-resolution static 3D editorial illustration using the topic, palette, believable material, soft directional light, depth and a clean area for text. Do not place fake writing inside the artwork.')
+            heading_key = re.sub(r'[^\w\s]', '', str(page.get('heading') or next(iter(page.get('headings') or []), '') or (raw.splitlines()[0] if raw else ''))).strip().lower()
+            toc_titles = {'мазмұны', 'мазмуны', 'мазмұн', 'содержание', 'оглавление', 'contents', 'table of contents', 'agenda', 'жоспар', 'источники', 'дереккөздер', 'пайдаланылған әдебиеттер', 'references'}
+            is_outline = heading_key in toc_titles
+            doc_context = str(editorial.get('title') or '').strip()
+            history_context = (str(goal or '') + ' ' + doc_context + ' ' + raw + ' ' + context).lower()
+            kazakh_history = any(x in history_context for x in ('қазақстан', 'казахстан', 'kazakhstan', 'желтоқсан', 'желтоксан', 'алаш', 'қазақ хандығы')) and (domain == 'HISTORY_CULTURE' or any(x in history_context for x in ('тарих', 'истори', 'history', 'желтоқсан', 'желтоксан', 'алаш', 'хандығы')))
+            if is_outline:
+                image_plan.append(f'Page {n} — «{subject}»: contents/agenda/references page. Use a clear typographic hierarchy, aligned numbered entries and generous space; do not add a photograph.')
+            elif subject and raw:
+                terms = ' '.join(x for x in (doc_context, subject) if x)
+                if kazakh_history and not any(x in terms.lower() for x in ('қазақстан', 'казахстан', 'kazakhstan')):
+                    terms += ' Kazakhstan'
+                query=quote_plus(terms[:160])
+                position=('cover: large editorial visual with clear title area' if n==1 else ('right 35–45% image and left text' if n%2==0 else 'left 35–45% image and right text'))
+                history_note = (' For Kazakhstan history, find an authentic image matching the specific event, location and period. Verify provenance, caption, date and license. Never depict an AI-generated illustration as an archival photograph; label any reconstruction.' if kazakh_history else '')
+                image_plan.append(f'Page {n} — topic: «{subject}»; document: «{doc_context}». Layout: {position}. Search Wikimedia Commons: https://commons.wikimedia.org/wiki/Special:MediaSearch?type=image&search={query}; optionally search Pexels or Unsplash. Verify each asset license and attribution; do not claim an image was found without checking. If a relevant image cannot be verified, use a marked placeholder and describe a clearly labeled illustration, not a false source.'+history_note)
             else:
-                image_plan.append(f'Page {n}: the page content was not reliably extracted; inspect the original before selecting a subject or image.')
+                image_plan.append(f'Page {n}: content not reliably extracted; inspect the original before choosing a photo or claiming the page topic.')
             details.append(f"Page {n}: "+('; '.join(patterns) if patterns else 'inspect source structure before assigning content blocks')+'.')
             if page.get('contrast_samples'):details.append(f"Page {n}: {page.get('low_contrast',0)} low-contrast sampled spans among {page['contrast_samples']}; verify all final text/background pairs.")
             if isinstance(page.get('small_font_spans'),int) and page['small_font_spans']:details.append(f"Page {n}: {page['small_font_spans']} native spans below 10.5pt; inspect them.")
         main=editorial.get('title') or ''
         headings=[(f"Page {p.get('page')} "+(p.get('heading') or '')) for p in pages if p.get('heading')]
-        limitation=('Redesign as a professional editorial PDF presentation with consistent margins, page numbers and a clear visual hierarchy. Use the source page proportions or a consistent landscape 16:9 presentation when appropriate. Organize each page into a large context-specific photograph or static 3D visual plus readable text; alternate image positions and layouts, reserve generous whitespace, and never crop text or place body copy over a detailed image. Preserve all source words, facts, units, citations and reading order: if text does not fit, add continuation pages rather than omitting or shrinking it. Use a clear 28–32pt title, 18–22pt headings and 11.5–12pt body as starting points; align baselines and group related information.\n'
+        limitation=('Redesign as a professional editorial PDF presentation with consistent margins, page numbers and a clear visual hierarchy. Use the source page proportions or a consistent landscape 16:9 presentation when appropriate. Use a substantial topic-specific photograph or visual on each content-bearing explanatory page where suitable; keep contents, agenda and reference pages photo-free with clean typographic hierarchy; alternate image positions and layouts, reserve generous whitespace, and never crop text or place body copy over a detailed image. Preserve all source words, facts, units, citations and reading order: if text does not fit, add continuation pages rather than omitting or shrinking it. Use a clear 28–32pt title, 18–22pt headings and 11.5–12pt body as starting points; align baselines and group related information.\n'
         +'PAGE-BY-PAGE VISUAL SOURCING AND PLACEMENT (suggestions; check each image license):\n'+'\n'.join(image_plan)+'\n'
         +'Use static 3D artwork in the PDF, because animation is not reliably supported by PDF viewers. In addition provide optional 4–6 second looping animation instructions or MP4/GIF per scene, matching the static image; never rely on animation to convey essential information. Attach the source PDF; verify OCR and truncated content against the original. Export searchable PDF with embedded fonts.')
     else:
