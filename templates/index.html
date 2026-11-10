@@ -53,6 +53,17 @@ body[data-theme='navy']{--bg:#071426;--surface:#102640;background:#071426}body[d
 
 .brief-home{max-width:860px;margin:clamp(30px,7vh,80px) auto 80px}.brief-intro{text-align:center;margin:0 auto 28px;max-width:680px}.brief-intro h1{font-size:clamp(30px,5vw,50px);letter-spacing:-1.6px;margin:18px 0 8px}.brief-intro p{color:#aeb8cc;font-size:15px;line-height:1.7}.brief-card,.brief-result{background:#151a28;border:1px solid #343c53;border-radius:22px;padding:22px;box-shadow:0 24px 75px #0004}.brief-types,.brief-models{display:flex;gap:8px;flex-wrap:wrap}.brief-types button,.brief-models button,.brief-tools button{border:1px solid #384158;background:#101521;color:#c3cbdd;border-radius:11px;padding:11px 15px;font-weight:700;min-height:44px}.brief-types button.active,.brief-models button.active{border-color:#9291ff;background:#2a2950;color:white}.brief-label{display:block;color:#aeb8d0;font-size:11px;letter-spacing:.1em;font-weight:700;margin:22px 0 8px}.brief-card textarea{min-height:165px;resize:vertical;background:#0b101a;border:1px solid #343d53;font-size:15px;line-height:1.65}.brief-actions,.brief-result-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:16px}.brief-actions span,.brief-tools span{color:#aab4c8;font-size:12px}.brief-submit{background:linear-gradient(120deg,#6266ee,#8b6ff2);color:white;border:0;border-radius:12px;min-height:48px;padding:12px 20px;font-weight:800}.brief-tools{display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap;margin:22px 0}.brief-result{margin-top:24px}.brief-result h2{margin:4px 0 14px}.brief-result pre{white-space:pre-wrap;overflow-wrap:anywhere;font:14px/1.75 inherit;color:#e2e8f5;background:#0b101a;border:1px solid #30394e;border-radius:14px;padding:18px;max-height:65vh;overflow:auto}.brief-mode #audit{display:none!important}body:not(.brief-mode) #brief-home{display:none!important}.brief-mode #academic{display:none!important}@media(max-width:600px){.brief-home{margin:32px auto}.brief-card,.brief-result{padding:16px;border-radius:16px}.brief-actions{align-items:stretch;flex-direction:column}.brief-submit{width:100%}.brief-result-head{align-items:flex-start;flex-direction:column}.brief-result pre{font-size:13px}.brief-tools{justify-content:flex-start}}
 
+
+/* Settings arranged as clear, individually bordered rows */
+.settings-card{display:grid;grid-template-columns:minmax(0,1fr) minmax(160px,240px);column-gap:24px;row-gap:4px;align-items:center;margin-bottom:10px;padding:18px 20px}
+.settings-card>label{grid-column:1;grid-row:1;align-self:end}
+.settings-card>small{grid-column:1;grid-row:2;margin:0;align-self:start}
+.settings-card>select{grid-column:2;grid-row:1 / span 2;width:100%}
+.settings-card:has(.settings-check){grid-template-columns:1fr}
+.settings-card:has(.settings-check)>label{align-self:center}
+.settings-card:has(.settings-check)>small{padding-left:32px}
+@media(max-width:480px){.settings-card{grid-template-columns:1fr;padding:16px;row-gap:6px}.settings-card>select{grid-column:1;grid-row:3;margin-top:8px}.settings-card>small{line-height:1.45}.settings-card:has(.settings-check)>small{padding-left:32px}}
+
 </style>
 <link rel="manifest" href="/static/manifest.webmanifest"><meta name="theme-color" content="#10131d"><link rel="apple-touch-icon" href="/static/vibepromt-icon-192.png"><noscript><style>.splash{display:none}</style></noscript><link rel="icon" type="image/svg+xml" href="/static/vibepromt-logo.svg"><meta name="apple-mobile-web-app-title" content="VibePromt AI"></head>
 <body class="brief-mode">
