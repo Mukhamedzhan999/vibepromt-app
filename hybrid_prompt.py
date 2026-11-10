@@ -1,5 +1,6 @@
 """Hybrid English design brief and source-grounded Kazakh output payload."""
 import re
+from urllib.parse import quote_plus
 from pdf_editorial import analyze, NUMBER
 from pdf_professional_prompt import contrast
 
@@ -28,7 +29,7 @@ def build_hybrid_prompt(kind,goal,assessment,meta,css=''):
         editorial=analyze([{'page':1,'_analysis_text':str(meta.get('content_text') or '')[:24000]}])
     domain=editorial.get('domain','ACADEMIC_GUIDE')
     name,bg,surface,accent,secondary,heading,body,heading_font,body_font=PALETTES.get(domain,PALETTES['ACADEMIC_GUIDE'])
-    metrics=[]; details=[]; source=[]; remaining=240000
+    metrics=[]; details=[]; source=[]; image_plan=[]; remaining=240000
     if kind=='PDF':
         for page in pages:
             n=page.get('page'); types=page.get('content_types') or []; raw=page.get('source_text') or page.get('excerpt') or ''
@@ -45,12 +46,22 @@ def build_hybrid_prompt(kind,goal,assessment,meta,css=''):
             if 'stats' in types:patterns.append('KPI callouts with exact units; only build comparisons when source data supports them')
             if 'prose' in types:patterns.append('two-column Swiss editorial grid with a left-bordered callout')
             if page.get('image_count'):patterns.append('a dedicated image-and-caption area')
+            subject=page.get('heading') or next(iter(page.get('headings') or []),'') or editorial.get('title') or ''
+            subject=' '.join(str(subject).split())[:90]
+            if subject and raw:
+                query=quote_plus(subject)
+                position=('cover: a large editorial photograph occupying the right 40–50% with the title and introduction on the left' if n==1 else ('right side: large 35–45% width thematic image; leave readable text in the left column' if n%2==0 else 'left side: large 35–45% width thematic image; place the main text in the right column'))
+                image_plan.append(f'Page {n} — topic: «{subject}». Layout: {position}. Search references: https://unsplash.com/s/photos/{query} or https://www.pexels.com/search/{query}/ or https://commons.wikimedia.org/wiki/Special:MediaSearch?type=image&search={query}. Select a relevant image only after verifying its individual license and attribution; do not claim a specific image was found. If search is unavailable, generate a high-resolution static 3D editorial illustration using the topic, palette, believable material, soft directional light, depth and a clean area for text. Do not place fake writing inside the artwork.')
+            else:
+                image_plan.append(f'Page {n}: the page content was not reliably extracted; inspect the original before selecting a subject or image.')
             details.append(f"Page {n}: "+('; '.join(patterns) if patterns else 'inspect source structure before assigning content blocks')+'.')
             if page.get('contrast_samples'):details.append(f"Page {n}: {page.get('low_contrast',0)} low-contrast sampled spans among {page['contrast_samples']}; verify all final text/background pairs.")
             if isinstance(page.get('small_font_spans'),int) and page['small_font_spans']:details.append(f"Page {n}: {page['small_font_spans']} native spans below 10.5pt; inspect them.")
         main=editorial.get('title') or ''
         headings=[(f"Page {p.get('page')} "+(p.get('heading') or '')) for p in pages if p.get('heading')]
-        limitation='Attach the source PDF; verify OCR and truncated content against the original. Export searchable PDF with embedded fonts. Use static 3D artwork; animation may be a separate video because PDF viewer support varies.'
+        limitation=('Redesign as a professional editorial PDF presentation with consistent margins, page numbers and a clear visual hierarchy. Use the source page proportions or a consistent landscape 16:9 presentation when appropriate. Organize each page into a large context-specific photograph or static 3D visual plus readable text; alternate image positions and layouts, reserve generous whitespace, and never crop text or place body copy over a detailed image. Preserve all source words, facts, units, citations and reading order: if text does not fit, add continuation pages rather than omitting or shrinking it. Use a clear 28–32pt title, 18–22pt headings and 11.5–12pt body as starting points; align baselines and group related information.\n'
+        +'PAGE-BY-PAGE VISUAL SOURCING AND PLACEMENT (suggestions; check each image license):\n'+'\n'.join(image_plan)+'\n'
+        +'Use static 3D artwork in the PDF, because animation is not reliably supported by PDF viewers. In addition provide optional 4–6 second looping animation instructions or MP4/GIF per scene, matching the static image; never rely on animation to convey essential information. Attach the source PDF; verify OCR and truncated content against the original. Export searchable PDF with embedded fonts.')
     else:
         text=str(meta.get('content_text') or '')[:24000]
         source_headings=meta.get('source_headings') or []
