@@ -33,7 +33,7 @@ body[data-theme='navy']{--bg:#071426;--surface:#102640;background:#071426}body[d
 .sidebar .side-button{border:1px solid #343b50;background:#141925;border-radius:14px;color:#e0e6f5;padding:15px 17px;min-height:56px;transition:border-color .18s,background .18s}
 .sidebar .side-button:hover,.sidebar .side-button:focus-visible{border-color:#8b8bf2;background:#20263a}
 .sidebar .side-new{background:linear-gradient(120deg,#4949b0,#6a57c2);border-color:#8986ef;color:#fff;box-shadow:0 10px 30px #5654d033}
-.sidebar>div:not(.sidebar-top):not(.side-history):not(.side-bottom){display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sidebar>div:not(.sidebar-top):not(.side-history):not(.side-bottom){display:grid;grid-template-columns:1fr;gap:10px}
 .sidebar .side-button.current{border-color:#7275c6;background:#222641}
 .side-history{border:1px solid #30384c;background:#111621;border-radius:18px;padding:20px;min-height:150px;flex:1;overflow:auto}
 .side-label{margin:0 0 14px;color:#b5bdd2;letter-spacing:.1em;font-weight:700}
@@ -64,6 +64,7 @@ body[data-theme='navy']{--bg:#071426;--surface:#102640;background:#071426}body[d
 .settings-card:has(.settings-check)>small{padding-left:32px}
 @media(max-width:480px){.settings-card{grid-template-columns:1fr;padding:16px;row-gap:6px}.settings-card>select{grid-column:1;grid-row:3;margin-top:8px}.settings-card>small{line-height:1.45}.settings-card:has(.settings-check)>small{padding-left:32px}}
 
+.brief-brand{font-size:clamp(22px,3vw,30px);font-weight:800;letter-spacing:-.8px;line-height:1.2;color:#f4f6ff}.brief-brand span{color:#a7a5ff}.brief-intro .brief-about{font-size:13px;line-height:1.6;color:#bac5d9;max-width:570px;margin:8px auto 24px}.brief-intro h1{margin-top:0}
 </style>
 <link rel="manifest" href="/static/manifest.webmanifest"><meta name="theme-color" content="#10131d"><link rel="apple-touch-icon" href="/static/vibepromt-icon-192.png"><noscript><style>.splash{display:none}</style></noscript><link rel="icon" type="image/svg+xml" href="/static/vibepromt-logo.svg"><meta name="apple-mobile-web-app-title" content="VibePromt AI"></head>
 <body class="brief-mode">
@@ -73,7 +74,7 @@ body[data-theme='navy']{--bg:#071426;--surface:#102640;background:#071426}body[d
 <header class="top"><div class="shell"><button type="button" class="menu-toggle" id="menu-toggle" aria-label="Мәзірді ашу" aria-controls="sidebar" aria-expanded="false">☰</button><a href="#" class="brand"><img class="brand-icon" src="/static/vibepromt-logo.svg" alt="" aria-hidden="true"><span>VibePromt <em>AI</em></span></a><nav class="nav" aria-label="Негізгі навигация"><button class="active" data-view="audit">✦ &nbsp; Аудит</button><button data-view="academic">▦ &nbsp; Оқытушы режимі</button></nav><div class="nav-status"><span class="dot"></span> ЖҮЙЕ ДАЙЫН</div></div></header>
 <main class="shell mx-auto">
 <section id="brief-home" class="brief-home">
-<div class="brief-intro"><span class="eyebrow"><span class="dot"></span> VIBEPROMT AI</span><h1>Бүгін не жасаймыз?</h1><p>Ойыңызды сипаттаңыз — сайтқа немесе презентацияға арналған үш дайын AI промпт алыңыз.</p></div>
+<div class="brief-intro"><div class="brief-brand">VibePromt <span>AI</span></div><p class="brief-about">Сайт пен презентацияға идеяңыз бойынша сапалы промпт жасаңыз немесе дайын сайт пен PDF-ті талдаңыз.</p><h1>Бүгін не жасаймыз?</h1><p>Ойыңызды сипаттаңыз — сайтқа немесе презентацияға арналған үш дайын AI промпт алыңыз.</p></div>
 <div class="brief-card"><div class="brief-types" role="group" aria-label="Жоба түрі"><button type="button" data-brief-kind="site" class="active">↗ Сайт</button><button type="button" data-brief-kind="presentation">▤ Презентация</button></div>
 <label for="brief-text" class="brief-label">ЖОБАҢЫЗДЫ СИПАТТАҢЫЗ</label><textarea id="brief-text" maxlength="5000" placeholder="Мысалы: қазақы тойға шақыру сайты. Жылы бежевый түстер, қонақтардың қатысуын растау, күн мен орын..."></textarea>
 <div class="brief-actions"><span>Тақырып, аудитория, стиль және қажет бөлімдерді жазыңыз</span><button id="brief-generate" type="button" class="brief-submit">Промпт жасау ↑</button></div><p id="brief-error" class="error" role="status"></p></div>
@@ -110,6 +111,7 @@ function applyMotion(){document.documentElement.classList.toggle('reduce-motion'
 $('#open-settings').addEventListener('click',()=>{closeMenu();$('#theme-choice').value=preferences.theme||'dark';$('#language-choice').value=preferences.lang||'kk';$('#default-ai').value=promptModel;$('#reduce-motion').checked=!!preferences.reduceMotion;$('#settings-dialog').showModal()});
 $('#close-settings').addEventListener('click',()=>$('#settings-dialog').close());$('#close-settings-top').addEventListener('click',()=>$('#settings-dialog').close());$('#default-ai').addEventListener('change',e=>{preferences.ai=e.target.value;savePreferences();$(`[data-prompt-model="${preferences.ai}"]`).click()});$('#reduce-motion').addEventListener('change',e=>{preferences.reduceMotion=e.target.checked;savePreferences();applyMotion()});
 const uiTranslations={
+'Сайт пен презентацияға идеяңыз бойынша сапалы промпт жасаңыз немесе дайын сайт пен PDF-ті талдаңыз.':['Создавайте подробные промпты для сайтов и презентаций по вашей идее или анализируйте готовые сайты и PDF.','Create detailed prompts for websites and presentations from your idea, or analyze an existing website or PDF.'],
 '⚙ Баптаулар':['⚙ Настройки','⚙ Settings'],'＋ Жаңа аудит':['＋ Новый аудит','＋ New audit'],'◈ Аудит':['◈ Аудит','◈ Audit'],'▦ Оқытушы режимі':['▦ Режим преподавателя','▦ Teaching mode'],'✦ Аудит':['✦ Аудит','✦ Audit'],'↗ Сайт / PDF сілтемесі':['↗ Сайт / ссылка PDF','↗ Website / PDF link'],'▤ PDF құжат':['▤ Документ PDF','▤ PDF document'],
 'Баптаулар':['Настройки','Settings'], 'ЖҰМЫС КЕҢІСТІГІ':['РАБОЧЕЕ ПРОСТРАНСТВО','WORKSPACE'], 'Әдепкі AI нұсқасы':['AI по умолчанию','Default AI'], 'Фон түсі':['Цвет фона','Background color'], 'Интерфейс тілі':['Язык интерфейса','Interface language'], 'Қара':['Чёрный','Black'], 'Қою көк':['Тёмно-синий','Dark navy'], 'Қоңыр':['Коричневый','Brown'], 'Анимацияны азайту':['Уменьшить анимацию','Reduce motion'], 'Дайын':['Готово','Done'],
 'Баптаулар осы браузерде сақталады. Тегін сервер қайта іске қосылса, аудит тарихы өшуі мүмкін.':['Настройки сохраняются в этом браузере. История может исчезнуть после перезапуска бесплатного сервера.','Settings are saved in this browser. History may be lost when the free server restarts.'],
