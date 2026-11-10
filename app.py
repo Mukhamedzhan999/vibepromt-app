@@ -38,7 +38,7 @@ if len(WEB_PASSWORD) < 20:
 def protect_web():
     from flask import Response
     supplied = request.authorization
-    if not supplied or supplied.username != 'vibeaudit' or not hmac.compare_digest(supplied.password or '', WEB_PASSWORD):
+    if not supplied or supplied.username != 'vibeaudit' or not hmac.compare_digest((supplied.password or '').encode('utf-8'), WEB_PASSWORD.encode('utf-8')):
         return Response('Authentication required', 401, {'WWW-Authenticate': 'Basic realm="VibeAudit", charset="UTF-8"', 'Cache-Control':'no-store'})
     if request.path.startswith('/api/chrome-'):
         return Response('Local Chrome extension is unavailable on hosted deployments.', 404)
