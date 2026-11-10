@@ -1,0 +1,9 @@
+Flask>=3.0,<4
+requests>=2.32,<3
+beautifulsoup4>=4.12,<5
+PyMuPDF>=1.28.2,<2
+scikit-learn>=1.4,<2
+numpy>=1.26,<3
+publicsuffix2>=2.20191221,<3
+playwright>=1.48,<2
+Pillow>=10,<13
