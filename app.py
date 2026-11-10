@@ -425,6 +425,52 @@ def pdf_job_status(job_id):
     if not result: return jsonify({'error':'Талдау табылмады. Қайта бастаңыз.'}),404
     response=jsonify(result); response.headers['Cache-Control']='no-store'; return response
 
+
+def collect_site_pages(url, max_pages=4):
+    """Collect public same-origin HTML summaries, with explicit limits."""
+    from collections import deque
+    from urllib.parse import urldefrag
+    start=urlsplit(url)
+    origin=(start.scheme.lower(),start.netloc.lower())
+    queue=deque([urlunsplit((start.scheme,start.netloc,start.path or '/', '', ''))])
+    seen=set(); pages=[]; errors=0; discovered=0
+    while queue and len(seen)<max_pages:
+        link=queue.popleft()
+        if link in seen: continue
+        seen.add(link)
+        try:
+            html, final, ctype=safe_fetch(link, 600000)
+            parsed=urlsplit(final)
+            if (parsed.scheme.lower(),parsed.netloc.lower())!=origin or ('html' not in ctype.lower() and '<html' not in html.lower()): continue
+            soup=BeautifulSoup(html,'html.parser')
+            title=' '.join(soup.title.get_text(' ',strip=True).split())[:160] if soup.title else ''
+            headings=[' '.join(h.get_text(' ',strip=True).split())[:120] for h in soup.select('h1,h2,h3')[:12]]
+            pages.append({'url':final,'title':title,'headings':headings})
+            for node in soup.select('a[href]')[:150]:
+                raw=node.get('href','')
+                u=urlsplit(urljoin(final,raw))
+                if (u.scheme.lower(),u.netloc.lower())!=origin or u.query or not u.path or re.search(r'\.(pdf|zip|jpg|png|svg|webp|mp4)\Z',u.path,re.I): continue
+                candidate=urlunsplit((u.scheme,u.netloc,u.path,'',''))
+                if candidate not in seen and candidate not in queue:
+                    discovered+=1
+                    if len(queue)<20: queue.append(candidate)
+        except Exception:
+            errors+=1
+    return pages, bool(queue), errors, discovered
+
+def add_site_map_to_prompts(result, url):
+    pages, remaining, errors, discovered=collect_site_pages(url)
+    lines=['\n\nСАЙТ БЕТТЕРІ: НАҚТЫ ТАБЫЛҒАН ҚҰРЫЛЫМ']
+    for page in pages:
+        lines.append('- '+page['url']+' | '+(page['title'] or 'Тақырып көрсетілмеген')+' | '+('; '.join(page['headings']) or 'Бөлім атаулары алынбады'))
+    lines.append(f'Қамту: {len(pages)} HTML бет; қосымша табылған сілтемелер: {discovered}; ашылмағаны: {errors}. Бұл шектеулі тексеріс; JS арқылы көрінетін контент пен басқа беттер қамтылмауы мүмкін.')
+    lines.append('Әр анықталған бет үшін бөлек құрылым мен навигация жаса, барлық белгілі мәтінді және бренд стилін сақта. Тексерілмеген беттерді, мазмұнды не функцияларды ойдан қоспа; қалған беттер бойынша материалды сұра. Той/шақыру сайтында тұлғаларды, күнді, орынды, RSVP, нәзік стильді және түпнұсқа тілін сақта.')
+    text='\n'.join(lines)
+    result['prompts']={k:v+text for k,v in result['prompts'].items()}
+    result['prompt']=result['prompts']['chatgpt']
+    result['site_pages']={'pages':pages,'limited':remaining,'errors':errors}
+    return result
+
 @app.post('/api/audit')
 def audit():
     try:
@@ -448,6 +494,7 @@ def audit():
                 result=finish_evidence(features,meta,'PDF',final,prompt,meta.get('pdf_size_mb'),meta.get('pdf_pages'))
             else:
                 result=finish_evidence(features,meta,'URL',final,prompt)
+                result=add_site_map_to_prompts(result,final)
         elif kind=='PDF':
             file=request.files.get('file')
             if not file or not file.filename.lower().endswith('.pdf'): raise ValueError('PDF файлын таңдаңыз.')

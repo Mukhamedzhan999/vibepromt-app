@@ -29,6 +29,10 @@ def build_hybrid_prompt(kind,goal,assessment,meta,css=''):
         editorial=analyze([{'page':1,'_analysis_text':str(meta.get('content_text') or '')[:24000]}])
     domain=editorial.get('domain','ACADEMIC_GUIDE')
     name,bg,surface,accent,secondary,heading,body,heading_font,body_font=PALETTES.get(domain,PALETTES['ACADEMIC_GUIDE'])
+    subject=(str(goal or '')+' '+str(meta.get('content_text') or '')).lower()
+    if kind=='URL' and any(term in subject for term in ('той','шақыру','шакыру','үйлену','свадьб','wedding','invitation')):
+        name,bg,surface,accent,secondary,heading,body,heading_font,body_font=('Warm Wedding Editorial','#F2E7D7','#FBF5EC','#A67C45','#A65E4B','#34251F','#34251F','Lora','Noto Sans')
+
     metrics=[]; details=[]; source=[]; image_plan=[]; remaining=240000
     if kind=='PDF':
         for page in pages:
