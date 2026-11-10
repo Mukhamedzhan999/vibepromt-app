@@ -34,18 +34,57 @@ WEB_PASSWORD = os.environ.get('VIBEAUDIT_PASSWORD', '')
 if len(WEB_PASSWORD) < 20:
     raise RuntimeError('Set VIBEAUDIT_PASSWORD to a random value of at least 20 characters')
 
+from datetime import timedelta
+import hashlib
+from flask import Response, session, redirect, url_for
+app.secret_key = hashlib.sha256(('vibeaudit-session-v1:' + WEB_PASSWORD).encode('utf-8')).digest()
+app.config.update(SESSION_COOKIE_HTTPONLY=True, SESSION_COOKIE_SECURE=True,
+                  SESSION_COOKIE_SAMESITE='Lax', PERMANENT_SESSION_LIFETIME=timedelta(days=30))
+_login_attempts = []
+_login_lock = threading.Lock()
+
 @app.before_request
 def protect_web():
-    from flask import Response
-    supplied = request.authorization
-    if not supplied or supplied.username != 'vibeaudit' or not hmac.compare_digest((supplied.password or '').encode('utf-8'), WEB_PASSWORD.encode('utf-8')):
-        return Response('Authentication required', 401, {'WWW-Authenticate': 'Basic realm="VibeAudit", charset="UTF-8"', 'Cache-Control':'no-store'})
-    if request.path.startswith('/api/chrome-'):
-        return Response('Local Chrome extension is unavailable on hosted deployments.', 404)
     if request.method in ('POST', 'PUT', 'PATCH', 'DELETE'):
         origin=request.headers.get('Origin', '')
         if origin and urlsplit(origin).netloc.lower() != request.host.lower():
             return Response('Cross-origin request denied', 403)
+    if request.path == '/login':
+        return None
+    if request.path.startswith('/api/chrome-'):
+        return Response('Local Chrome extension is unavailable on hosted deployments.', 404)
+    supplied = request.authorization
+    if supplied and supplied.username == 'vibeaudit' and hmac.compare_digest((supplied.password or '').encode('utf-8'), WEB_PASSWORD.encode('utf-8')):
+        session.permanent=True
+        session['authenticated']=True
+    if not session.get('authenticated'):
+        if request.path.startswith('/api/'):
+            return jsonify({'error':'Кіру қажет.'}), 401
+        return redirect(url_for('login'))
+
+@app.route('/login', methods=['GET','POST'])
+def login():
+    if session.get('authenticated'):
+        return redirect(url_for('index'))
+    error=''
+    if request.method == 'POST':
+        now=time.monotonic()
+        with _login_lock:
+            _login_attempts[:]=[x for x in _login_attempts if now-x < 300]
+            limited=len(_login_attempts)>=10
+            if not limited:
+                _login_attempts.append(now)
+        if limited:
+            return render_template('login.html', error='Көп әрекет жасалды. Бес минуттан кейін қайталаңыз.'), 429
+        password=request.form.get('password','')
+        if len(password)<=1024 and hmac.compare_digest(password.encode('utf-8'),WEB_PASSWORD.encode('utf-8')):
+            session.clear()
+            session.permanent=True
+            session['authenticated']=True
+            with _login_lock: _login_attempts.clear()
+            return redirect(url_for('index'))
+        error='Құпиясөз қате. Қайта енгізіңіз.'
+    return render_template('login.html',error=error)
 
 @app.after_request
 def web_privacy_headers(response):
