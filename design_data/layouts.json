@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "description": "Original curated layout recommendations; do not treat suggestions as source facts.",
+  "records": {
+    "HISTORY_CULTURE": [
+      "Chronological source-grounded timeline with dated captions and an authentic place-specific archival visual when verifiable.",
+      "Two-column editorial spread: short context left and captioned geographic visual right, preserving names and dates.",
+      "Compare documented periods with a readable table and a source note; use only relationships supported by the source."
+    ],
+    "TECH_AI": [
+      "Preserve code and show a labeled process diagram beside its explanation.",
+      "Arrange documented components as a compact grid with accurate captions; do not invent connections.",
+      "Use a code block and a step-by-step narrative with sufficient contrast and line wrapping."
+    ],
+    "FINANCE_BUSINESS": [
+      "Use a metric callout and clearly labeled unit, currency and time period from the source.",
+      "Use a comparison table only where the source provides comparable values.",
+      "Pair a verified chart with a short explanatory text and visible data source."
+    ],
+    "ECO_SCIENCE": [
+      "Use a labeled subject-specific image beside a concise evidence-based explanation.",
+      "Present measurements with units and the source context; avoid unsupported causality.",
+      "Illustrate a documented process with a simple annotated diagram and source note."
+    ],
+    "ACADEMIC_GUIDE": [
+      "Use a clear concept heading, a concise definition and a source-grounded example.",
+      "Present a documented sequence as numbered steps with a small highlighted rule.",
+      "Arrange related concepts in a readable two-column comparison without inventing material."
+    ]
+  }
+}
