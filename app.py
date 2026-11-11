@@ -287,6 +287,9 @@ def real_model_prediction(features, meta, kind):
         return None
 
 def finish_evidence(features, meta, kind, source, prompt='', size=None, pages=None):
+    if kind == 'PDF':
+        from hybrid_prompt import synchronize_pdf_palette
+        synchronize_pdf_palette(meta)
     assessment = browser_audit.evaluate(features, meta, kind) if kind == 'URL' and meta.get('rendered') else audit_engine.evaluate(features, meta, kind)
     known = meta['known']
     f = [round(float(x), 2) if known.get(k, False) else None for k,x in zip(FEATURES, features)]
