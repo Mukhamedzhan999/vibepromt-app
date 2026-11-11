@@ -129,6 +129,47 @@ body[data-theme='navy'] .sidebar{background:#09192c}
 }
 @media(max-width:600px){.brief-home{margin:38px auto}.brief-brand{font-size:29px}.brief-card{padding:12px}.brief-card textarea{min-height:150px}.brief-actions{align-items:stretch}.brief-submit{width:100%}.brief-tools button{flex:1}.top .nav-status{display:none}}
 
+
+/* Unified theme colors and compact history */
+body,body[data-theme='dark']{
+ --theme-bg:#090912;--theme-glow:#2b2250;--theme-sidebar:#10101d;--theme-top:#111120;
+ --theme-panel:#19192b;--theme-panel-deep:#121222;--theme-border:#39314f;
+ --theme-selected:#2d2949;--theme-muted:#b0a9c5;--theme-footer:#090912;
+ background:radial-gradient(ellipse at 65% 90%,#352355 0,transparent 42%),var(--theme-bg);
+}
+body[data-theme='navy']{
+ --theme-bg:#071426;--theme-glow:#1b3658;--theme-sidebar:#09192c;--theme-top:#0c2037;
+ --theme-panel:#152c49;--theme-panel-deep:#0d1d31;--theme-border:#375577;
+ --theme-selected:#253f60;--theme-muted:#b2c4d8;--theme-footer:#071426;
+ background:radial-gradient(ellipse at 65% 90%,#203e65 0,transparent 42%),var(--theme-bg);
+}
+body[data-theme='warm']{
+ --theme-bg:#1a1311;--theme-glow:#503527;--theme-sidebar:#1a1210;--theme-top:#241916;
+ --theme-panel:#32221d;--theme-panel-deep:#211915;--theme-border:#62483e;
+ --theme-selected:#4b342b;--theme-muted:#d0bdb1;--theme-footer:#1a1311;
+ background:radial-gradient(ellipse at 65% 90%,#493025 0,transparent 42%),var(--theme-bg);
+}
+body:before{background:radial-gradient(ellipse at 70% 35%,var(--theme-glow),transparent 55%);opacity:.42}
+body .sidebar,body[data-theme] .sidebar{background:var(--theme-sidebar);border-color:var(--theme-border)}
+body .top{background:var(--theme-top);border-color:var(--theme-border)}
+body .nav-status,body .side-history-item{background:var(--theme-panel);border-color:var(--theme-border)}
+body .sidebar .side-button:hover,body .sidebar .side-button:focus-visible,body .sidebar .side-button.current{background:var(--theme-selected);border-color:var(--theme-border)}
+body.brief-mode .sidebar .side-new{background:var(--theme-selected);border-color:var(--theme-border);border-left:2px solid #a99aff}
+body .brief-card,body .brief-result,body .card,body[data-theme] .card{background:var(--theme-panel);border-color:var(--theme-border)}
+body .brief-card textarea,body .brief-result pre,body .urlbox,body textarea,body .drop{background:var(--theme-panel-deep)}
+body .brief-types button,body .brief-models button,body .brief-tools button{background:var(--theme-panel-deep);border-color:var(--theme-border)}
+body .brief-types button.active,body .brief-models button.active{background:var(--theme-selected);border-color:#a394ff}
+body .settings-modal[open]{background:radial-gradient(ellipse at 85% 0%,var(--theme-glow),transparent 42%),var(--theme-bg)}
+body .settings-card{background:var(--theme-panel);border-color:var(--theme-border)}
+body .settings-card select{background:var(--theme-panel-deep);border-color:var(--theme-border)}
+body .settings-footer{background:linear-gradient(transparent,var(--theme-footer) 25%)}
+body .side-history-item{min-width:0}
+body .history-open{min-width:0;overflow:hidden}
+body .history-open strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+body .history-open br{display:none}
+body .history-open small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:3px}
+@media(min-width:901px){.sidebar{width:280px}.workspace{margin-left:280px}}
+
 </style>
 <link rel="manifest" href="/static/manifest.webmanifest"><meta name="theme-color" content="#10131d"><link rel="apple-touch-icon" href="/static/vibepromt-icon-192.png"><noscript><style>.splash{display:none}</style></noscript><link rel="icon" type="image/svg+xml" href="/static/vibepromt-logo.svg"><meta name="apple-mobile-web-app-title" content="VibePromt AI"></head>
 <body class="brief-mode">
