@@ -65,11 +65,75 @@ body[data-theme='navy']{--bg:#071426;--surface:#102640;background:#071426}body[d
 @media(max-width:480px){.settings-card{grid-template-columns:1fr;padding:16px;row-gap:6px}.settings-card>select{grid-column:1;grid-row:3;margin-top:8px}.settings-card>small{line-height:1.45}.settings-card:has(.settings-check)>small{padding-left:32px}}
 
 .brief-brand{font-size:clamp(22px,3vw,30px);font-weight:800;letter-spacing:-.8px;line-height:1.2;color:#f4f6ff}.brief-brand span{color:#a7a5ff}.brief-intro .brief-about{font-size:13px;line-height:1.6;color:#bac5d9;max-width:570px;margin:8px auto 24px}.brief-intro h1{margin-top:0}
+
+/* Reference-inspired application workspace */
+body:not(.brief-mode) .sidebar .side-new{background:transparent;border-color:transparent;border-left:2px solid transparent;color:#bac5d6}.brief-mode .sidebar #side-audit.current{background:transparent;border-color:transparent;color:#bac5d6}
+
+:root{--workspace-bg:#111c2b;--workspace-panel:#1d293a;--workspace-line:#334158;--workspace-accent:#a394ff}
+body{background:radial-gradient(ellipse at 62% 92%,#252449 0,transparent 35%),#111b2a}
+body:before{background:radial-gradient(ellipse at 70% 30%,#283c5c55,transparent 48%),radial-gradient(ellipse at 80% 95%,#5e46a333,transparent 40%);z-index:-1}
+.workspace{margin-left:248px}
+.sidebar{display:flex;transform:none;width:248px;height:100dvh;padding:20px 14px;background:#111b29;border-right:1px solid #2c394b;gap:14px;overflow:auto}
+.sidebar-top{margin:0 0 3px;padding:0 6px 17px;border-bottom:1px solid #2a3749}
+.sidebar-top .brand{font-size:16px;letter-spacing:-.4px;gap:9px}
+.sidebar-top .brand-icon{width:31px;height:31px;border-radius:8px}
+.sidebar-top .side-close{display:none}
+.sidebar .side-button,.sidebar .side-new{min-height:42px;padding:10px 12px;font-size:13px;background:transparent;border:1px solid transparent;border-radius:8px;box-shadow:none;color:#bac5d6}
+.sidebar .side-new{background:#273346;color:#f8f7ff;border-left:2px solid #a99aff}
+.sidebar .side-button:hover,.sidebar .side-button:focus-visible,.sidebar .side-button.current{background:#263347;border-color:#38475f;color:#fff}
+.sidebar>div:not(.sidebar-top):not(.side-history):not(.side-bottom){grid-template-columns:1fr;gap:3px}
+.side-history{flex:1;min-height:120px;padding:14px 8px;border:0;border-top:1px solid #29384a;background:transparent;border-radius:0}
+.side-history-item{background:#1c293a;border:1px solid #344258}
+.side-bottom{border-top:1px solid #29384a;padding-top:9px}
+.side-bottom .note{font-size:10px;color:#94a5b9}
+.top{height:66px;background:#172232cc;border-bottom:1px solid #2c394c;backdrop-filter:blur(14px)}
+.top .shell{padding:0 26px;justify-content:flex-end}
+.top .brand,.top .nav,.top .menu-toggle{display:none}
+.nav-status{display:inline-flex;align-items:center;font-family:inherit;letter-spacing:.03em;font-weight:700;background:#253247;border:1px solid #33445d;padding:8px 12px;border-radius:9px}
+main.shell{max-width:1200px;padding:30px 36px 70px}
+.brief-home{max-width:780px;margin:clamp(48px,12vh,120px) auto 80px}
+.brief-intro{text-align:center;margin-bottom:30px}
+.brief-brand{font-size:clamp(28px,3.2vw,38px);font-weight:800;letter-spacing:-1px}
+.brief-intro .brief-about{max-width:610px;font-size:13px;color:#aab9cd;margin:9px auto 0;line-height:1.6}
+.brief-intro h1{font-size:15px;letter-spacing:0;margin:20px 0 4px;color:#d6ddef}
+.brief-intro>p:not(.brief-about){font-size:12px;margin:0;color:#93a2b7}
+.brief-card{position:relative;background:linear-gradient(135deg,#273447,#202b3e);border:1px solid #39465d;border-radius:17px;padding:15px;box-shadow:0 20px 55px #050a162b}
+.brief-types{gap:6px}
+.brief-types button,.brief-models button,.brief-tools button{border:1px solid #39475e;background:#273447;color:#bac5d8;border-radius:8px;padding:8px 13px;min-height:38px}
+.brief-types button.active,.brief-models button.active{background:#38395c;border-color:#877dd0;color:#fff}
+.brief-label{margin:14px 2px 7px;color:#afbdd2;font-size:10px}
+.brief-card textarea{min-height:150px;border:1px solid #9185d7;border-radius:12px;background:#273448;color:#f6f7ff;padding:16px;font-size:16px;line-height:1.55;box-shadow:0 0 0 3px #9a88ed15}
+.brief-card textarea:focus{border-color:#b4a6ff;box-shadow:0 0 0 3px #a292ff2b}
+.brief-actions{margin-top:11px;gap:12px}
+.brief-actions span{font-size:11px;color:#9cabc0}
+.brief-submit{min-height:43px;border-radius:9px;padding:10px 17px;background:linear-gradient(135deg,#ad9aff,#8177ee);box-shadow:0 8px 24px #8272e83b}
+.brief-tools{justify-content:flex-start;gap:8px;margin:22px 0}
+.brief-tools span{width:100%;font-weight:700;color:#d6dfef}
+.brief-result{background:#1c2939;border:1px solid #3d4a62;border-radius:16px}
+.brief-result pre{font-family:inherit;font-size:14px;line-height:1.75;background:#111b2a}
+body[data-theme='warm']{background:radial-gradient(ellipse at 65% 85%,#433126,transparent 48%),#1a1311}
+body[data-theme='warm'] .sidebar{background:#1a1210}
+body[data-theme='navy']{background:radial-gradient(ellipse at 70% 85%,#213b62,transparent 48%),#071426}
+body[data-theme='navy'] .sidebar{background:#09192c}
+@media(max-width:900px){
+ .workspace{margin-left:0}
+ .sidebar{display:none;transform:translateX(-100%);width:min(320px,88vw);padding:20px 14px;z-index:50;box-shadow:20px 0 60px #0008}
+ body.menu-open .sidebar{display:flex;transform:translateX(0)}
+ body.menu-open .side-overlay{display:block;position:fixed;inset:0;z-index:45;background:#030712b8}
+ .sidebar-top .side-close{display:inline-flex;align-items:center;justify-content:center}
+ .top .shell{justify-content:space-between;padding:0 17px}
+ .top .brand,.top .menu-toggle{display:inline-flex}
+ .top .nav-status{font-size:9px;padding:7px}
+ main.shell{padding:28px 17px 50px}
+ .brief-home{margin:50px auto}
+}
+@media(max-width:600px){.brief-home{margin:38px auto}.brief-brand{font-size:29px}.brief-card{padding:12px}.brief-card textarea{min-height:150px}.brief-actions{align-items:stretch}.brief-submit{width:100%}.brief-tools button{flex:1}.top .nav-status{display:none}}
+
 </style>
 <link rel="manifest" href="/static/manifest.webmanifest"><meta name="theme-color" content="#10131d"><link rel="apple-touch-icon" href="/static/vibepromt-icon-192.png"><noscript><style>.splash{display:none}</style></noscript><link rel="icon" type="image/svg+xml" href="/static/vibepromt-logo.svg"><meta name="apple-mobile-web-app-title" content="VibePromt AI"></head>
 <body class="brief-mode">
 <div id="splash" class="splash" role="status" aria-label="VibePromt AI жүктелуде"><div class="splash-brand"><img class="splash-logo" src="/static/vibepromt-logo.svg" alt="" aria-hidden="true">VibePromt <i>AI</i></div></div>
-<div class="side-overlay" id="side-overlay"></div><aside class="sidebar" id="sidebar" aria-label="Қосымша навигация"><div class="sidebar-top"><a class="brand" href="#"><img class="brand-icon" src="/static/vibepromt-logo.svg" alt="" aria-hidden="true"><span>VibePromt <em>AI</em></span></a><button type="button" class="side-close" id="close-menu" aria-label="Мәзірді жабу">×</button></div><button type="button" class="side-button side-new" id="new-audit">＋ &nbsp; Жаңа аудит</button><div><button type="button" class="side-button current" id="side-audit">◈ &nbsp; Аудит</button><button type="button" class="side-button" id="side-lab">▦ &nbsp; Оқытушы режимі</button></div><div class="side-history"><div class="side-label">СОҢҒЫ АУДИТТЕР</div><div id="sidebar-history"><p class="note">Тарих жүктелуде...</p></div></div><div class="side-bottom"><button type="button" class="side-button" id="open-settings">⚙ &nbsp; Баптаулар</button><p class="note" style="margin:8px 10px">Жаңа нәтижелер мен промпттар осы браузерде сақталады. Басқа құрылғыға көшпейді; браузер деректерін тазаласаңыз, өшеді.</p></div></aside><div class="workspace">
+<div class="side-overlay" id="side-overlay"></div><aside class="sidebar" id="sidebar" aria-label="Қосымша навигация"><div class="sidebar-top"><a class="brand" href="#"><img class="brand-icon" src="/static/vibepromt-logo.svg" alt="" aria-hidden="true"><span>VibePromt <em>AI</em></span></a><button type="button" class="side-close" id="close-menu" aria-label="Мәзірді жабу">×</button></div><button type="button" class="side-button side-new" id="new-audit">⌂ &nbsp; Басты бет</button><div><button type="button" class="side-button current" id="side-audit">◈ &nbsp; Аудит</button><button type="button" class="side-button" id="side-lab">▦ &nbsp; Оқытушы режимі</button></div><div class="side-history"><div class="side-label">СОҢҒЫ АУДИТТЕР</div><div id="sidebar-history"><p class="note">Тарих жүктелуде...</p></div></div><div class="side-bottom"><button type="button" class="side-button" id="open-settings">⚙ &nbsp; Баптаулар</button><p class="note" style="margin:8px 10px">Жаңа нәтижелер мен промпттар осы браузерде сақталады. Басқа құрылғыға көшпейді; браузер деректерін тазаласаңыз, өшеді.</p></div></aside><div class="workspace">
 <dialog class="settings-modal" id="settings-dialog" aria-labelledby="settings-title"><div class="settings-inner"><div class="settings-header"><div><div class="mini">ЖҰМЫС КЕҢІСТІГІ</div><h2 id="settings-title">Баптаулар</h2></div><button type="button" class="side-close" id="close-settings-top" aria-label="Баптауларды жабу">×</button></div><div class="settings-card"><label for="default-ai">Әдепкі AI нұсқасы</label><small>Промптты ашқанда көрсетілетін модельді таңдаңыз.</small><select id="default-ai" class="select"><option value="chatgpt">ChatGPT</option><option value="gemini">Gemini</option><option value="claude">Claude</option></select></div><div class="settings-card"><label for="theme-choice">Фон түсі</label><small>Жұмыс кеңістігінің өзіңізге ыңғайлы түсін таңдаңыз.</small><select id="theme-choice" class="select"><option value="dark">Қара</option><option value="navy">Қою көк</option><option value="warm">Қоңыр</option></select></div><div class="settings-card"><label for="language-choice">Интерфейс тілі</label><small>Негізгі мәзір мен басқару элементтерінің тілі.</small><select id="language-choice" class="select"><option value="kk">Қазақша</option><option value="ru">Русский</option><option value="en">English</option></select></div><div class="settings-card"><label class="settings-check"><input type="checkbox" id="reduce-motion"> Анимацияны азайту</label><small>Ашылу және өту анимацияларын қысқартады.</small></div><p class="note">Баптаулар мен аудит тарихы осы браузерде сақталады. Браузер деректерін тазаласаңыз, олар өшеді.</p><div class="settings-footer"><button type="button" class="copy settings-close" id="close-settings">Дайын</button></div></div></dialog>
 <header class="top"><div class="shell"><button type="button" class="menu-toggle" id="menu-toggle" aria-label="Мәзірді ашу" aria-controls="sidebar" aria-expanded="false">☰</button><a href="#" class="brand"><img class="brand-icon" src="/static/vibepromt-logo.svg" alt="" aria-hidden="true"><span>VibePromt <em>AI</em></span></a><nav class="nav" aria-label="Негізгі навигация"><button class="active" data-view="audit">✦ &nbsp; Аудит</button><button data-view="academic">▦ &nbsp; Оқытушы режимі</button></nav><div class="nav-status"><span class="dot"></span> ЖҮЙЕ ДАЙЫН</div></div></header>
 <main class="shell mx-auto">
@@ -111,6 +175,21 @@ function applyMotion(){document.documentElement.classList.toggle('reduce-motion'
 $('#open-settings').addEventListener('click',()=>{closeMenu();$('#theme-choice').value=preferences.theme||'dark';$('#language-choice').value=preferences.lang||'kk';$('#default-ai').value=promptModel;$('#reduce-motion').checked=!!preferences.reduceMotion;$('#settings-dialog').showModal()});
 $('#close-settings').addEventListener('click',()=>$('#settings-dialog').close());$('#close-settings-top').addEventListener('click',()=>$('#settings-dialog').close());$('#default-ai').addEventListener('change',e=>{preferences.ai=e.target.value;savePreferences();$(`[data-prompt-model="${preferences.ai}"]`).click()});$('#reduce-motion').addEventListener('change',e=>{preferences.reduceMotion=e.target.checked;savePreferences();applyMotion()});
 const uiTranslations={
+'⌂ Басты бет':['⌂ Главная','⌂ Home'],
+'Бүгін не жасаймыз?':['Что создадим сегодня?','What shall we create today?'],
+'Ойыңызды сипаттаңыз — сайтқа немесе презентацияға арналған үш дайын AI промпт алыңыз.':['Опишите идею и получите три промпта для сайта или презентации.','Describe your idea and get three AI prompts for a website or presentation.'],
+'↗ Сайт':['↗ Сайт','↗ Website'],
+'▤ Презентация':['▤ Презентация','▤ Presentation'],
+'ЖОБАҢЫЗДЫ СИПАТТАҢЫЗ':['ОПИШИТЕ ВАШ ПРОЕКТ','DESCRIBE YOUR PROJECT'],
+'Тақырып, аудитория, стиль және қажет бөлімдерді жазыңыз':['Укажите тему, аудиторию, стиль и необходимые разделы','Describe the topic, audience, style, and required sections'],
+'Промпт жасау ↑':['Создать промпт ↑','Create prompt ↑'],
+'Дайын материал бар ма?':['Уже есть материал?','Already have material?'],
+'↗ Сайтты талдау':['↗ Анализ сайта','↗ Analyze website'],
+'▤ PDF талдау':['▤ Анализ PDF','▤ Analyze PDF'],
+'ДАЙЫН НӘТИЖЕ':['ГОТОВЫЙ РЕЗУЛЬТАТ','YOUR RESULT'],
+'Сіздің промптыңыз':['Ваш промпт','Your prompt'],
+'Промптты көшіру':['Копировать промпт','Copy prompt'],
+
 'Сайт пен презентацияға идеяңыз бойынша сапалы промпт жасаңыз немесе дайын сайт пен PDF-ті талдаңыз.':['Создавайте подробные промпты для сайтов и презентаций по вашей идее или анализируйте готовые сайты и PDF.','Create detailed prompts for websites and presentations from your idea, or analyze an existing website or PDF.'],
 '⚙ Баптаулар':['⚙ Настройки','⚙ Settings'],'＋ Жаңа аудит':['＋ Новый аудит','＋ New audit'],'◈ Аудит':['◈ Аудит','◈ Audit'],'▦ Оқытушы режимі':['▦ Режим преподавателя','▦ Teaching mode'],'✦ Аудит':['✦ Аудит','✦ Audit'],'↗ Сайт / PDF сілтемесі':['↗ Сайт / ссылка PDF','↗ Website / PDF link'],'▤ PDF құжат':['▤ Документ PDF','▤ PDF document'],
 'Баптаулар':['Настройки','Settings'], 'ЖҰМЫС КЕҢІСТІГІ':['РАБОЧЕЕ ПРОСТРАНСТВО','WORKSPACE'], 'Әдепкі AI нұсқасы':['AI по умолчанию','Default AI'], 'Фон түсі':['Цвет фона','Background color'], 'Интерфейс тілі':['Язык интерфейса','Interface language'], 'Қара':['Чёрный','Black'], 'Қою көк':['Тёмно-синий','Dark navy'], 'Қоңыр':['Коричневый','Brown'], 'Анимацияны азайту':['Уменьшить анимацию','Reduce motion'], 'Дайын':['Готово','Done'],
