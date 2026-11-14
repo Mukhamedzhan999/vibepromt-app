@@ -295,7 +295,7 @@ updateBriefExample();
 
 const briefThemes=[
  {match:/той|шақыр|шакыру|үйлен|wedding|invitation|свадьб/i,name:'Мерекелік editorial',colors:'жылы бежевый #F2E7D7; жұмсақ крем #FBF5EC; қою қоңыр #34251F; шампан алтыны #A67C45; терракота #A65E4B',fonts:'Cormorant Garamond (тақырып, қазақша таңбалары тексерілсін) + Noto Sans (мәтін)'},
- {match:/тарих|history|мәдени|әдеби|culture|истори|желтоқсан|декабрь|1986/i,name:'Тарихи editorial',colors:'пергамент #F3E8D5; құм #DDD0B7; қою сия #27313B; алтын #A67C31; терракота #965139',fonts:'Lora + Noto Sans'},
+ {match:/тарих|history|мәдени|әдеби|culture|истори|желтоқсан|декабрь|1986|соғыс|войн|\bwar\b/i,name:'Тарихи editorial',colors:'пергамент #F3E8D5; құм #DDD0B7; қою сия #27313B; алтын #A67C31; терракота #965139',fonts:'Lora + Noto Sans'},
  {match:/табиғ|эколог|ботан|eco|nature|биологи/i,name:'Табиғи botanical',colors:'шалфей #E3EFE5; орман #164A39; крем #F5F1E8; жасыл #3B8062; құм #C6B89E',fonts:'Manrope + Noto Sans'},
  {match:/қаржы|бизнес|finance|business|стартап|бухгалтер/i,name:'Заманауи business',colors:'қою көк #1B2A38; мұз көк #E9F0F5; көк сұр #34495B; көгілдір жасыл #117B72; алтын #B99860',fonts:'Plus Jakarta Sans + Noto Sans'},
  {match:/технолог|код|жасанды интеллект|cyber|software|\bai\b/i,name:'Digital technology',colors:'қою көк #0B1120; көк-сұр #1E293B; ашық #F1F5F9; көгілдір #06B6D4; индиго #818CF8',fonts:'Space Grotesk + Noto Sans'}
@@ -313,7 +313,7 @@ function analyzeBrief(text, kind){
  const countMatch=clean.match(/(\d{1,2})\s*(?:слайд|бет|slide|страниц|слайд)/i);
  const count=countMatch?Math.min(50,Math.max(3,Number(countMatch[1]))):null;
  const wedding=/той|шақыр|шакыру|үйлен|wedding|invitation|свадьб/i.test(clean);
- const history=/тарих|истори|history|өркениет|culture|желтоқсан|декабрь|1986/i.test(clean);
+ const history=/тарих|истори|history|өркениет|culture|желтоқсан|декабрь|1986|соғыс|войн|\bwar\b/i.test(clean);
  const goals=[];
  if(/тіркел|регистрац|signup|register/i.test(clean))goals.push('тіркелу');
  if(/сатып|сату|дүкен|магазин|buy|shop|төле/i.test(clean))goals.push('тауарды қарау және сатып алу');
