@@ -204,11 +204,11 @@ body,button,input,textarea,select{font-family:'Plus Jakarta Sans','Noto Sans',sa
 .brief-home{margin-top:clamp(32px,6vh,64px)}
 .brief-intro{max-width:760px;position:relative}
 .hero-eyebrow{font-size:10px;font-weight:700;letter-spacing:.17em;color:#b8a7ea;margin:22px 0 14px}
-.brief-intro .hero-headline{font-size:clamp(36px,5vw,64px);line-height:1.1;letter-spacing:-.045em;font-weight:800;margin:0 0 18px;color:#f4f0ff;text-wrap:balance}
+.brief-intro .hero-headline{font-size:clamp(32px,4.2vw,54px);line-height:1.1;letter-spacing:-.045em;font-weight:800;margin:0 0 18px;color:#f4f0ff;text-wrap:balance}
 .hero-gradient{color:#c4afff;background:linear-gradient(110deg,#dfd1ff 0%,#ac8df4 48%,#79c9de 100%);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .brief-intro .brief-about{max-width:570px;margin:10px auto;color:var(--theme-muted);font-size:13px}
 .brief-card{box-shadow:0 0 0 1px #ac8df40a,0 20px 70px #0003,0 -18px 70px #8b5cf610}
-@media(max-width:600px){.language-segments button{min-width:42px;min-height:38px;padding:8px}.hero-eyebrow{font-size:8px;letter-spacing:.11em}.brief-intro .hero-headline{font-size:clamp(32px,8.5vw,46px)}.brief-home{margin-top:28px}.brief-intro{margin-bottom:24px}}
+@media(max-width:600px){.language-segments button{min-width:42px;min-height:38px;padding:8px}.hero-eyebrow{font-size:8px;letter-spacing:.11em}.brief-intro .hero-headline{font-size:clamp(28px,7.2vw,40px)}.brief-home{margin-top:28px}.brief-intro{margin-bottom:24px}}
 @media(prefers-reduced-motion:reduce){.language-segments button{transition:none}}
 
 </style>
@@ -220,7 +220,7 @@ body,button,input,textarea,select{font-family:'Plus Jakarta Sans','Noto Sans',sa
 <header class="top"><div class="shell"><button type="button" class="menu-toggle" id="menu-toggle" aria-label="Мәзірді ашу" aria-controls="sidebar" aria-expanded="false">☰</button><a href="#" class="brand"><img class="brand-icon" src="/static/vibepromt-logo.svg" alt="" aria-hidden="true"><span>VibePromt <em>AI</em></span></a><nav class="nav" aria-label="Негізгі навигация"><button class="active" data-view="audit">✦ &nbsp; Аудит</button><button data-view="academic">▦ &nbsp; Оқытушы режимі</button></nav><div class="nav-status"><span class="dot"></span> ЖҮЙЕ ДАЙЫН</div><div class="top-language"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 4 6 4 9s-1 6-4 9c-3-3-4-6-4-9s1-6 4-9Z"/></svg><select id="home-language" aria-label="Интерфейс тілі"><option value="kk">ҚАЗ</option><option value="ru">РУС</option><option value="en">ENG</option></select><div class="language-segments" role="group" aria-label="Тілді таңдау"><button type="button" data-home-lang="kk" aria-label="Қазақша">ҚАЗ</button><button type="button" data-home-lang="ru" aria-label="Русский">РУС</button><button type="button" data-home-lang="en" aria-label="English">ENG</button></div></div></div></header>
 <main class="shell mx-auto">
 <section id="brief-home" class="brief-home">
-<div class="brief-intro"><div class="brief-brand">VibePromt <span>AI</span></div><p class="brief-about">Сайт пен презентацияға идеяңыз бойынша сапалы промпт жасаңыз немесе дайын сайт пен PDF-ті талдаңыз.</p><div class="hero-eyebrow">БІР ИДЕЯ. ҮШ AI. ЖАҢА МҮМКІНДІК.</div><h1 class="hero-headline"><span>Ойыңызға</span><br><span class="hero-gradient">ерекше пішін беріңіз.</span></h1><p>Ойыңызды сипаттаңыз — сайтқа немесе презентацияға арналған үш дайын AI промпт алыңыз.</p></div>
+<div class="brief-intro"><div class="brief-brand">VibePromt <span>AI</span></div><p class="brief-about">Сайт пен презентацияға идеяңыз бойынша сапалы промпт жасаңыз немесе дайын сайт пен PDF-ті талдаңыз.</p><div class="hero-eyebrow">БІР ИДЕЯ. ҮШ AI. ЖАҢА МҮМКІНДІК.</div><h1 class="hero-headline"><span>Идеяңызды кәсіби</span><br><span class="hero-gradient">жобаға айналдырыңыз</span></h1><p>Ойыңызды сипаттаңыз — сайтқа немесе презентацияға арналған үш дайын AI промпт алыңыз.</p></div>
 <div class="brief-card"><div class="brief-types" role="group" aria-label="Жоба түрі"><button type="button" data-brief-kind="site" class="active">↗ Сайт</button><button type="button" data-brief-kind="presentation">▤ PDF/презентация</button></div>
 <label for="brief-text" class="brief-label">ЖОБАҢЫЗДЫ СИПАТТАҢЫЗ</label><textarea id="brief-text" maxlength="5000" placeholder="Мысалы: жеке портфолио сайты. Жобаларым, өзім туралы және байланыс бөлімі болсын."></textarea>
 <div class="brief-actions"><span>Тақырып, аудитория, стиль және қажет бөлімдерді жазыңыз</span><button id="brief-generate" type="button" class="brief-submit">Промпт жасау ↑</button></div><p id="brief-error" class="error" role="status"></p></div>
@@ -270,8 +270,8 @@ const uiTranslations={
 '⌂ Басты бет':['⌂ Главная','⌂ Home'],
 'Бүгін не жасаймыз?':['Что создадим сегодня?','What shall we create today?'],
 'БІР ИДЕЯ. ҮШ AI. ЖАҢА МҮМКІНДІК.':['ОДНА ИДЕЯ. ТРИ AI. НОВЫЕ ВОЗМОЖНОСТИ.','ONE IDEA. THREE AIs. NEW POSSIBILITIES.'],
-'Ойыңызға':['Придайте идее','Give your idea'],
-'ерекше пішін беріңіз.':['выразительную форму.','a remarkable form.'],
+'Идеяңызды кәсіби':['Превратите вашу идею','Turn your idea into'],
+'жобаға айналдырыңыз':['в профессиональный проект','a professional project'],
 'Ойыңызды сипаттаңыз — сайтқа немесе презентацияға арналған үш дайын AI промпт алыңыз.':['Опишите идею и получите три промпта для сайта или презентации.','Describe your idea and get three AI prompts for a website or presentation.'],
 '↗ Сайт':['↗ Сайт','↗ Website'],
 '▤ PDF/презентация':['▤ PDF/презентация','▤ PDF/presentation'],
