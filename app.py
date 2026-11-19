@@ -1,5 +1,6 @@
 import os, re, io, csv, math, socket, ipaddress, sqlite3, random, time, json, secrets, hmac, threading
 from collections import Counter
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from urllib.parse import urlsplit, urljoin, urlunsplit
 
@@ -29,7 +30,7 @@ DB = os.path.join(BASE, 'vibe_audit.db')
 FEATURES = ['contrast_ratio', 'whitespace_ratio', 'text_density', 'font_variety', 'cta_presence', 'visual_hierarchy_score']
 CLASSES = ['Жоғары деңгейлі UI', 'Контраст және типографика қатесі', 'Шамадан тыс жүктелген / мәтін тым көп', 'Аяқталмаған шикі макет']
 app = Flask(__name__)
-app.config['MAX_CONTENT_LENGTH'] = 30 * 1024 * 1024
+app.config['MAX_CONTENT_LENGTH'] = 31 * 1024 * 1024  # Includes multipart overhead.
 # Web deployment requires an access password; local version remains unchanged.
 WEB_PASSWORD = os.environ.get('VIBEAUDIT_PASSWORD', '')
 if len(WEB_PASSWORD) < 20:
@@ -287,7 +288,14 @@ def real_model_prediction(features, meta, kind):
         app.logger.exception('Нақты сайт моделі жүктелмеді')
         return None
 
+PDF_CHECK_WORKERS = ThreadPoolExecutor(max_workers=2, thread_name_prefix='pdf-check')
+
+
 def finish_evidence(features, meta, kind, source, prompt='', size=None, pages=None):
+    grade_future = None
+    if kind == 'PDF' and prompt.strip():
+        # Text classification doesn't depend on the PDF's visual evidence.
+        grade_future = PDF_CHECK_WORKERS.submit(NLP.predict, [prompt])
     if kind == 'PDF':
         from hybrid_prompt import synchronize_pdf_palette
         synchronize_pdf_palette(meta)
@@ -306,7 +314,8 @@ def finish_evidence(features, meta, kind, source, prompt='', size=None, pages=No
     mega=variants['chatgpt']
     score=assessment['score']
     prediction=real_model_prediction(features,meta,kind)
-    grade=str(NLP.predict([prompt])[0]) if prompt.strip() else None
+    grade = (str(grade_future.result()[0]) if grade_future else
+             str(NLP.predict([prompt])[0]) if prompt.strip() else None)
     with sqlite3.connect(DB) as db:
         db.execute('INSERT INTO scans(kind,source,size_mb,pages,score,class_id,created_at) VALUES(?,?,?,?,?,?,?)', (kind,source[:250],size,pages,score if score is not None else -1,-1,datetime.now(timezone.utc).isoformat()))
     return {'features':dict(zip(FEATURES,f)), 'class_id':None, 'class_name':'Шамамен баға' if score is not None else 'Көрсеткіш өлшенбеді',
@@ -417,43 +426,125 @@ def history():
     with sqlite3.connect(DB) as db:
         db.row_factory=sqlite3.Row
         return jsonify([dict(x) for x in db.execute('SELECT * FROM scans ORDER BY id DESC LIMIT 20')])
+PDF_FILE_LIMIT = 30 * 1024 * 1024
+PDF_JOB_TTL = 15 * 60
+PDF_MAX_ACTIVE = 3
+PDF_MAX_RETAINED = 8
 PDF_JOBS = {}
-PDF_JOB_LOCK = threading.Lock()
+PDF_JOB_CHANGED = threading.Condition()
+PDF_WORKERS = ThreadPoolExecutor(max_workers=2, thread_name_prefix='pdf-audit')
+
+
+def read_pdf_upload():
+    file = request.files.get('file')
+    if not file or not (file.filename or '').lower().endswith('.pdf'):
+        raise ValueError('PDF файлын таңдаңыз.')
+    data = file.read(PDF_FILE_LIMIT + 1)
+    if len(data) > PDF_FILE_LIMIT:
+        raise ValueError('Файл көлемі 30 МБ-тан аспауы керек.')
+    if not data.startswith(b'%PDF-'):
+        raise ValueError('Таңдалған файл жарамды PDF емес.')
+    return data, os.path.basename(file.filename)
+
+
+def publish_pdf_state(job_id, **fields):
+    with PDF_JOB_CHANGED:
+        PDF_JOBS[job_id].update(fields, updated=time.monotonic())
+        PDF_JOB_CHANGED.notify_all()
+
+
+def run_pdf_job(job_id, data, filename, prompt):
+    def report_pages(done, total):
+        publish_pdf_state(job_id, phase='reading', done=done, total=total)
+
+    try:
+        features, meta, pages = audit_engine.extract_pdf(data, progress=report_pages)
+        publish_pdf_state(job_id, phase='analyzing', done=pages, total=pages)
+        result = finish_evidence(features, meta, 'PDF', filename, prompt,
+                                 round(len(data) / 1024 / 1024, 2), pages)
+        publish_pdf_state(job_id, state='done', result=result)
+    except Exception as exc:
+        if not isinstance(exc, ValueError):
+            app.logger.exception('PDF analysis failed')
+        message = str(exc) if isinstance(exc, ValueError) else 'PDF талдау кезінде қате шықты.'
+        publish_pdf_state(job_id, state='error', error=message)
+
 
 @app.post('/api/pdf-jobs')
 def start_pdf_job():
-    file=request.files.get('file'); prompt=request.form.get('prompt','')
-    if not file or not file.filename.lower().endswith('.pdf'): return jsonify({'error':'PDF файлын таңдаңыз.'}),400
-    if len(prompt)>5000: return jsonify({'error':'Сипаттама 5000 таңбадан аспауы керек.'}),400
-    data=file.read()
-    if not data.startswith(b'%PDF-'): return jsonify({'error':'Жарамды PDF файлын таңдаңыз.'}),400
-    job_id=secrets.token_urlsafe(24); filename=os.path.basename(file.filename)
-    with PDF_JOB_LOCK:
-        now=time.time()
-        for key in list(PDF_JOBS):
-            if now-PDF_JOBS[key]['updated']>3600: PDF_JOBS.pop(key,None)
-        PDF_JOBS[job_id]={'state':'running','done':0,'total':0,'updated':now}
-    def worker():
-        def progress(done,total):
-            with PDF_JOB_LOCK:
-                if job_id in PDF_JOBS: PDF_JOBS[job_id].update(done=done,total=total,updated=time.time())
-        try:
-            features,meta,pages=audit_engine.extract_pdf(data,progress=progress)
-            result=finish_evidence(features,meta,'PDF',filename,prompt,round(len(data)/1024/1024,2),pages)
-            with PDF_JOB_LOCK:
-                if job_id in PDF_JOBS: PDF_JOBS[job_id].update(state='done',result=result,updated=time.time())
-        except Exception as exc:
-            message=str(exc) if isinstance(exc,ValueError) else 'PDF талдау кезінде қате шықты.'
-            with PDF_JOB_LOCK:
-                if job_id in PDF_JOBS: PDF_JOBS[job_id].update(state='error',error=message,updated=time.time())
-    threading.Thread(target=worker,daemon=True).start()
-    return jsonify({'job_id':job_id}),202
+    prompt = request.form.get('prompt', '')
+    if len(prompt) > 5000:
+        return jsonify(error='Сипаттама 5000 таңбадан аспауы керек.'), 400
+    try:
+        data, filename = read_pdf_upload()
+    except ValueError as exc:
+        return jsonify(error=str(exc)), 400
+
+    key = hashlib.sha256(data).digest(), prompt.strip()
+    with PDF_JOB_CHANGED:
+        now = time.monotonic()
+        for job_id, job in list(PDF_JOBS.items()):
+            if job['state'] != 'running' and now - job['updated'] > PDF_JOB_TTL:
+                del PDF_JOBS[job_id]
+        for job_id, job in PDF_JOBS.items():
+            if job['key'] != key:
+                continue
+            if job['state'] == 'done':
+                return jsonify(result=job['result'], cached=True)
+            if job['state'] == 'running':
+                return jsonify(job_id=job_id), 202
+        if sum(job['state'] == 'running' for job in PDF_JOBS.values()) >= PDF_MAX_ACTIVE:
+            return jsonify(error='Талдау кезегі толы. Сәлден кейін қайта көріңіз.'), 429
+        while len(PDF_JOBS) >= PDF_MAX_RETAINED:
+            oldest = next(key for key, job in PDF_JOBS.items() if job['state'] != 'running')
+            del PDF_JOBS[oldest]
+        job_id = secrets.token_urlsafe(24)
+        PDF_JOBS[job_id] = dict(key=key, state='running', phase='queued', done=0, total=0, updated=now)
+    PDF_WORKERS.submit(run_pdf_job, job_id, data, filename, prompt)
+    return jsonify(job_id=job_id), 202
+
+
+def pdf_public_state(job_id):
+    job = PDF_JOBS.get(job_id)
+    if job is None:
+        return None
+    return {name: value for name, value in job.items() if name not in ('key', 'updated')}
+
 
 @app.get('/api/pdf-jobs/<job_id>')
 def pdf_job_status(job_id):
-    with PDF_JOB_LOCK: job=PDF_JOBS.get(job_id); result=dict(job) if job else None
-    if not result: return jsonify({'error':'Талдау табылмады. Қайта бастаңыз.'}),404
-    response=jsonify(result); response.headers['Cache-Control']='no-store'; return response
+    with PDF_JOB_CHANGED:
+        state = pdf_public_state(job_id)
+    if state is None:
+        return jsonify(error='Талдау табылмады. Қайта бастаңыз.'), 404
+    return jsonify(state)
+
+
+@app.get('/api/pdf-jobs/<job_id>/events')
+def pdf_job_events(job_id):
+    with PDF_JOB_CHANGED:
+        if job_id not in PDF_JOBS:
+            return jsonify(error='Талдау табылмады. Қайта бастаңыз.'), 404
+
+    def events():
+        previous = None
+        while True:
+            with PDF_JOB_CHANGED:
+                PDF_JOB_CHANGED.wait_for(lambda: pdf_public_state(job_id) != previous, timeout=12)
+                state = pdf_public_state(job_id)
+            if state is None:
+                yield 'data: {"state":"error","error":"Талдау табылмады."}\n\n'
+                return
+            if state == previous:
+                yield ': heartbeat\n\n'
+                continue
+            yield 'data: ' + json.dumps(state, ensure_ascii=False) + '\n\n'
+            if state['state'] in ('done', 'error'):
+                return
+            previous = state
+
+    return Response(events(), mimetype='text/event-stream',
+                    headers={'X-Accel-Buffering': 'no', 'Cache-Control': 'no-store'})
 
 
 def collect_site_pages(url, max_pages=4):
@@ -526,11 +617,8 @@ def audit():
                 result=finish_evidence(features,meta,'URL',final,prompt)
                 result=add_site_map_to_prompts(result,final)
         elif kind=='PDF':
-            file=request.files.get('file')
-            if not file or not file.filename.lower().endswith('.pdf'): raise ValueError('PDF файлын таңдаңыз.')
-            data=file.read()
-            if not data.startswith(b'%PDF-'): raise ValueError('Жарамды PDF файлын таңдаңыз.')
-            features,meta,pages=audit_engine.extract_pdf(data); result=finish_evidence(features,meta,'PDF',os.path.basename(file.filename),prompt,round(len(data)/1024/1024,2),pages)
+            data, filename = read_pdf_upload()
+            features,meta,pages=audit_engine.extract_pdf(data); result=finish_evidence(features,meta,'PDF',filename,prompt,round(len(data)/1024/1024,2),pages)
         else: raise ValueError('Талдау түрін таңдаңыз.')
         return jsonify(result)
     except ValueError as e: return jsonify({'error':str(e)}),400

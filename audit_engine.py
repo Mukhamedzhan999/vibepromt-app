@@ -4,6 +4,7 @@ import re
 import os
 import math
 import shutil
+from threading import Lock
 from collections import Counter
 from urllib.parse import urljoin
 
@@ -163,7 +164,16 @@ def _sample_pdf_page(page, spans):
     return {'colors':counts,'pairs':pairs,'width':pix.width,'height':pix.height}
 
 
+_PDF_LOCK = Lock()
+
+
 def extract_pdf(data, progress=None):
+    # PyMuPDF objects must not be used by concurrent threads.
+    with _PDF_LOCK:
+        return _extract_pdf(data, progress)
+
+
+def _extract_pdf(data, progress):
     """Read every page sequentially; keep only aggregate and per-page diagnostics."""
     try: doc=fitz.open(stream=data,filetype='pdf')
     except Exception: raise ValueError('PDF файлын оқу мүмкін болмады.')
@@ -172,6 +182,8 @@ def extract_pdf(data, progress=None):
         n=len(doc)
         if not n: raise ValueError('PDF ішінде бет жоқ.')
         per_page=[]; fonts=set(); links=0; no_text=0; heads=0; graphic=0
+        raster_limit=min(n,12)
+        raster_pages={round(i*(n-1)/max(1,raster_limit-1)) for i in range(raster_limit)}
         per_page_budget=max(40,min(1200,24000//n)); source_text_truncated=False
         raster_colors=Counter(); worst=[]; contrast_samples=0; low_count=0
         rendered=0; render_errors=0; page_errors=[]; ocr_needed=[]; ocr_failed=[]; ocr_pages=0
@@ -204,7 +216,14 @@ def extract_pdf(data, progress=None):
                 spans=[sp for block in blocks for line in block.get('lines',[]) for sp in line.get('spans',[]) if sp.get('text','').strip()]
                 native_words=sum(len(sp.get('text','').split()) for sp in spans)
                 images=page.get_image_info(); graphic+=len(images); info['image_count']=len(images)
-                image_text_possible=bool(images)
+                image_text_possible=bool(images) and (
+                    native_words < 12 or any(
+                        fitz.Rect(image['bbox']).get_area() >= page.rect.get_area() * .65
+                        for image in images
+                    )
+                )
+                if images and not image_text_possible:
+                    info['image_text_not_checked']=True
                 used_ocr=False
                 if image_text_possible:
                     ocr_needed.append(page_no)
@@ -261,7 +280,7 @@ def extract_pdf(data, progress=None):
                     sizes=sorted(sp.get('size',0) for sp in spans); median=sizes[len(sizes)//2]
                     heads+=sum(1 for sp in spans if sp.get('size',0)>median*1.25 and len(sp.get('text',''))<160)
                 try:
-                    observed=_sample_pdf_page(page, [] if used_ocr else spans)
+                    observed=_sample_pdf_page(page, [] if used_ocr else spans) if i in raster_pages else None
                     if observed:
                         rendered+=1; raster_colors.update(observed['colors'])
                         page_pairs=observed['pairs']; page_low=[x for x in page_pairs if x['ratio']<x['threshold']]
@@ -270,7 +289,7 @@ def extract_pdf(data, progress=None):
                         info['contrast_below_7']=sum(pair['ratio']<7 for pair in page_pairs) if page_pairs else None
                         contrast_samples+=len(page_pairs); low_count+=len(page_low)
                         worst=sorted(worst+[{**pair,'page':page_no} for pair in page_pairs],key=lambda x:x['ratio'])[:3]
-                    else: render_errors+=1
+                    elif i in raster_pages: render_errors+=1
                 except Exception: render_errors+=1
             except Exception:
                 page_errors.append(page_no); info['text_status']='Бетті оқу кезінде қате шықты'
@@ -286,8 +305,8 @@ def extract_pdf(data, progress=None):
         font_known=bool(fonts) and not page_errors and not ocr_failed and ocr_pages==0
         text_known=not needs_ocr and bool(valid_words)
         features=[contrast,0,round(avg,2),min(30,len(fonts)),round(links/max(1,n),2),round(hierarchy,2)]
-        note=('Әр бет бөлек оқылды және растрлануға жіберілді; контраст әр беттегі алғашқы 150 мәтін үзіндісінің жергілікті фонынан жуықталды. '
-              'Суреттегі мәтін OCR қажет етеді; фотосурет, градиент, мөлдірлік және толық қолжетімділік қолмен тексеріледі.')
+        note=(f'Мәтін барлық беттен оқылды. Контраст {rendered} үлгі беттегі мәтін мен фоннан шамамен өлшенді. '
+              'Мәтіні аз немесе үлкен суреті бар беттерде OCR қолданылады. Басқа суреттердегі мәтін, градиент және толық қолжетімділік қолмен тексеріледі.')
         if ocr_failed: note+=f' OCR қолданылмаған немесе сәтсіз беттер: {len(ocr_failed)}; бет тізімі төменде көрсетілген.'
         if page_errors: note+=f' Оқу қатесі шыққан беттер: {len(page_errors)}.'
         if render_errors: note+=f' Растрланбаған беттер: {render_errors}.'
@@ -301,7 +320,7 @@ def extract_pdf(data, progress=None):
                 'editorial':editorial,'words_avg':round(avg,1),'words_max':max(valid_words,default=0),'words_min':min(valid_words,default=0),
                 'pages_without_text':no_text,'needs_ocr':needs_ocr,'page_errors':page_errors,'page_results':per_page,
                 'source_text_truncated':source_text_truncated,'ocr_needed_pages':ocr_needed,'ocr_failed_pages':ocr_failed,'font_variants':len(fonts),'heading_candidates':heads,
-                'links':links,'images':graphic,'rendered_pages':rendered,'render_errors':render_errors,'contrast_samples':contrast_samples,
+                'links':links,'images':graphic,'rendered_pages':rendered,'raster_sample_pages':sorted(i+1 for i in raster_pages),'render_errors':render_errors,'contrast_samples':contrast_samples,
                 'low_contrast_count':low_count,'contrast_examples':worst,'ocr_available':ocr_available,'ocr_pages':ocr_pages,'ocr_error':ocr_error,'ocr_language':ocr_lang,'truncated':False}}
         return features,meta,n
     finally: doc.close()
