@@ -258,6 +258,18 @@ main.shell{padding:65px var(--page-gutter) 34px}
 .example-chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 0}
 .example-chips button{min-height:44px;padding:6px 12px;border-radius:999px;border:1px solid var(--theme-border);background:var(--theme-panel);color:var(--theme-muted);font-size:.8rem;font-weight:600}
 .example-chips button:hover,.example-chips button:focus-visible{background:var(--theme-selected);color:#fff}
+.presentation-tiers{margin:14px 0 0;padding:0;border:0;min-width:0}
+.presentation-tiers legend{padding:0;margin-bottom:8px;font-weight:600}
+.tier-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.tier-card{display:flex;gap:8px;align-items:start;min-height:70px;padding:10px 12px;border:1px solid var(--theme-border);border-radius:10px;background:var(--theme-panel-deep);cursor:pointer}
+.tier-card:has(input:checked){border-color:#a998ff;background:var(--theme-selected)}
+.tier-card:focus-within{outline:2px solid #bdb2ff;outline-offset:2px}
+.tier-card input{width:16px;height:16px;min-height:0;margin:3px 0 0;flex:none;accent-color:#ad9aff}
+.tier-card strong,.tier-card small{display:block}
+.tier-card small{color:var(--theme-muted);font-size:.78rem;line-height:1.45}
+#site-tier-control{display:contents}
+#site-tier-control[hidden],.presentation-tiers[hidden]{display:none}
+@media(max-width:767px){.tier-grid{grid-template-columns:minmax(0,1fr)}}
 #drop{position:relative;min-height:64px}
 #drop input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
 #drop:focus-within{outline:2px solid #bdb2ff;outline-offset:3px}
@@ -328,7 +340,14 @@ main.shell{padding:65px var(--page-gutter) 34px}
 </div>
 <div class="brief-actions"><button id="brief-generate" type="button" class="brief-submit">Промпт жасау</button></div><p id="brief-error" class="error" role="status"></p></div>
 <div class="brief-tools"><span>Дайын материал бар ма?</span><button type="button" id="open-url-audit">↗ Сайтты талдау</button><button type="button" id="open-pdf-audit">▤ PDF талдау</button></div>
-<div id="brief-result" class="brief-result hidden" aria-live="polite"><div class="brief-result-head"><div><span class="mini">ДАЙЫН НӘТИЖЕ</span><h2>Сіздің промптыңыз</h2></div><button id="brief-copy" class="copy" data-copy-label="brief">Промптты көшіру</button></div><div class="brief-models" role="group" aria-label="AI нұсқасы"><button type="button" data-brief-model="chatgpt" class="active">ChatGPT</button><button type="button" data-brief-model="gemini">Gemini</button><button type="button" data-brief-model="claude">Claude</button></div><div class="prompt-controls"><label for="brief-size">Промпт көлемі</label><select id="brief-size"><option value="short">Қысқа</option><option value="medium">Орташа</option><option value="full">Толық</option></select><a id="brief-ai-link" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">AI ашу ↗</a></div><p class="prompt-size-note">Промптты көшіріп, AI бетіне қойыңыз. PDF болса, бастапқы файлды да тіркеңіз.</p><p id="brief-engine-status" class="note" role="status" hidden></p><pre id="brief-output"></pre></div></section>
+<div id="brief-result" class="brief-result hidden" aria-live="polite"><div class="brief-result-head"><div><span class="mini">ДАЙЫН НӘТИЖЕ</span><h2>Сіздің промптыңыз</h2></div><button id="brief-copy" class="copy" data-copy-label="brief">Промптты көшіру</button></div><div class="brief-models" role="group" aria-label="AI нұсқасы"><button type="button" data-brief-model="chatgpt" class="active">ChatGPT</button><button type="button" data-brief-model="gemini">Gemini</button><button type="button" data-brief-model="claude">Claude</button></div><fieldset id="presentation-tiers" class="presentation-tiers" hidden>
+<legend>Промпт көлемі</legend>
+<div class="tier-grid">
+<label class="tier-card"><input type="radio" name="presentation-tier" value="short" checked><span><strong>Қысқа</strong><small>Фотосыз · Тек жүйелі мәтін мен кестелер</small></span></label>
+<label class="tier-card"><input type="radio" name="presentation-tier" value="medium"><span><strong>Орташа</strong><small>Әр 2 бет сайын 1 фото · Теңгерімді дизайн</small></span></label>
+<label class="tier-card"><input type="radio" name="presentation-tier" value="full"><span><strong>Толық</strong><small>Әр бетте фото · Кәсіби визуалды макет</small></span></label>
+</div>
+</fieldset><div class="prompt-controls"><span id="site-tier-control"><label for="brief-size">Промпт көлемі</label><select id="brief-size"><option value="short">Қысқа</option><option value="medium">Орташа</option><option value="full">Толық</option></select></span><a id="brief-ai-link" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">AI ашу ↗</a></div><p class="prompt-size-note">Промптты көшіріп, AI бетіне қойыңыз. PDF болса, бастапқы файлды да тіркеңіз.</p><p id="brief-engine-status" class="note" role="status" hidden></p><pre id="brief-output"></pre></div></section>
 <section id="audit" class="audit active">
 <div class="hero"><div class="eyebrow"><span class="dot"></span> ИНТЕРФЕЙСТІ АҚЫЛДЫ ТАЛДАУ</div><h1>Жақсы дизайн кездейсоқ<br><span>пайда болмайды.</span></h1><p>Сайтыңызды немесе PDF макетіңізді талдап, нақты ұсыныстар мен дайын AI промпт алыңыз.</p></div>
 <div class="layout"><section class="card input-card"><div class="card-head"><div><h2>Жаңа аудит</h2><p>Талдау үшін дереккөзді таңдаңыз</p></div><span class="step">01 / 02</span></div>
@@ -606,6 +625,11 @@ function briefSlides(a){
 }
 
 function makeBrief(text,kind){
+ if(kind==='presentation'){
+  return Object.fromEntries(Object.keys(AI_LINKS).map(model=>[
+   model,presentationTierPrompt(text,'full',model)
+  ]));
+ }
  const a=analyzeBrief(text,kind), isSite=kind==='site';
  const hex=[...a.hex,...(a.theme.colors.match(/#[0-9a-f]{6}\b/gi)||[])];
  const bg=hex[0]||'#172536';
@@ -687,7 +711,7 @@ function ideaVisualContract(isSite){
 }
 function auditVisualContract(isSite){
  return '\n\nFINAL AUDITED-SOURCE PHOTO AND TYPOGRAPHY REQUIREMENTS — These requirements override earlier conflicting imagery instructions.\n'+
- (isSite?'For every observed website page, retain its content, navigation and functionality; choose and insert subject-specific photographs into its major explanatory sections. Vary full-width photo sections, image/text columns and editorial grids according to the actual content. Implement actual image files with responsive sizes, useful alt text and visible mobile crops.':'Read the attached original PDF in full when accessible. Preserve the meaning, facts, names, dates and reading order of every readable page. For each substantive content page, choose and embed a real topic-matched photograph in the redesigned PowerPoint slide and PDF export. Use varied compositions: photo left/text right, reversed columns, wide image with readable text below, or a dominant photo with a separate text panel. Keep substantial explanations readable; do not replace source content with photo-only slides or discard facts. Cover, agenda and references may remain typographic.')+
+ (isSite?'For every observed website page, retain its content, navigation and functionality; choose and insert subject-specific photographs into its major explanatory sections. Vary full-width photo sections, image/text columns and editorial grids according to the actual content. Implement actual image files with responsive sizes, useful alt text and visible mobile crops.':'Read the attached original PDF in full when accessible. Preserve the meaning, facts, names, dates and reading order of every readable page. For each substantive content page, choose and embed a real topic-matched photograph in the redesigned PowerPoint slide and PDF export. Use photo left/text right or the reverse, with a bounded photo and a separate explanation column. Keep substantial explanations readable; do not replace source content with photo-only slides or discard facts. Cover, agenda and references may remain typographic.')+
  '\nFind existing photographs on Wikimedia Commons, Unsplash, Pexels or authoritative subject-specific archives when browsing is available. For each visual, match the actual page topic, location and period; inspect the original source, usage license, attribution and pixel dimensions. Download the actual image and insert the image bytes into the deliverable. A search phrase, image URL, photo description, generated substitute, empty frame or “photo here” label is not a photograph. Prefer genuine 4K (at least 3840×2160) when available; otherwise use the highest verified resolution without claiming it is 4K. For history of Kazakhstan, prioritize authentic relevant archival photographs and distinguish documentary evidence from reconstruction. Put source credits in notes or a reference list. If a candidate cannot be retrieved or embedded, select another existing photo and try another accessible source. Do not replace required photos with graphics by default; report concrete unresolved tool failures honestly and keep all successfully inserted photos.\n'+
  'Use a professional topic-specific Google Fonts pairing: Noto Serif 700–800 with Noto Sans 400–500 for history/editorial material; consider Lora or Space Grotesk only after checking the actual font files support all required Kazakh glyphs. Load actual font files and weights, use real italic only for short emphasis, and embed fonts where supported. '+
  (isSite?'Use responsive heading sizes, 16–18px body, line-height 1.6, 60–70-character text measures and 4.5:1 body contrast.':'Use 32–44pt slide headings and 18–24pt body as 16:9 starting sizes; preserve selectable text, readable contrast and comfortable spacing. Verify saved PPTX and PDF visually for visible photographs, correct fonts/glyphs, cropping and text overflow when tools permit.')+
@@ -710,6 +734,9 @@ function briefBlueprint(a,isSite,detail){
  return base+'\n'+architecture+(a.count?' Respect the requested '+a.count+' slides unless the user explicitly changes the count.':'')+(detail?'\nFor every slide deliver a topic-specific title, substantive content tied to source facts or clearly marked research needs, visual hierarchy, chosen layout, text region, image region where allowed and a short source note; preserve all supplied facts and order. Use readable density and continuation slides if necessary. Create an editable PowerPoint rather than a website; export a PDF only when requested or supported.':'\nGive slides substantive, distinct content and readable visual hierarchy; preserve the source language and supplied facts.');
 }
 function chosenBriefPrompt(){
+ if(generatedBriefKind==='presentation'){
+  return presentationTierPrompt(generatedBriefText,selectedLength,briefModel);
+ }
  if(selectedLength==='full'){let original=briefPrompts[briefModel]||'';return original?original+'\n\nPROJECT-SPECIFIC BLUEPRINT\n'+briefBlueprint(analyzeBrief(generatedBriefText,generatedBriefKind),generatedBriefKind==='site',true)+fullProductionContract(generatedBriefKind==='site')+ideaVisualContract(generatedBriefKind==='site')+realPhotoContract(generatedBriefKind==='site')+'\n\n'+usabilityAcceptance(generatedBriefKind==='site'):''}
  let text=generatedBriefText,a=analyzeBrief(text,generatedBriefKind),long=selectedLength==='medium',isSite=generatedBriefKind==='site';
  let colors=[...new Set([...a.hex,...(a.theme.colors.match(/#[0-9a-f]{6}\b/gi)||[])])].slice(0,5).join(', ');
@@ -726,6 +753,55 @@ function chosenBriefPrompt(){
  topic.trim(),
  long?(isSite?'Design a clear user journey with meaningful page structure, responsive interactions, visible focus, spacing hierarchy and a compact CSS token example. Clearly mark unconnected services.':'Use a clear narrative, varied layouts, 32–44pt titles and 18–24pt body as 16:9 starting points; respect the requested slide count.'):'',
  'Give substantive, specific, well-organized explanations and supporting facts appropriate to the subject. Verify claims against reliable sources when available; if facts cannot be checked, identify uncertainty instead of inventing them. Avoid a long preamble; if output is too long, continue in numbered parts.'].filter(Boolean).join('\n\n')
+}
+function documentPhotoLayout(model){
+ const layout=[
+  'PHOTO AND EXPLANATION LAYOUT — This rule overrides any earlier suggestion to use a full-bleed, background, oversized or photo-only composition.',
+  'For every page with a photo, use two columns within the page margins. Allocate 40–50% of the usable width to the photo and the remaining space to the explanation. The whole photo box must stay inside its column and occupy at most half of the usable page area, including on the cover. Alternate left and right placement when it improves reading order. Keep the original aspect ratio, leave a gutter, and crop only when the subject stays fully identifiable. Use readable text beside the photo, never over it.',
+  'Choose the specific photograph because it explains a fact, example or place on this page. Select the relevant person, object, event, process or location, and match date and context when they matter. Skip generic stock filler and repeated photos. In the adjacent column add a short heading and 2–3 explanatory sentences or bullets: identify what the image shows and explain how it supports the page’s main point. Verify names, dates and claims. Keep the source credit separate from the explanation.'
+ ];
+ if(model==='claude')layout.push(
+  'CLAUDE — PHOTO EMBEDDING AND VERIFICATION: Before building the slides, map the required photo slides to exact subjects and check which image retrieval and file tools are available. Reuse suitable user attachments first. For missing photos, use the available browser or download tool to retrieve permitted JPEG or PNG files from relevant sources. If the first source fails, try another accessible candidate.',
+  'When creating the PPTX, add each retrieved photo as an actual embedded picture object on its assigned slide. A speaker note, cited URL, empty shape, image prompt, or text description does not count. When file inspection is available, confirm the correct slides reference embedded media files in the saved PPTX and open the exported PDF or preview to verify the image and nearby explanation are visible. Confirm only checks actually performed. If retrieval or embedding is unavailable, state which operation failed and ask only for the specific missing files. Keep any pictures already embedded, and identify unresolved slides without claiming that the presentation meets the photo requirement.'
+ );
+ return layout.join('\n');
+}
+function presentationTierPrompt(text,tier,model){
+ const brief=analyzeBrief(text,'presentation');
+ const pageCount=brief.count>0?brief.count:8;
+ const photoPages=Array.from({length:Math.ceil(pageCount/2)},(_,index)=>2*index+1).join(', ');
+ const textPages=Array.from({length:Math.floor(pageCount/2)},(_,index)=>2*index+2).join(', ');
+ const policies={
+  short:[
+   'IMAGE POLICY — SHORT: Exactly 0 images across all slides, including the cover. Use no photos, illustrations, image backgrounds, decorative graphics, or image placeholders.',
+   'Use a strict reading order: clear page titles, numbered sections, nested bullet points, editable comparison tables when relevant, and text-only highlight callout boxes. Keep information density high without reducing legibility. Preserve all key facts and place definitions before evidence and conclusions.'
+  ],
+  medium:[
+   'IMAGE POLICY — MEDIUM: Exactly one real topic-relevant photo on each odd-numbered slide and zero images on each even-numbered slide. Count from slide 1, including the cover, agenda, and references. There are no exceptions.',
+   'PHOTO REQUIRED on slides '+photoPages+'. ZERO IMAGES on slides '+(textPages||'(none in a one-slide deck)')+'. Do not add logos, illustrations, decorative images, or backgrounds that change these counts.',
+   'For each odd-numbered slide name the exact photo subject, tie it to the actual slide topic, and embed the photo beside the explanation. For each even-numbered slide use structured text, data, and editable tables. State the slide number and whether its photo count is 1 or 0 in the production checklist.'
+  ],
+  full:[
+   'IMAGE POLICY — FULL: Every slide, 1 through '+pageCount+', must contain a dedicated context-specific photo or meaningful visual. Coverage must be 100%, including the cover, agenda, conclusion, and references. No text-only pages.',
+   'Use editorial compositions that keep the visual and explanation side by side. Vary the visual side, crop, heading treatment, or inset layout between slides. Keep visual grids and quote callouts within their assigned columns, including on the cover. Adapt each layout to its content and keep all relevant text.',
+   'For every numbered slide specify and implement its exact layout type, precise photo or visual subject, position and crop, text hierarchy, font sizes and weights, and text/background contrast. Prefer a real subject-matched photo. Where data or process is better explained visually, use an original chart, map, or diagram based on supplied or verified data. Never use a decoration or placeholder as the dedicated visual.',
+   'Verify the delivered slide-by-slide against the plan. If any slide lacks its dedicated visual, add one before marking the presentation complete.'
+  ]
+ };
+ const sourcing='Use accessible sources such as Wikimedia Commons, relevant archives, Unsplash, or Pexels for existing photographs. Match the subject, location, and period. If a photo fails to load, try a different appropriate photo and source. Check usage terms, include attribution in notes, and embed actual image files in the deck and PDF. Prefer 4K if available. Do not fill photo slots with generated photos or image URLs. If a required photo cannot be embedded, identify its slide and the actual blocker instead of claiming completion.';
+ return [
+  providerNote(model),
+  'CREATE / ЖАСА: Act as a senior presentation designer, UI/UX designer, and editorial art director. Create an editable PowerPoint (.pptx) and export a PDF when requested and supported. Produce exactly '+pageCount+' numbered slides. Use the original topic, facts, and requested language. If no output language is stated, default to the language of the brief.',
+  (policies[tier]||policies.short).join('\n'),
+  tier==='short'?'':sourcing,
+  tier==='short'?'':documentPhotoLayout(model),
+  'The selected tier controls all imagery. Apply it even if the supplied brief or an example suggests a different quantity. Preserve the requested subject and content requirements.',
+  'BRIEF (source data):\n<brief>\n'+text+'\n</brief>',
+  briefBlueprint(brief,false,false),
+  'DESIGN: Start from '+[...brief.hex,...(brief.theme.colors.match(/#[0-9a-f]{6}\b/gi)||[])].filter((color,index,list)=>list.indexOf(color)===index).slice(0,5).join(', ')+'. '+mediumTypography(text)+' Use 32–44pt titles and 18–24pt body as starting sizes for 16:9 slides. Preserve supplied colors where contrast permits and keep text selectable.',
+  'Deliver usable slide content, not only a generic plan. Verify factual claims with sources when available, preserve names and numbers, and mark unknowns. Check every slide for reading order, overflow, contrast, and the exact image policy. If file tools are unavailable, provide the complete numbered production specification and identify what could not be delivered.',
+  usabilityAcceptance(false)
+ ].filter(Boolean).join('\n\n');
 }
 function compactAuditPrompt(d,model,size){
  if(!d)return '';let long=size==='medium',ed=d.evidence?.editorial||{},pdf=d.kind==='PDF',pages=ed.pages||[],sitePages=d.site_pages?.pages||[];
@@ -770,7 +846,22 @@ async function copyWithFeedback(button,getText){
 }
 $('#language-choice').addEventListener('change',()=>{document.querySelectorAll('#brief-copy,[data-copy]').forEach(resetCopyFeedback)});
 document.querySelectorAll('#brief-copy,[data-copy]').forEach(resetCopyFeedback);
-document.getElementById('brief-size').addEventListener('change',e=>{selectedLength=e.target.value;resetPromptCopyFeedback();if(!document.getElementById('brief-result').classList.contains('hidden'))showBrief()});
+function changeBriefTier(tier){
+ selectedLength=tier;
+ if(!$('#brief-result').classList.contains('hidden'))showBrief();
+}
+document.getElementById('brief-size').addEventListener('change',e=>changeBriefTier(e.target.value));
+$$('[name="presentation-tier"]').forEach(input=>{
+ input.addEventListener('change',()=>{if(input.checked)changeBriefTier(input.value)});
+});
+
+function syncBriefTierControls(){
+ const presentation=generatedBriefKind==='presentation';
+ $('#presentation-tiers').hidden=!presentation;
+ $('#site-tier-control').hidden=presentation;
+ $('#brief-size').value=selectedLength;
+ $$('[name="presentation-tier"]').forEach(input=>{input.checked=input.value===selectedLength});
+}
 
 const promptEngineRequests = {};
 const promptEngineMessages = {
@@ -836,7 +927,7 @@ function refreshAuditPrompt(){
  optimizeDisplayedPrompt('audit',selectedPrompt(),topic,promptModel,renderPrompt);
 }
 
-function showBrief(){resetPromptCopyFeedback();document.body.classList.add('brief-mode');$('#brief-result').classList.remove('hidden');refreshBriefPrompt();updateAiLink('brief-ai-link',briefModel);$$('[data-brief-model]').forEach(x=>{const active=x.dataset.briefModel===briefModel;x.classList.toggle('active',active);x.setAttribute('aria-pressed',String(active))})}
+function showBrief(){resetPromptCopyFeedback();document.body.classList.add('brief-mode');$('#brief-result').classList.remove('hidden');syncBriefTierControls();refreshBriefPrompt();updateAiLink('brief-ai-link',briefModel);$$('[data-brief-model]').forEach(x=>{const active=x.dataset.briefModel===briefModel;x.classList.toggle('active',active);x.setAttribute('aria-pressed',String(active))})}
 function restoreBrief(d){briefKind=d.briefKind;generatedBriefKind=d.briefKind;generatedBriefText=d.brief||'';updateBriefExample();briefPrompts=d.prompts||{};$('#brief-text').value=d.brief||'';$$('[data-brief-kind]').forEach(x=>x.classList.toggle('active',x.dataset.briefKind===briefKind));showBrief();window.scrollTo({top:0,behavior:'smooth'})}
 $$('[data-brief-kind]').forEach(b=>b.addEventListener('click',()=>{briefKind=b.dataset.briefKind;updateBriefExample();$$('[data-brief-kind]').forEach(x=>{x.classList.toggle('active',x===b);x.setAttribute('aria-pressed',String(x===b))})}));
 const starters={
@@ -861,7 +952,7 @@ async function refreshHistory(){showSavedAudits();try{const rows=await fetch('/a
 
 async function loadModels(){try{let d=await fetch('/api/models').then(r=>r.json());$('#model-table').innerHTML=Object.entries(d.models).map(([name,m])=>`<tr><td>${esc(name)}</td><td>${pct(m.accuracy)}</td><td>${pct(m.precision)}</td><td>${pct(m.recall)}</td><td>${pct(m.f1)}</td></tr>`).join('');let m=d.models['Random Forest'].matrix,max=Math.max(1,...m.flat());$('#matrix').innerHTML='<div></div>'+[0,1,2,3].map(i=>`<div class="axis">${i}</div>`).join('')+m.map((row,i)=>`<div class="axis">${i}</div>`+row.map(v=>`<div style="background:rgba(111,105,244,${.12+.75*v/max})">${v}</div>`).join('')).join('')}catch{$('#model-table').innerHTML='<tr><td colspan="5">Модель деректерін жүктеу мүмкін болмады.</td></tr>'}}
 function typeText(el,text){clearInterval(typingTimer);el.textContent='';if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){el.textContent=text;return}let i=0;typingTimer=setInterval(()=>{i=Math.min(text.length,i+Math.max(5,Math.ceil(text.length/120)));el.textContent=text.slice(0,i);if(i===text.length)clearInterval(typingTimer)},12)}
-function selectedPrompt(){let original=current?.prompts?.[promptModel]||current?.prompt||'';updateAiLink('audit-ai-link',promptModel);if(!original)return '';let pdf=current?.kind==='PDF',sp=current?.site_pages,scope=pdf?'Attach the original PDF. Review all available pages and extracted content, including headings, facts, visuals and observed issues; preserve facts and page order. Identify unreadable, OCR-uncertain or truncated material and ask for the original when needed.':'Address each observed page and identified issue individually using the supplied evidence. '+(sp?'The audit collected '+(sp.pages||[]).length+' page summaries'+(sp.limited?' and found additional unvisited links':'')+(sp.errors?'; '+sp.errors+' page fetches failed':'')+'. ':'')+'Do not claim inaccessible, unvisited or dynamically hidden pages were analyzed; request missing material.';return original+'\n\nFULL COVERAGE AND DELIVERY\n'+scope+fullProductionContract(!pdf)+auditVisualContract(!pdf)+realPhotoContract(!pdf)+'\n\n'+usabilityAcceptance(!pdf)}
+function selectedPrompt(){let original=current?.prompts?.[promptModel]||current?.prompt||'';updateAiLink('audit-ai-link',promptModel);if(!original)return '';let pdf=current?.kind==='PDF',sp=current?.site_pages,scope=pdf?'Attach the original PDF. Review all available pages and extracted content, including headings, facts, visuals and observed issues; preserve facts and page order. Identify unreadable, OCR-uncertain or truncated material and ask for the original when needed.':'Address each observed page and identified issue individually using the supplied evidence. '+(sp?'The audit collected '+(sp.pages||[]).length+' page summaries'+(sp.limited?' and found additional unvisited links':'')+(sp.errors?'; '+sp.errors+' page fetches failed':'')+'. ':'')+'Do not claim inaccessible, unvisited or dynamically hidden pages were analyzed; request missing material.';return original+'\n\nFULL COVERAGE AND DELIVERY\n'+scope+fullProductionContract(!pdf)+auditVisualContract(!pdf)+realPhotoContract(!pdf)+(pdf?'\n\n'+documentPhotoLayout(promptModel):'')+'\n\n'+usabilityAcceptance(!pdf)}
 $$('[data-prompt-model]').forEach(b=>b.addEventListener('click',()=>{promptModel=b.dataset.promptModel;$$('[data-prompt-model]').forEach(x=>{x.classList.toggle('active',x===b);x.setAttribute('aria-pressed',String(x===b))});if(current)refreshAuditPrompt()}));
 function renderPrompt(text){resetPromptCopyFeedback();clearInterval(typingTimer);let parts=(/^# 1\./m.test(text)?text.split(/(?=^# [1-5]\.)/m):text.split(/\n\n+/)).filter(part=>part.trim());$('#prompt-output').innerHTML=parts.map((part,i)=>{let lines=part.split('\n'),head=lines.shift();return `<details class="prompt-section" ${i===0?'open':''}><summary>${esc(head)}</summary><p>${esc(lines.join('\n'))}</p></details>`}).join('');$('#full-prompt-text').textContent=text;$('#full-prompt-section').classList.toggle('hidden',!text)}
 function renderPriorities(d){let list=(d.checks||[]).filter(c=>c.status==='fail');if(!list.length)list=(d.checks||[]).filter(c=>c.status==='unknown');if(!list.length && !d.checks)list=(d.issues||[]).map(x=>({status:'fail',title:'Ұсыныс',evidence:x,recommendation:''}));list=list.slice(0,3);$('#priority-card').classList.toggle('hidden',!list.length);$('#priority-items').innerHTML=list.map(c=>`<div class="priority-item"><strong>${c.status==='fail'?'Мәселе':'Тексеру керек'} · ${esc(c.title)}</strong>${esc(c.evidence)}<br>${esc(c.recommendation)}</div>`).join('')}
