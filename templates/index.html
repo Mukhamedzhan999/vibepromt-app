@@ -2,9 +2,9 @@
 <html lang="kk">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>VibePromt AI — интерфейсті зерделе</title>
+<title>VibePrompt AI — интерфейсті зерделе</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Manrope:wght@600;700;800&amp;subset=cyrillic,cyrillic-ext&amp;display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js" defer></script>
@@ -222,19 +222,111 @@ body .side-history-item:hover,body .side-history-item:focus-within{background:va
 .history-remove{min-width:36px;min-height:36px;visibility:hidden}
 .side-history-item:hover .history-remove,.side-history-item:focus-within .history-remove{visibility:visible}
 @media(hover:none){.history-remove{visibility:visible}}
+
+/* Compact workspace and Kazakh-ready typography */
+:root{
+ --font-ui:'Inter',system-ui,sans-serif;
+ --font-heading:'Manrope',var(--font-ui);
+ --font-prompt:'JetBrains Mono',monospace;
+ --side-width:264px;
+ --page-gutter:clamp(16px,3vw,40px);
+}
+html,body{overflow-x:hidden}
+body,body button,body input,body textarea,body select,.side-label,.mini,.label,.eyebrow,
+.workspace .brief-label,.workspace .preview-top,.workspace .stat span{font-family:var(--font-ui)}
+body h1,body h2,body h3,.brand{font-family:var(--font-heading)}
+.brief-result pre,.full-prompt-text,.prompt-output,.code{font-family:var(--font-prompt)}
+.workspace{position:relative;min-width:0}
+.top{position:absolute;inset:12px var(--page-gutter) auto auto;width:auto;height:auto;min-height:0;background:none;border:0;box-shadow:none;backdrop-filter:none;z-index:10}
+body .top,body[data-theme] .top{background:none;border-bottom:0}
+.top .shell{padding:0;min-height:0;height:auto}
+.top .brand,.top .menu-toggle,.top .nav{display:none}
+.top-language select{min-height:44px}
+main.shell{padding:65px var(--page-gutter) 34px}
+.brief-home{margin:clamp(12px,4vh,38px) auto 24px;max-width:780px}
+.brief-intro{margin:0 auto 20px;max-width:780px}
+.brief-intro .hero-headline{font-family:var(--font-heading);font-size:clamp(1.75rem,5vw,3rem);line-height:1.14;letter-spacing:-.035em;margin:0 0 10px;text-wrap:balance}
+.brief-intro>p:not(.brief-about){font-size:clamp(.8rem,1.35vw,.94rem);line-height:1.5;color:var(--theme-muted)}
+.brief-card{padding:clamp(12px,2vw,20px)}
+.brief-label{margin:12px 2px 6px}
+.brief-card textarea{min-height:0;height:clamp(96px,16vh,136px);padding:12px}
+.brief-actions{margin-top:10px;justify-content:flex-end}
+.brief-actions+.error:empty,.drop+.error:empty{display:none}
+.brief-submit,.brief-types button,.brief-models button,.brief-tools button{min-height:44px}
+.brief-tools{margin:14px 0;justify-content:center;align-items:center}
+.brief-tools span{width:auto}
+.example-chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 0}
+.example-chips button{min-height:44px;padding:6px 12px;border-radius:999px;border:1px solid var(--theme-border);background:var(--theme-panel);color:var(--theme-muted);font-size:.8rem;font-weight:600}
+.example-chips button:hover,.example-chips button:focus-visible{background:var(--theme-selected);color:#fff}
+#drop{position:relative;min-height:64px}
+#drop input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+#drop:focus-within{outline:2px solid #bdb2ff;outline-offset:3px}
+#file-label{overflow-wrap:anywhere}
+.pdf-steps{margin:0 0 10px;padding-left:1.45rem;color:var(--theme-muted)}
+.pdf-steps li[aria-current=step]{color:#fff;font-weight:600}
+.pdf-steps li[data-complete]{color:#8ee5ba}
+@media(min-width:768px){
+ body .workspace{margin-left:var(--side-width)}
+ body .sidebar{display:flex;width:var(--side-width);height:100dvh;transform:none;visibility:visible;padding:18px 14px}
+ body.menu-open{overflow:auto}
+ body.menu-open .side-overlay,.sidebar-top .side-close{display:none}
+}
+@media(max-width:767px){
+ body .workspace{margin:0}
+ body .sidebar,body.menu-open .sidebar{display:flex;width:min(320px,88vw);height:100dvh;padding:16px;transition:transform .22s ease,visibility .22s;z-index:65}
+ body .sidebar{transform:translateX(-105%);visibility:hidden}
+ body.menu-open .sidebar{transform:translateX(0);visibility:visible}
+ body.menu-open .side-overlay{z-index:60}
+ body .top{position:relative;inset:auto;min-height:60px;width:100%;height:auto}
+ .top .shell{padding:8px 16px;gap:8px;flex-wrap:nowrap;justify-content:flex-start}
+ .top .brand,.top .menu-toggle{display:inline-flex}
+ .top .brand{min-width:0;font-size:.86rem;white-space:nowrap}
+ .top .brand-icon{width:28px;height:28px}
+ .top .top-language{margin-left:auto}
+ .top-language select{width:88px;padding-left:12px}
+ .top-language svg{display:none}
+ main.shell{padding:16px 16px 28px}
+ .brief-home{margin:12px auto 24px}
+ .brief-card textarea{height:116px}
+ .brief-home .brief-intro{margin-bottom:18px}
+ .brief-tools span{flex-basis:100%;text-align:center}
+ .brief-types,.tabs{min-width:0}
+ .brief-types button{flex:1 1 125px}
+ .workspace button,.workspace .copy,.workspace input:not([type=checkbox]):not([type=file]),.workspace select,
+ .sidebar .side-button,.sidebar .history-open,.sidebar .history-remove,.sidebar input{min-height:44px}
+ .workspace input:not([type=checkbox]):not([type=file]),.workspace select,.workspace textarea{font-size:16px}
+ .brief-actions{align-items:stretch}
+ .brief-submit{width:100%}
+ .workspace button,.workspace .copy,.workspace .top-language select,.sidebar .side-close,
+ .sidebar .side-button,.sidebar .history-open,.sidebar .history-remove,.sidebar input,
+ .workspace input:not([type=checkbox]):not([type=file]),.workspace select{
+  min-height:max(44px,calc(44px / var(--app-scale,1)));
+ }
+ .top .menu-toggle{min-width:max(44px,calc(44px / var(--app-scale,1)))}
+}
+@media(prefers-reduced-motion:reduce){body .sidebar{transition:none}}
+
 </style>
-<link rel="manifest" href="/static/manifest.webmanifest"><meta name="theme-color" content="#10131d"><link rel="apple-touch-icon" href="/static/vibepromt-icon-192.png"><noscript><style>.splash{display:none}</style></noscript><link rel="icon" type="image/svg+xml" href="/static/vibepromt-logo.svg"><meta name="apple-mobile-web-app-title" content="VibePromt AI"></head>
+<link rel="manifest" href="/static/manifest.webmanifest"><meta name="theme-color" content="#10131d"><link rel="apple-touch-icon" href="/static/vibepromt-icon-192.png"><noscript><style>.splash{display:none}</style></noscript><link rel="icon" type="image/svg+xml" href="/static/vibepromt-logo.svg"><meta name="apple-mobile-web-app-title" content="VibePrompt AI"></head>
 <body class="brief-mode">
-<div id="splash" class="splash" role="status" aria-label="VibePromt AI жүктелуде"><div class="splash-brand"><img class="splash-logo" src="/static/vibepromt-logo.svg" alt="" aria-hidden="true">VibePromt <i>AI</i></div></div>
-<div class="side-overlay" id="side-overlay"></div><aside class="sidebar" id="sidebar" aria-label="Қосымша навигация"><div class="sidebar-top"><a class="brand" href="#"><img class="brand-icon" src="/static/vibepromt-logo.svg" alt="" aria-hidden="true"><span>VibePromt <em>AI</em></span></a><button type="button" class="side-close" id="close-menu" aria-label="Мәзірді жабу">×</button></div><button type="button" class="side-button side-new" id="new-audit">⌂ &nbsp; Басты бет</button><div><button type="button" class="side-button current" id="side-audit">◈ &nbsp; Аудит</button><button type="button" class="side-button" id="side-lab">▦ &nbsp; Оқытушы режимі</button></div><div class="side-history"><div class="side-label">СОҢҒЫ АУДИТТЕР</div><div class="history-search" role="search"><input id="history-search" type="search" aria-label="Аудит атауын іздеу" placeholder="Аудит атауын іздеу" aria-controls="sidebar-history" autocomplete="off"><span id="history-search-status" class="history-search-status" role="status"></span></div><div id="sidebar-history"><p class="note">Тарих жүктелуде...</p></div></div><div class="side-bottom"><button type="button" class="side-button" id="open-settings">⚙ &nbsp; Баптаулар</button><p class="note" style="margin:8px 10px">Жаңа нәтижелер мен промпттар осы браузерде сақталады. Басқа құрылғыға көшпейді; браузер деректерін тазаласаңыз, өшеді.</p></div></aside><div class="workspace">
+<div id="splash" class="splash" role="status" aria-label="VibePrompt AI жүктелуде"><div class="splash-brand"><img class="splash-logo" src="/static/vibepromt-logo.svg" alt="" aria-hidden="true">VibePrompt <i>AI</i></div></div>
+<div class="side-overlay" id="side-overlay"></div><aside class="sidebar" id="sidebar" aria-label="Қосымша навигация"><div class="sidebar-top"><a class="brand" href="#"><img class="brand-icon" src="/static/vibepromt-logo.svg" alt="" aria-hidden="true"><span>VibePrompt <em>AI</em></span></a><button type="button" class="side-close" id="close-menu" aria-label="Мәзірді жабу">×</button></div><button type="button" class="side-button side-new" id="new-audit">⌂ &nbsp; Басты бет</button><div><button type="button" class="side-button current" id="side-audit">◈ &nbsp; Аудит</button><button type="button" class="side-button" id="side-lab">▦ &nbsp; Оқытушы режимі</button></div><div class="side-history"><div class="side-label">СОҢҒЫ АУДИТТЕР</div><div class="history-search" role="search"><input id="history-search" type="search" aria-label="Аудит атауын іздеу" placeholder="Аудит атауын іздеу" aria-controls="sidebar-history" autocomplete="off"><span id="history-search-status" class="history-search-status" role="status"></span></div><div id="sidebar-history"><p class="note">Тарих жүктелуде...</p></div></div><div class="side-bottom"><button type="button" class="side-button" id="open-settings">⚙ &nbsp; Баптаулар</button><p class="note" style="margin:8px 10px">Жаңа нәтижелер мен промпттар осы браузерде сақталады. Басқа құрылғыға көшпейді; браузер деректерін тазаласаңыз, өшеді.</p></div></aside><div class="workspace">
 <dialog class="settings-modal" id="settings-dialog" aria-labelledby="settings-title"><div class="settings-inner"><div class="settings-header"><div><div class="mini">ЖҰМЫС КЕҢІСТІГІ</div><h2 id="settings-title">Баптаулар</h2></div><button type="button" class="side-close" id="close-settings-top" aria-label="Баптауларды жабу">×</button></div><div class="settings-card"><label for="default-ai">Әдепкі AI нұсқасы</label><small>Промптты ашқанда көрсетілетін модельді таңдаңыз.</small><select id="default-ai" class="select"><option value="chatgpt">ChatGPT</option><option value="gemini">Gemini</option><option value="claude">Claude</option></select></div><div class="settings-card"><label for="theme-choice">Фон түсі</label><small>Жұмыс кеңістігінің өзіңізге ыңғайлы түсін таңдаңыз.</small><select id="theme-choice" class="select"><option value="dark">Қара</option><option value="navy">Қою көк</option><option value="warm">Қоңыр</option></select></div><div class="settings-card"><label for="language-choice">Интерфейс тілі</label><small>Негізгі мәзір мен басқару элементтерінің тілі.</small><select id="language-choice" class="select"><option value="kk">Қазақша</option><option value="ru">Русский</option><option value="en">English</option></select></div><div class="settings-card"><label for="text-scale">Масштаб</label><small>Таңдалған масштаб осы браузерде сақталады.</small><select id="text-scale" class="select"><option value="90">90%</option><option value="100">100%</option><option value="110">110%</option><option value="125">125%</option><option value="150">150%</option></select></div><div class="settings-card"><label class="settings-check"><input type="checkbox" id="reduce-motion"> Анимацияны азайту</label><small>Ашылу және өту анимацияларын қысқартады.</small></div><p class="note">Баптаулар мен аудит тарихы осы браузерде сақталады. Браузер деректерін тазаласаңыз, олар өшеді.</p><div class="settings-footer"><button type="button" class="copy settings-close" id="close-settings">Дайын</button></div></div></dialog>
-<header class="top"><div class="shell"><button type="button" class="menu-toggle" id="menu-toggle" aria-label="Мәзірді ашу" aria-controls="sidebar" aria-expanded="false">☰</button><a href="#" class="brand"><img class="brand-icon" src="/static/vibepromt-logo.svg" alt="" aria-hidden="true"><span>VibePromt <em>AI</em></span></a><nav class="nav" aria-label="Негізгі навигация"><button class="active" data-view="audit">✦ &nbsp; Аудит</button><button data-view="academic">▦ &nbsp; Оқытушы режимі</button></nav><div class="top-language"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 4 6 4 9s-1 6-4 9c-3-3-4-6-4-9s1-6 4-9Z"/></svg><select id="home-language" aria-label="Интерфейс тілі"><option value="kk">ҚАЗ</option><option value="ru">РУС</option><option value="en">ENG</option></select></div></div></header>
+<header class="top"><div class="shell"><button type="button" class="menu-toggle" id="menu-toggle" aria-label="Мәзірді ашу" aria-controls="sidebar" aria-expanded="false">☰</button><a href="#" class="brand"><img class="brand-icon" src="/static/vibepromt-logo.svg" alt="" aria-hidden="true"><span>VibePrompt <em>AI</em></span></a><nav class="nav" aria-label="Негізгі навигация"><button class="active" data-view="audit">✦ &nbsp; Аудит</button><button data-view="academic">▦ &nbsp; Оқытушы режимі</button></nav><div class="top-language"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 4 6 4 9s-1 6-4 9c-3-3-4-6-4-9s1-6 4-9Z"/></svg><select id="home-language" aria-label="Интерфейс тілі"><option value="kk">ҚАЗ</option><option value="ru">РУС</option><option value="en">ENG</option></select></div></div></header>
 <main class="shell mx-auto">
 <section id="brief-home" class="brief-home">
-<div class="brief-intro"><div class="brief-brand">VibePromt <span>AI</span></div><p class="brief-about">Сайт пен презентацияға идеяңыз бойынша сапалы промпт жасаңыз немесе дайын сайт пен PDF-ті талдаңыз.</p><div class="hero-eyebrow">БІР ИДЕЯ. ҮШ AI. ЖАҢА МҮМКІНДІК.</div><h1 class="hero-headline"><span>Идеяңызды кәсіби</span><br><span class="hero-gradient">жобаға айналдырыңыз</span></h1><p>Ойыңызды сипаттаңыз — сайтқа немесе презентацияға арналған үш дайын AI промпт алыңыз.</p></div>
+<div class="brief-intro">
+<h1 class="hero-headline">Идеяңызды кәсіби <span class="hero-gradient">жобаға айналдырыңыз</span></h1>
+<p>Сайтқа не презентацияға арналған промпт жасаңыз немесе дайын жұмысты талдаңыз.</p>
+</div>
 <div class="brief-card"><div class="brief-types" role="group" aria-label="Жоба түрі"><button type="button" data-brief-kind="site" class="active">↗ Сайт</button><button type="button" data-brief-kind="presentation">▤ PDF/презентация</button></div>
 <label for="brief-text" class="brief-label">ЖОБАҢЫЗДЫ СИПАТТАҢЫЗ</label><textarea id="brief-text" maxlength="5000" placeholder="Мысалы: жеке портфолио сайты. Жобаларым, өзім туралы және байланыс бөлімі болсын."></textarea>
-<div class="brief-actions"><span>Тақырып, аудитория, стиль және қажет бөлімдерді жазыңыз</span><button id="brief-generate" type="button" class="brief-submit">Промпт жасау ↑</button></div><p id="brief-error" class="error" role="status"></p></div>
+<div class="example-chips" role="group" aria-label="Дайын мысалдар">
+<button type="button" data-starter="portfolio">Жеке портфолио</button>
+<button type="button" data-starter="startup">IT стартап презентациясы</button>
+<button type="button" data-starter="shop">Онлайн дүкен лендингі</button>
+</div>
+<div class="brief-actions"><button id="brief-generate" type="button" class="brief-submit">Промпт жасау</button></div><p id="brief-error" class="error" role="status"></p></div>
 <div class="brief-tools"><span>Дайын материал бар ма?</span><button type="button" id="open-url-audit">↗ Сайтты талдау</button><button type="button" id="open-pdf-audit">▤ PDF талдау</button></div>
 <div id="brief-result" class="brief-result hidden" aria-live="polite"><div class="brief-result-head"><div><span class="mini">ДАЙЫН НӘТИЖЕ</span><h2>Сіздің промптыңыз</h2></div><button id="brief-copy" class="copy" data-copy-label="brief">Промптты көшіру</button></div><div class="brief-models" role="group" aria-label="AI нұсқасы"><button type="button" data-brief-model="chatgpt" class="active">ChatGPT</button><button type="button" data-brief-model="gemini">Gemini</button><button type="button" data-brief-model="claude">Claude</button></div><div class="prompt-controls"><label for="brief-size">Промпт көлемі</label><select id="brief-size"><option value="short">Қысқа</option><option value="medium">Орташа</option><option value="full">Толық</option></select><a id="brief-ai-link" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">AI ашу ↗</a></div><p class="prompt-size-note">Промптты көшіріп, AI бетіне қойыңыз. PDF болса, бастапқы файлды да тіркеңіз.</p><p id="brief-engine-status" class="note" role="status" hidden></p><pre id="brief-output"></pre></div></section>
 <section id="audit" class="audit active">
@@ -242,9 +334,11 @@ body .side-history-item:hover,body .side-history-item:focus-within{background:va
 <div class="layout"><section class="card input-card"><div class="card-head"><div><h2>Жаңа аудит</h2><p>Талдау үшін дереккөзді таңдаңыз</p></div><span class="step">01 / 02</span></div>
 <form id="audit-form"><div class="tabs" role="group" aria-label="Дереккөз түрі"><button type="button" class="active" data-mode="URL">↗ &nbsp; Сайт / PDF сілтемесі</button><button type="button" data-mode="PDF">▤ &nbsp; PDF құжат</button></div>
 <div id="url-field"><label class="label" for="url">САЙТ МЕКЕНЖАЙЫ <span>URL</span></label><div class="urlbox"><span class="chain">↗</span><input id="url" name="url" type="url" placeholder="https://example.com немесе PDF сілтемесі" autocomplete="url"></div><details style="margin-top:15px;border:1px solid #33394b;border-radius:10px;padding:12px"><summary style="cursor:pointer;font-weight:700;color:#d9dcff">Chrome-да өзім ашқан бетті талдау</summary><div class="note" style="line-height:1.8"><p>1. Chrome-да қалаған профиліңізді таңдаңыз. <strong>chrome://extensions</strong> ашып, «Developer mode» қосыңыз.</p><p>2. «Load unpacked» басып, мына қалтаны таңдаңыз:</p><code id="extension-path" style="display:block;overflow-wrap:anywhere;color:#d6d9ff">{{ extension_dir }}</code><button type="button" id="copy-extension-path" class="copy" style="margin-top:7px">Қалта жолын көшіру</button><p>3. Жұптау кодын көшіріп, Chrome кеңейтіміне қойыңыз. Сервер қайта іске қосылса, жаңа код керек.</p><button type="button" id="copy-chrome-key" class="copy">Жұптау кодын көшіру</button><span id="chrome-pair-status" role="status" style="margin-left:8px"></span><p>4. Сол Chrome профилінде қалаған сайтты өзіңіз ашып, қажет болса өзіңіз кіріңіз. Кеңейтімде «Осы бетті талдау» басыңыз; нәтиже осы қосымшада көрінеді.</p><p>Тек таңдалған қойындыдағы көрінетін дерек жергілікті қосымшаға жіберіледі. Құпиясөз өрістері, cookie және басқа қойындылар алынбайды. Кейбір ішкі браузер беттері мен iframe ішіндегі мазмұнды тексеру мүмкін емес.</p></div></details></div>
-<div id="pdf-field" class="hidden"><div class="label">PDF ҚҰЖАТЫ <span>30 МБ ДЕЙІН · БЕТ САНЫ ШЕКТЕЛМЕГЕН</span></div><label class="drop" id="drop"><span class="drop-icon">⇧</span><span><strong>Файлды осында тастаңыз немесе таңдаңыз</strong><small id="file-label">PDF · ең көбі 30 МБ</small></span><input id="file" type="file" accept="application/pdf,.pdf" hidden></label></div>
-<label class="label" for="goal">ЖОБА МАҚСАТЫ <span>МІНДЕТТІ ЕМЕС</span></label><textarea id="goal" name="prompt" maxlength="5000" placeholder="Мысалы: студенттерге арналған ыңғайлы платформа жасағым келеді..."></textarea><button class="primary" id="submit" type="submit">Аудитті бастау <span>↗</span></button><div id="pdf-progress" class="progress-box hidden" role="status" aria-live="polite"><strong id="pdf-progress-text">PDF жүктеліп жатыр...</strong><progress id="pdf-progress-bar" class="progress-bar" max="100"></progress></div><p class="micro">✧ &nbsp; Браузерлік талдау · Нақты дәлелдер · Дайын промпт</p><div id="error" class="error" role="alert"></div></form></section>
-<section class="card preview" id="preview"><div class="preview-top"><strong>Талдау көрінісі</strong><span class="live"><span class="dot"></span> ТІКЕЛЕЙ ТАЛДАУ</span></div><div class="mock"><div class="mock-bar"><i></i><i></i><i></i><div class="mock-address">vibepromt / analysis</div></div><div class="laser"></div><div class="mock-body" aria-live="polite"><img id="preview-shot" class="hidden" alt="Талданған беттің көрінісі" style="max-width:100%;max-height:190px;object-fit:contain;border:1px solid #34394b;border-radius:8px;margin-bottom:10px"><div class="scan-icon" id="scan-icon">⌁</div><strong id="preview-title">Талдауға дайын</strong><p id="preview-desc">Дереккөзді қосыңыз. Нәтижелеріңіз осы жерде пайда болады.</p></div><div class="mock-stats"><div><b id="stat-score">—</b><span>ТЕКСЕРУ ҰПАЙЫ</span></div><div><b id="stat-class">—</b><span>ЖІКТЕУ</span></div><div><b>06</b><span>КӨРСЕТКІШ</span></div></div></div></section></div>
+<div id="pdf-field" class="hidden"><div class="label">PDF ҚҰЖАТЫ <span>30 МБ-ҚА ДЕЙІН</span></div><label class="drop" id="drop"><span class="drop-icon">⇧</span><span><strong>Файлды осында тастаңыз немесе таңдаңыз</strong><small id="file-label">PDF · ең көбі 30 МБ</small></span><input id="file" type="file" accept="application/pdf,.pdf" aria-describedby="file-label file-error"></label><p id="file-error" class="error" role="alert"></p></div>
+<label class="label" for="goal">ЖОБА МАҚСАТЫ <span>МІНДЕТТІ ЕМЕС</span></label><textarea id="goal" name="prompt" maxlength="5000" placeholder="Мысалы: студенттерге арналған ыңғайлы платформа жасағым келеді..."></textarea><button class="primary" id="submit" type="submit">Аудитті бастау <span>↗</span></button><div id="pdf-progress" class="progress-box hidden"><ol id="pdf-steps" class="pdf-steps">
+<li>Файл жүктелуде</li><li>Мәтін мен құрылым оқылуда</li><li>Аудит нәтижесі дайындалуда</li>
+</ol><strong id="pdf-progress-text" aria-live="polite"></strong><progress id="pdf-progress-bar" class="progress-bar" aria-label="PDF талдау барысы" max="100"></progress></div><p class="micro">✧ &nbsp; Браузерлік талдау · Нақты дәлелдер · Дайын промпт</p><div id="error" class="error" role="alert"></div></form></section>
+<section class="card preview" id="preview"><div class="preview-top"><strong>Талдау көрінісі</strong><span class="live"><span class="dot"></span> ТІКЕЛЕЙ ТАЛДАУ</span></div><div class="mock"><div class="mock-bar"><i></i><i></i><i></i><div class="mock-address">vibeprompt / талдау</div></div><div class="laser"></div><div class="mock-body" aria-live="polite"><img id="preview-shot" class="hidden" alt="Талданған беттің көрінісі" style="max-width:100%;max-height:190px;object-fit:contain;border:1px solid #34394b;border-radius:8px;margin-bottom:10px"><div class="scan-icon" id="scan-icon">⌁</div><strong id="preview-title">Талдауға дайын</strong><p id="preview-desc">Дереккөзді қосыңыз. Нәтижелеріңіз осы жерде пайда болады.</p></div><div class="mock-stats"><div><b id="stat-score">—</b><span>ТЕКСЕРУ ҰПАЙЫ</span></div><div><b id="stat-class">—</b><span>ЖІКТЕУ</span></div><div><b>06</b><span>КӨРСЕТКІШ</span></div></div></div></section></div>
 <div class="below-head" id="results"><div><div class="mini">02 / ТАЛДАУ НӘТИЖЕСІ</div><h2>Дизайнды тереңірек түсініңіз</h2><p>Әр көрсеткіш интерфейстің әлсіз және мықты тұстарын көрсетеді.</p></div><div class="tag">◈ &nbsp; 6 КӨРСЕТКІШ БОЙЫНША</div></div>
 <div class="bento"><section id="editorial-card" class="card result-wide hidden"><div class="mini">PDF ART DIRECTION · ҰСЫНЫС</div><h3 id="editorial-title"></h3><p id="editorial-domain" class="note"></p><div id="editorial-keywords" class="note"></div><div id="editorial-palette" class="palette-list"></div><p class="note">Ұсынылған палитра · төмендегі өлшенген түстерден бөлек. Жіктеу жуық.</p></section><section id="priority-card" class="card priority-card hidden"><div class="mini">БІРІНШІ КЕЗЕКТЕ</div><h3>Назар аударатын тұстар</h3><div id="priority-items" class="priority-items"></div></section><section class="card metric-card"><div class="metric-title"><span id="score-title" style="font-size:12px;color:inherit">Тексеру ұпайы</span><span>◌</span></div><div id="score-content" class="empty"><div class="empty-icon">◌</div>Ұпай талдаудан кейін көрсетіледі</div></section><section class="card metric-card"><div class="metric-title">Көрсеткіштер профилі <span>⌁</span></div><div id="radar-empty" class="empty"><div class="empty-icon">⬡</div>Дерек әлі жоқ</div><div id="radar-box" class="chart-box hidden"><canvas id="radar" aria-label="Алты көрсеткіш диаграммасы"></canvas></div></section><section class="card metric-card"><div class="metric-title">Түс палитрасы <span>◈</span></div><div id="palette" class="empty"><div class="empty-icon">◈</div>Анықталған түстер осында көрінеді</div></section>
 <section class="card result-wide"><div class="prompt-head"><div><div class="mini">ПРОМПТ ҚҰРАСТЫРУ</div><h3 style="margin:5px 0 0;font-size:15px">Жақсартуға арналған промпт</h3></div><button type="button" class="copy" data-copy="prompt">Барлығын көшіру ↗</button></div><div class="tabs" role="group" aria-label="AI түрі" style="margin-top:15px;grid-template-columns:repeat(3,1fr)"><button type="button" class="active" data-prompt-model="chatgpt">ChatGPT</button><button type="button" data-prompt-model="gemini">Gemini</button><button type="button" data-prompt-model="claude">Claude</button></div><p class="note">Таңдалған AI нұсқасы көшіріледі. Сайт промптына CSS үлгісі де кіреді; PDF промпты құжатты түзетуге арналған. Промптқа оқылған мәтін үзінділері кіреді. Оны сыртқы AI сервисіне жіберер алдында құпия деректерді тексеріңіз.</p><div class="prompt-controls"><span class="note">Толық промпт</span><a id="audit-ai-link" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">AI ашу ↗</a></div><p class="prompt-size-note">Промптты көшіріп, AI бетіне қойыңыз. PDF болса, бастапқы файлды да тіркеңіз.</p><p id="audit-engine-status" class="note" role="status" hidden></p><div class="prompt-output" id="prompt-output">Аудитті бастаңыз — сізге бейімделген промпт осы жерде пайда болады.</div><div class="note" id="prompt-grade"></div><section id="full-prompt-section" class="full-prompt hidden" aria-label="Толық промпт"><div class="prompt-head"><div><div class="mini">ДАЙЫН МӘТІН</div><h3>Таңдалған промпт</h3></div><button type="button" class="copy" data-copy="prompt">Таңдалған промптты көшіру ↗</button></div><p class="note">Таңдалған AI үшін толық промпт төменде көрсетілген.</p><pre id="full-prompt-text" class="full-prompt-text"></pre></section></section><section class="card result-side"><div class="mini">ҰСЫНЫСТАР</div><h3 style="font-size:15px;margin:5px 0 12px">Неге назар аудару керек?</h3><div id="issues" class="note">Нәтиже шыққан соң ұсыныстар көрсетіледі.</div><div class="note" id="method-note"></div><div id="page-details"></div></section>
@@ -254,17 +348,50 @@ body .side-history-item:hover,body .side-history-item:focus-within{background:va
 <div class="lab-section"><div class="card" style="padding:18px"><strong>Нақты сайттармен оқыту мәртебесі</strong><p class="note">19 жария беттен бақылау жиналды. Сапа белгілерін сарапшы тексергеннен кейін ғана нақты сайт моделі оқытылады; қазіргі кесте — синтетикалық демонстрация. Нұсқаулық: TRAINING_KK.md.</p></div></div><div class="lab-section"><div class="mini">02 / МОДЕЛЬДЕРДІ САЛЫСТЫРУ</div><h2>Тест жиынындағы нәтиже</h2><p class="note">Тек синтетикалық оқу жиыны: бұл көрсеткіштер нақты сайттардағы дәлдікті білдірмейді · 80/20 · macro орташа</p><div class="card table-wrap"><table class="table"><thead><tr><th>МОДЕЛЬ</th><th>ДӘЛДІК</th><th>PRECISION</th><th>RECALL</th><th>F1-SCORE</th></tr></thead><tbody id="model-table"><tr><td colspan="5">Жүктелуде...</td></tr></tbody></table></div></div>
 <div class="lab-section"><div class="mini">03 / ҚАТЕЛЕР МАТРИЦАСЫ</div><h2>Random Forest жіктеуі</h2><p class="note">Жолдар — нақты класс, бағандар — болжам. 0–3 класс атаулары төменде көрсетілген.</p><div class="card" style="padding:20px"><div class="heat" id="matrix"></div><p class="note">0 — жоғары деңгей · 1 — контраст · 2 — жүктеме · 3 — шикі макет</p></div></div>
 <div class="lab-section lab-info"><div class="card"><div class="mini">ҚАТЕ ЖАҒДАЙЫ</div><h3>JavaScript арқылы салынатын сайт</h3><p>Браузерде көрінетін интерфейс бастапқы HTML ішінде болмауы мүмкін. Соның салдарынан толық сайт «шикі макет» деп қате жіктелуі ықтимал. Бұл — ықтимал мысал, тест жиынында тіркелген қате емес.</p></div><div class="card"><div class="mini">ЖҮЙЕ ШЕКТЕУІ</div><h3>Бұл — жуық бағалау</h3><p>PDF-тің барлық беті оқылады, ал контраст үзінділер бойынша жуық тексеріледі. OCR мәтінді қате тануы мүмкін; нақты орналасу мен толық CSS cascade толық бағаланбайды. Белгісіз мәндер ұпайға кірмейді. Синтетикалық деректердегі жоғары нәтиже нақты сайттардағы сапаны дәлелдемейді.</p></div></div></section>
-</main><footer class="shell"><div class="footer"><span><b>VibePromt AI</b> &nbsp; / &nbsp; Интерфейсті саналы түрде жақсарт.</span><span>ОҚУ ЖОБАСЫ · 2026</span></div></footer></div>
+</main><footer class="shell"><div class="footer"><span><b>VibePrompt AI</b> &nbsp; / &nbsp; Интерфейсті саналы түрде жақсарт.</span><span>ОҚУ ЖОБАСЫ · 2026</span></div></footer></div>
 <script>
 let mode='URL', radarChart=null, current=null, typingTimer=null, promptModel='chatgpt';
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
-const closeMenu=()=>{document.body.classList.remove('menu-open');$('#menu-toggle').setAttribute('aria-expanded','false')};
-$('#menu-toggle').addEventListener('click',()=>{let open=document.body.classList.toggle('menu-open');$('#menu-toggle').setAttribute('aria-expanded',String(open))});$('#side-overlay').addEventListener('click',closeMenu);$('#close-menu').addEventListener('click',closeMenu);document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.body.classList.contains('menu-open')){closeMenu();$('#menu-toggle').focus()}});
+const mobileLayout=window.matchMedia('(max-width: 767px)');
+function closeMenu(){
+ const wasOpen=document.body.classList.contains('menu-open');
+ document.body.classList.remove('menu-open');
+ $('.workspace').inert=false;
+ $('#menu-toggle').setAttribute('aria-expanded','false');
+ if(wasOpen && mobileLayout.matches && $('#sidebar').contains(document.activeElement))$('#menu-toggle').focus();
+}
+$('#menu-toggle').addEventListener('click',()=>{
+ if(!mobileLayout.matches)return;
+ document.body.classList.add('menu-open');
+ $('#menu-toggle').setAttribute('aria-expanded','true');
+ $('.workspace').inert=true;
+ $('#close-menu').focus();
+});
+$('#side-overlay').addEventListener('click',closeMenu);
+$('#close-menu').addEventListener('click',closeMenu);
+mobileLayout.addEventListener('change',closeMenu);
+document.addEventListener('keydown',event=>{
+ if(!document.body.classList.contains('menu-open'))return;
+ if(event.key==='Escape'){closeMenu();return}
+ if(event.key!=='Tab')return;
+ const controls=$$('#sidebar a[href],#sidebar button:not(:disabled),#sidebar input').filter(
+  node=>node.getClientRects().length&&getComputedStyle(node).visibility==='visible'
+ );
+ const first=controls[0],last=controls.at(-1);
+ if(event.shiftKey&&document.activeElement===first){event.preventDefault();last?.focus()}
+ else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first?.focus()}
+});
 $('#side-audit').addEventListener('click',()=>{view('audit');closeMenu()});$('#side-lab').addEventListener('click',()=>{view('academic');closeMenu()});
 $('#new-audit').addEventListener('click',()=>{document.body.classList.add('brief-mode');closeMenu();window.scrollTo(0,0);$('#brief-text').focus()});
 let preferences={};try{preferences=JSON.parse(localStorage.getItem('vibe-preferences')||'{}')}catch{};if(['chatgpt','gemini','claude'].includes(preferences.ai))promptModel=preferences.ai;
 function savePreferences(){try{localStorage.setItem('vibe-preferences',JSON.stringify(preferences))}catch{}}
-function applyTextScale(){let x=Number(preferences.textScale);if(![90,100,110,125,150].includes(x))x=100;document.documentElement.style.setProperty('--app-scale',String(x/100));$('#text-scale').value=String(x)}
+function applyTextScale(){
+ const stored=Number(preferences.textScale);
+ const scale=[90,100,110,125,150].includes(stored)?stored:(mobileLayout.matches?90:100);
+ document.documentElement.style.setProperty('--app-scale',String(scale/100));
+ $('#text-scale').value=String(scale);
+}
+mobileLayout.addEventListener('change',applyTextScale);
 $('#text-scale').addEventListener('change',e=>{preferences.textScale=Number(e.target.value);savePreferences();applyTextScale()});applyTextScale();
 function applyMotion(){document.documentElement.classList.toggle('reduce-motion',!!preferences.reduceMotion)}applyMotion();
 $('#open-settings').addEventListener('click',()=>{closeMenu();$('#theme-choice').value=preferences.theme||'dark';$('#language-choice').value=preferences.lang||'kk';$('#default-ai').value=promptModel;$('#reduce-motion').checked=!!preferences.reduceMotion;$('#settings-dialog').showModal()});
@@ -289,7 +416,7 @@ const uiTranslations={
 '▤ PDF/презентация':['▤ PDF/презентация','▤ PDF/presentation'],
 'ЖОБАҢЫЗДЫ СИПАТТАҢЫЗ':['ОПИШИТЕ ВАШ ПРОЕКТ','DESCRIBE YOUR PROJECT'],
 'Тақырып, аудитория, стиль және қажет бөлімдерді жазыңыз':['Укажите тему, аудиторию, стиль и необходимые разделы','Describe the topic, audience, style, and required sections'],
-'Промпт жасау ↑':['Создать промпт ↑','Create prompt ↑'],
+'Промпт жасау':['Создать промпт','Create prompt'],
 'Дайын материал бар ма?':['Уже есть материал?','Already have material?'],
 '↗ Сайтты талдау':['↗ Анализ сайта','↗ Analyze website'],
 '▤ PDF талдау':['▤ Анализ PDF','▤ Analyze PDF'],
@@ -320,8 +447,41 @@ let lastChromeId=0;
 async function pollChrome(){try{let r=await fetch('/api/chrome-result',{cache:'no-store'});if(!r.ok)return;let d=await r.json();if(d.id>lastChromeId && d.data){lastChromeId=d.id;saveAudit(d.data,'Chrome: '+(d.data.detail||'Аудит'));render(d.data);view('audit');$('#results').scrollIntoView({behavior:'smooth',block:'start'})}}catch{}}
 setInterval(pollChrome,4000);pollChrome();
 $$('[data-mode]').forEach(b=>b.addEventListener('click',()=>{mode=b.dataset.mode;$$('[data-mode]').forEach(x=>{x.classList.toggle('active',x===b);x.setAttribute('aria-pressed',String(x===b))});$('#url-field').classList.toggle('hidden',mode!=='URL');$('#pdf-field').classList.toggle('hidden',mode!=='PDF');$('#error').textContent=''}));
-function fileLabel(){const f=$('#file').files[0];$('#file-label').textContent=f?`${f.name} · ${(f.size/1024/1024).toFixed(2)} МБ`:'PDF · ең көбі 30 МБ';$('#file-label').classList.toggle('file-badge',!!f)}
-$('#file').addEventListener('change',fileLabel); const drop=$('#drop');['dragenter','dragover'].forEach(e=>drop.addEventListener(e,x=>{x.preventDefault();drop.classList.add('drag')}));['dragleave','drop'].forEach(e=>drop.addEventListener(e,x=>{x.preventDefault();drop.classList.remove('drag')}));drop.addEventListener('drop',e=>{if(e.dataTransfer.files.length){$('#file').files=e.dataTransfer.files;fileLabel()}});
+const PDF_FILE_LIMIT=30*1024*1024;
+const fileInput=$('#file');
+const drop=$('#drop');
+let selectedPdf=null;
+
+function validatePdfFile(file){
+ if(!file)return 'PDF файлын таңдаңыз.';
+ if(!/\.pdf$/i.test(file.name))return 'Файл кеңейтімі .pdf болуы керек.';
+ if(!file.size)return 'Таңдалған файл бос.';
+ if(file.size>PDF_FILE_LIMIT)return 'Файл көлемі 30 МБ-тан аспауы керек.';
+ return '';
+}
+
+function selectPdf(file){
+ const error=file?validatePdfFile(file):'';
+ selectedPdf=error?null:file;
+ if(error||!file)fileInput.value='';
+ $('#file-error').textContent=error;
+ $('#file-label').textContent=selectedPdf
+  ?selectedPdf.name+' · '+(selectedPdf.size/1024/1024).toFixed(2)+' МБ'
+  :'PDF · ең көбі 30 МБ';
+ $('#file-label').classList.toggle('file-badge',Boolean(selectedPdf));
+}
+
+fileInput.addEventListener('change',()=>selectPdf(fileInput.files[0]));
+for(const eventName of ['dragenter','dragover','dragleave','drop']){
+ drop.addEventListener(eventName,event=>{
+  event.preventDefault();
+  drop.classList.toggle('drag',eventName==='dragenter'||eventName==='dragover');
+  if(eventName==='drop'&&!fileInput.disabled){
+   fileInput.value='';
+   selectPdf(event.dataTransfer.files[0]);
+  }
+ });
+}
 function esc(s){const d=document.createElement('div');d.textContent=String(s);return d.innerHTML}
 function pct(x){return Math.round(x*100)+'%'}
 const HISTORY_KEY='vibe-saved-audits-v1',HISTORY_LIMIT=12,HISTORY_MAX_CHARS=3000000;
@@ -679,6 +839,18 @@ function refreshAuditPrompt(){
 function showBrief(){resetPromptCopyFeedback();document.body.classList.add('brief-mode');$('#brief-result').classList.remove('hidden');refreshBriefPrompt();updateAiLink('brief-ai-link',briefModel);$$('[data-brief-model]').forEach(x=>{const active=x.dataset.briefModel===briefModel;x.classList.toggle('active',active);x.setAttribute('aria-pressed',String(active))})}
 function restoreBrief(d){briefKind=d.briefKind;generatedBriefKind=d.briefKind;generatedBriefText=d.brief||'';updateBriefExample();briefPrompts=d.prompts||{};$('#brief-text').value=d.brief||'';$$('[data-brief-kind]').forEach(x=>x.classList.toggle('active',x.dataset.briefKind===briefKind));showBrief();window.scrollTo({top:0,behavior:'smooth'})}
 $$('[data-brief-kind]').forEach(b=>b.addEventListener('click',()=>{briefKind=b.dataset.briefKind;updateBriefExample();$$('[data-brief-kind]').forEach(x=>{x.classList.toggle('active',x===b);x.setAttribute('aria-pressed',String(x===b))})}));
+const starters={
+ portfolio:['site','UX дизайнерге арналған қазақша жеке портфолио сайтын жаса. Басты бетте қысқа таныстыру мен байланыс батырмасы болсын. Үш жобаны міндеті, шешімі және нәтижесімен көрсет. Өзім туралы және байланыс бөлімдерін қос. Телефонда мәтін оқуға ыңғайлы, мәзір мен батырмалар пернетақтамен қолжетімді болсын. Жоба деректері берілмесе, орнын анық белгіле.'],
+ startup:['presentation','Шағын бизнеске арналған қойма есебін автоматтандыратын IT стартап туралы қазақша 8 слайдтық таныстырылым жаса. Мәселені, шешімді, өнімнің жұмысын, мақсатты нарықты, бизнес моделін, бәсекелік артықшылықты және даму жоспарын көрсет. Соңғы слайдта серіктеске ұсынысты жаз. Нақты дерек жоқ тұста ойдан сан қоспа.'],
+ shop:['site','Қазақстандағы шағын онлайн дүкенге қазақша лендинг жаса. Басты экранда құндылық ұсынысы мен каталог батырмасы болсын. Тауар санаттарын, танымал тауарларды, жеткізу мен қайтару шарттарын және жиі қойылатын сұрақтарды орналастыр. Телефоннан тауарды таңдау мен тапсырысқа өту оңай болсын. Баға мен пікір деректері берілмесе, үлгі екенін белгіле.']
+};
+$$('[data-starter]').forEach(button=>button.addEventListener('click',()=>{
+ const [kind,text]=starters[button.dataset.starter];
+ $('[data-brief-kind="'+kind+'"]').click();
+ $('#brief-text').value=text;
+ $('#brief-error').textContent='';
+ $('#brief-text').focus();
+}));
 $$('[data-brief-model]').forEach(b=>b.addEventListener('click',()=>{briefModel=b.dataset.briefModel;showBrief()}));
 $('#brief-generate').addEventListener('click',()=>{let text=$('#brief-text').value.trim();if(text.length<10){$('#brief-error').textContent='Жобаңызды кемінде 10 таңбамен сипаттаңыз.';return}$('#brief-error').textContent='';briefPrompts=makeBrief(text,briefKind);generatedBriefText=text;generatedBriefKind=briefKind;briefModel=Object.hasOwn(AI_LINKS,preferences.ai)?preferences.ai:'chatgpt';saveAudit({kind:'BRIEF',briefKind,brief:text,prompts:briefPrompts,features:{},score:null},text);showSavedAudits();showBrief();$('#brief-result').scrollIntoView({behavior:'smooth',block:'start'})});
 $('#brief-copy').addEventListener('click',()=>copyWithFeedback($('#brief-copy'),()=>$('#brief-output').textContent));
@@ -723,7 +895,154 @@ function render(d){
  $('#page-details').innerHTML=pageRows.length?`<details style="margin-top:16px"><summary style="cursor:pointer;color:#c4c7ff;font-weight:700">Әр беттің нәтижесі (${pageRows.length})</summary><div style="max-height:380px;overflow:auto;margin-top:10px">${pageRows.map(p=>`<div class="issue"><strong>${p.page}-бет · ${p.words==null?'сөз саны белгісіз':p.words+' сөз'}</strong><br>${esc(p.text_status)}<br>${p.text_excerpt?'<span style="color:#d0d6e2">Үзінді: '+esc(p.text_excerpt)+'</span><br>':''}Сурет: ${p.image_count||0}; контраст үлгісі: ${p.contrast_samples}; төмен контраст: ${p.low_contrast}</div>`).join('')}</div></details>`:'';
  refreshHistory();
 }
-async function run(url,body,demo=false){$('#error').textContent='';$('#submit').disabled=true;$('#preview').classList.add('scanning');$('#preview-title').textContent='Талдау жүріп жатыр...';$('#preview-desc').textContent=mode==='PDF'?'Әр бет оқылып жатыр. Сканерленген және көп бетті файлға көбірек уақыт қажет.':'Сайт браузерде ашылып, талданып жатыр. Тегін серверде бұл бір минуттан ұзаққа созылуы мүмкін.';let start=Date.now();try{let data;if(!demo && body.get('kind')==='PDF'){$('#pdf-progress').classList.remove('hidden');$('#pdf-progress-text').textContent='PDF жүктеліп жатыр...';$('#pdf-progress-bar').removeAttribute('value');const response=await fetch('/api/pdf-jobs',{method:'POST',body});let job=await response.json();if(!response.ok)throw Error(job.error||'Қате шықты');while(true){await new Promise(r=>setTimeout(r,500));let p=await fetch('/api/pdf-jobs/'+encodeURIComponent(job.job_id),{cache:'no-store'});let state=await p.json();if(!p.ok||state.state==='error')throw Error(state.error||'PDF талдау қатесі');if(state.total){$('#pdf-progress-text').textContent=state.total+' беттің '+state.done+'-і тексерілді';$('#pdf-progress-bar').value=Math.round(100*state.done/state.total)}if(state.state==='done'){data=state.result;break}}}else{const response=await fetch(url,{method:'POST',body});data=await response.json();if(!response.ok)throw Error(data.error||'Қате шықты')}if(!demo){let file=body.get('file');let source=typeof file==='object'&&file?file.name:body.get('url');if(data.kind==='URL'&&source)data.source_url=source;data.user_goal=body.get('prompt')||'';saveAudit(data,source)}render(data);if(demo)view('audit');$('#results').scrollIntoView({behavior:'smooth',block:'start'})}catch(e){$('#error').textContent=e instanceof TypeError?'Серверге қосылу мүмкін болмады. Серверді қайта іске қосыңыз.':e.message;$('#preview-title').textContent='Талдау орындалмады';$('#preview-desc').textContent='Дереккөзді тексеріп, қайта көріңіз.'}finally{$('#preview').classList.remove('scanning');$('#submit').disabled=false;$('#pdf-progress').classList.add('hidden')}}
-$('#audit-form').addEventListener('submit',e=>{e.preventDefault();let data=new FormData();data.append('kind',mode);data.append('prompt',$('#goal').value);if(mode==='URL'){if(!$('#url').value){$('#error').textContent='Сайт сілтемесін енгізіңіз.';return}data.append('url',$('#url').value)}else{let f=$('#file').files[0];if(!f){$('#error').textContent='PDF файлын таңдаңыз.';return}if(f.size>30*1024*1024){$('#error').textContent='Файл 30 МБ шегінен асады.';return}data.append('file',f)}run('/api/audit',data)});
+const PDF_ANALYSIS_TIMEOUT=8*60*1000;
+
+function updatePdfProgress(phase,message,percent){
+ const steps=$$('#pdf-steps li');
+ steps.forEach((step,index)=>{
+  step.toggleAttribute('data-complete',index<phase);
+  if(index===phase)step.setAttribute('aria-current','step');
+  else step.removeAttribute('aria-current');
+ });
+ const text=$('#pdf-progress-text');
+ if(text.textContent!==message)text.textContent=message;
+ const bar=$('#pdf-progress-bar');
+ if(percent==null)bar.removeAttribute('value');
+ else bar.value=percent;
+}
+
+function uploadPdf(body){
+ return new Promise((resolve,reject)=>{
+  const xhr=new XMLHttpRequest();
+  xhr.open('POST','/api/pdf-jobs');
+  xhr.responseType='json';
+  xhr.timeout=120000;
+  xhr.upload.onprogress=event=>{
+   if(!event.lengthComputable)return;
+   const percent=Math.round(100*event.loaded/event.total);
+   updatePdfProgress(0,'Жүктелді: '+percent+'%',Math.round(percent*.25));
+  };
+  xhr.onload=()=>{
+   if(xhr.status>=200&&xhr.status<300&&xhr.response)resolve(xhr.response);
+   else reject(new Error(xhr.response?.error||'Файлды жүктеу мүмкін болмады.'));
+  };
+  xhr.onerror=()=>reject(new Error('Сервермен байланыс үзілді.'));
+  xhr.ontimeout=()=>reject(new Error('Файлды жүктеу уақыты аяқталды.'));
+  xhr.send(body);
+ });
+}
+
+function showPdfState(state){
+ if(state.phase==='reading'){
+  updatePdfProgress(1,state.done+' / '+state.total+' бет оқылды',
+   state.total?25+Math.round(65*state.done/state.total):null);
+ }else if(state.phase==='analyzing'){
+  updatePdfProgress(2,'Оқылған деректер тексеріліп жатыр…',95);
+ }else{
+  updatePdfProgress(1,'Файл қабылданды. Талдау кезегінде тұр…',25);
+ }
+}
+
+async function pollPdfJob(path,deadline){
+ while(Date.now()<deadline){
+  const response=await fetch(path,{cache:'no-store',signal:AbortSignal.timeout(15000)});
+  const state=await response.json();
+  if(!response.ok||state.state==='error')throw new Error(state.error||'PDF талдау кезінде қате шықты.');
+  if(state.state==='done')return state.result;
+  showPdfState(state);
+  await new Promise(resolve=>setTimeout(resolve,800));
+ }
+ throw new Error('Талдау уақыты аяқталды. Қайта көріңіз.');
+}
+
+function streamPdfJob(id){
+ const path='/api/pdf-jobs/'+encodeURIComponent(id);
+ const deadline=Date.now()+PDF_ANALYSIS_TIMEOUT;
+ if(!window.EventSource)return pollPdfJob(path,deadline);
+ return new Promise((resolve,reject)=>{
+  const source=new EventSource(path+'/events');
+  const close=()=>{source.close();clearTimeout(timer)};
+  const timer=setTimeout(()=>{
+   close();reject(new Error('Талдау уақыты аяқталды. Қайта көріңіз.'));
+  },PDF_ANALYSIS_TIMEOUT);
+  source.onmessage=event=>{
+   let state;
+   try{state=JSON.parse(event.data)}catch{close();pollPdfJob(path,deadline).then(resolve,reject);return}
+   if(state.state==='done'){close();resolve(state.result);return}
+   if(state.state==='error'){close();reject(new Error(state.error));return}
+   showPdfState(state);
+  };
+  source.onerror=()=>{close();pollPdfJob(path,deadline).then(resolve,reject)};
+ });
+}
+
+async function run(url,body,demo=false){
+ const submit=$('#submit');
+ if(submit.disabled)return;
+ const isPdf=!demo&&body.get('kind')==='PDF';
+ $('#error').textContent='';
+ submit.disabled=true;
+ fileInput.disabled=true;
+ $('#preview').classList.add('scanning');
+ $('#preview-title').textContent='Талдау жүріп жатыр…';
+ $('#preview-desc').textContent=isPdf
+  ?'Беттер оқылып жатыр. Сканерленген құжатқа көбірек уақыт қажет болуы мүмкін.'
+  :'Сайт ашылып, тексеріліп жатыр.';
+ try{
+  let data;
+  if(isPdf){
+   $('#pdf-progress').classList.remove('hidden');
+   updatePdfProgress(0,'Файл серверге жіберіліп жатыр…',null);
+   const job=await uploadPdf(body);
+   if(job.cached)data=job.result;
+   else{
+    updatePdfProgress(1,'Файл қабылданды. Құжат ашылып жатыр…',25);
+    data=await streamPdfJob(job.job_id);
+   }
+   updatePdfProgress(3,job.cached?'Сақталған нәтиже ашылды.':'Талдау аяқталды.',100);
+  }else{
+   const response=await fetch(url,{method:'POST',body});
+   data=await response.json();
+   if(!response.ok)throw new Error(data.error||'Талдау кезінде қате шықты.');
+  }
+  if(!demo){
+   const file=body.get('file');
+   const source=file instanceof File?file.name:body.get('url');
+   if(data.kind==='URL'&&source)data.source_url=source;
+   data.user_goal=body.get('prompt')||'';
+   saveAudit(data,source);
+  }
+  render(data);
+  if(demo)view('audit');
+  $('#results').scrollIntoView({behavior:preferences.reduceMotion?'instant':'smooth',block:'start'});
+ }catch(error){
+  $('#error').textContent=error instanceof TypeError?'Сервермен байланыс үзілді. Қайта көріңіз.':error.message;
+  $('#preview-title').textContent='Талдау орындалмады';
+  $('#preview-desc').textContent='Дереккөзді тексеріп, қайта көріңіз.';
+  $('#pdf-progress').classList.add('hidden');
+ }finally{
+  $('#preview').classList.remove('scanning');
+  submit.disabled=false;
+  fileInput.disabled=false;
+ }
+}
+
+$('#audit-form').addEventListener('submit',event=>{
+ event.preventDefault();
+ const body=new FormData();
+ body.append('kind',mode);
+ body.append('prompt',$('#goal').value);
+ if(mode==='URL'){
+  $('#pdf-progress').classList.add('hidden');
+  const url=$('#url').value.trim();
+  if(!url){$('#error').textContent='Сайт сілтемесін енгізіңіз.';return}
+  body.append('url',url);
+ }else{
+  const error=validatePdfFile(selectedPdf);
+  if(error){$('#file-error').textContent=error;fileInput.focus();return}
+  body.append('file',selectedPdf);
+ }
+ run('/api/audit',body);
+});
 $$('[data-demo]').forEach(b=>b.addEventListener('click',()=>{let d=new FormData();d.append('kind',$('#demo-kind').value);d.append('prompt',$('#goal').value);run('/api/demo/'+b.dataset.demo,d,true)}));$$('[data-copy]').forEach(b=>b.addEventListener('click',()=>{if(current)copyWithFeedback(b,()=>b.dataset.copy==='prompt'?$('#full-prompt-text').textContent:current[b.dataset.copy])}));loadModels();refreshHistory();
 </script><script>if ('serviceWorker' in navigator && window.isSecureContext) navigator.serviceWorker.register('/sw.js').catch(()=>{});</script></body></html>
