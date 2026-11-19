@@ -21,6 +21,7 @@ import urllib3
 import audit_engine
 import browser_audit
 import prompt_builder
+import prompt_engine
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(BASE, 'ui_audit_dataset.csv')
@@ -382,6 +383,32 @@ def chrome_audit():
     except ValueError as exc: return jsonify({'error':str(exc)}),400
     except Exception:
         app.logger.exception('Chrome capture failed'); return jsonify({'error':'Chrome нәтижесін өңдеу мүмкін болмады.'}),500
+
+@app.post('/api/optimize-prompt')
+def optimize_project_prompt():
+    if request.content_length is None or request.content_length > 4_000_000:
+        return jsonify(error='Промпт сұрауы тым үлкен.'), 413
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict):
+        return jsonify(error='Промпт деректері жарамсыз.'), 400
+
+    task = data.get('prompt')
+    topic = data.get('topic')
+    model = data.get('model')
+    language = data.get('language', 'kk')
+    languages = {'kk': 'Kazakh', 'ru': 'Russian', 'en': 'English'}
+    if (not isinstance(task, str) or not task.strip() or len(task) > 2_000_000
+            or not isinstance(topic, str) or len(topic) > 12_000
+            or not isinstance(model, str) or model not in prompt_engine.ADAPTERS
+            or not isinstance(language, str) or language not in languages):
+        return jsonify(error='Промпт деректері жарамсыз.'), 400
+
+    response = jsonify(prompt_engine.optimize_prompt(
+        task, model, languages[language], match_text=topic
+    ))
+    response.headers['Cache-Control'] = 'no-store'
+    return response
+
 
 @app.get('/api/models')
 def models(): return jsonify({'models':MODEL_RESULTS, 'rows':DATA_ROWS,'classes':CLASSES})
