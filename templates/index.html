@@ -210,6 +210,11 @@ body,button,input,textarea,select{font-family:'Plus Jakarta Sans','Noto Sans',sa
 .top-language::after{z-index:2;right:17px;top:19px;border-color:#fff}
 .history-group{margin:0 0 14px}
 .history-group-title{margin:8px 10px 4px;color:var(--theme-muted);font-size:.78rem;font-weight:700}
+.history-search{display:block;margin:0 0 12px}
+.history-search input{width:100%;min-width:0;min-height:42px;padding:8px 12px;border:1px solid var(--theme-border);border-radius:10px;background:var(--theme-panel-deep);color:var(--white);font:inherit}
+.history-search input:focus-visible{outline:2px solid #cabaff;outline-offset:-2px}
+.history-search input::placeholder{color:var(--theme-muted)}
+.history-search-status{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 body .side-history-item{background:none;border:0;border-radius:9px;padding:0;margin:1px 0;box-shadow:none}
 body .side-history-item:hover,body .side-history-item:focus-within{background:var(--theme-selected)}
 .history-open{min-height:40px;padding:9px 10px;font-size:.85rem}
@@ -221,7 +226,7 @@ body .side-history-item:hover,body .side-history-item:focus-within{background:va
 <link rel="manifest" href="/static/manifest.webmanifest"><meta name="theme-color" content="#10131d"><link rel="apple-touch-icon" href="/static/vibepromt-icon-192.png"><noscript><style>.splash{display:none}</style></noscript><link rel="icon" type="image/svg+xml" href="/static/vibepromt-logo.svg"><meta name="apple-mobile-web-app-title" content="VibePromt AI"></head>
 <body class="brief-mode">
 <div id="splash" class="splash" role="status" aria-label="VibePromt AI жүктелуде"><div class="splash-brand"><img class="splash-logo" src="/static/vibepromt-logo.svg" alt="" aria-hidden="true">VibePromt <i>AI</i></div></div>
-<div class="side-overlay" id="side-overlay"></div><aside class="sidebar" id="sidebar" aria-label="Қосымша навигация"><div class="sidebar-top"><a class="brand" href="#"><img class="brand-icon" src="/static/vibepromt-logo.svg" alt="" aria-hidden="true"><span>VibePromt <em>AI</em></span></a><button type="button" class="side-close" id="close-menu" aria-label="Мәзірді жабу">×</button></div><button type="button" class="side-button side-new" id="new-audit">⌂ &nbsp; Басты бет</button><div><button type="button" class="side-button current" id="side-audit">◈ &nbsp; Аудит</button><button type="button" class="side-button" id="side-lab">▦ &nbsp; Оқытушы режимі</button></div><div class="side-history"><div class="side-label">СОҢҒЫ АУДИТТЕР</div><div id="sidebar-history"><p class="note">Тарих жүктелуде...</p></div></div><div class="side-bottom"><button type="button" class="side-button" id="open-settings">⚙ &nbsp; Баптаулар</button><p class="note" style="margin:8px 10px">Жаңа нәтижелер мен промпттар осы браузерде сақталады. Басқа құрылғыға көшпейді; браузер деректерін тазаласаңыз, өшеді.</p></div></aside><div class="workspace">
+<div class="side-overlay" id="side-overlay"></div><aside class="sidebar" id="sidebar" aria-label="Қосымша навигация"><div class="sidebar-top"><a class="brand" href="#"><img class="brand-icon" src="/static/vibepromt-logo.svg" alt="" aria-hidden="true"><span>VibePromt <em>AI</em></span></a><button type="button" class="side-close" id="close-menu" aria-label="Мәзірді жабу">×</button></div><button type="button" class="side-button side-new" id="new-audit">⌂ &nbsp; Басты бет</button><div><button type="button" class="side-button current" id="side-audit">◈ &nbsp; Аудит</button><button type="button" class="side-button" id="side-lab">▦ &nbsp; Оқытушы режимі</button></div><div class="side-history"><div class="side-label">СОҢҒЫ АУДИТТЕР</div><div class="history-search" role="search"><input id="history-search" type="search" aria-label="Аудит атауын іздеу" placeholder="Аудит атауын іздеу" aria-controls="sidebar-history" autocomplete="off"><span id="history-search-status" class="history-search-status" role="status"></span></div><div id="sidebar-history"><p class="note">Тарих жүктелуде...</p></div></div><div class="side-bottom"><button type="button" class="side-button" id="open-settings">⚙ &nbsp; Баптаулар</button><p class="note" style="margin:8px 10px">Жаңа нәтижелер мен промпттар осы браузерде сақталады. Басқа құрылғыға көшпейді; браузер деректерін тазаласаңыз, өшеді.</p></div></aside><div class="workspace">
 <dialog class="settings-modal" id="settings-dialog" aria-labelledby="settings-title"><div class="settings-inner"><div class="settings-header"><div><div class="mini">ЖҰМЫС КЕҢІСТІГІ</div><h2 id="settings-title">Баптаулар</h2></div><button type="button" class="side-close" id="close-settings-top" aria-label="Баптауларды жабу">×</button></div><div class="settings-card"><label for="default-ai">Әдепкі AI нұсқасы</label><small>Промптты ашқанда көрсетілетін модельді таңдаңыз.</small><select id="default-ai" class="select"><option value="chatgpt">ChatGPT</option><option value="gemini">Gemini</option><option value="claude">Claude</option></select></div><div class="settings-card"><label for="theme-choice">Фон түсі</label><small>Жұмыс кеңістігінің өзіңізге ыңғайлы түсін таңдаңыз.</small><select id="theme-choice" class="select"><option value="dark">Қара</option><option value="navy">Қою көк</option><option value="warm">Қоңыр</option></select></div><div class="settings-card"><label for="language-choice">Интерфейс тілі</label><small>Негізгі мәзір мен басқару элементтерінің тілі.</small><select id="language-choice" class="select"><option value="kk">Қазақша</option><option value="ru">Русский</option><option value="en">English</option></select></div><div class="settings-card"><label for="text-scale">Масштаб</label><small>Таңдалған масштаб осы браузерде сақталады.</small><select id="text-scale" class="select"><option value="90">90%</option><option value="100">100%</option><option value="110">110%</option><option value="125">125%</option><option value="150">150%</option></select></div><div class="settings-card"><label class="settings-check"><input type="checkbox" id="reduce-motion"> Анимацияны азайту</label><small>Ашылу және өту анимацияларын қысқартады.</small></div><p class="note">Баптаулар мен аудит тарихы осы браузерде сақталады. Браузер деректерін тазаласаңыз, олар өшеді.</p><div class="settings-footer"><button type="button" class="copy settings-close" id="close-settings">Дайын</button></div></div></dialog>
 <header class="top"><div class="shell"><button type="button" class="menu-toggle" id="menu-toggle" aria-label="Мәзірді ашу" aria-controls="sidebar" aria-expanded="false">☰</button><a href="#" class="brand"><img class="brand-icon" src="/static/vibepromt-logo.svg" alt="" aria-hidden="true"><span>VibePromt <em>AI</em></span></a><nav class="nav" aria-label="Негізгі навигация"><button class="active" data-view="audit">✦ &nbsp; Аудит</button><button data-view="academic">▦ &nbsp; Оқытушы режимі</button></nav><div class="top-language"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 4 6 4 9s-1 6-4 9c-3-3-4-6-4-9s1-6 4-9Z"/></svg><select id="home-language" aria-label="Интерфейс тілі"><option value="kk">ҚАЗ</option><option value="ru">РУС</option><option value="en">ENG</option></select></div></div></header>
 <main class="shell mx-auto">
@@ -329,19 +334,41 @@ function showSavedAudits(){
   ru:['Сегодня','Вчера','Последние 7 дней','Ранее','Нет сохранённых аудитов.','Удалить аудит'],
   en:['Today','Yesterday','Previous 7 days','Earlier','No saved audits.','Delete audit']
  }[preferences.lang] || ['Бүгін','Кеше','Соңғы 7 күн','Бұрын','Сақталған аудит жоқ.','Аудитті өшіру'];
+ const search=$('#history-search');
+ const [searchLabel,noMatches,resultLabel]=({
+  kk:['Аудит атауын іздеу','Сәйкес аудит табылмады.','Табылған аудиттер'],
+  ru:['Поиск по названию аудита','Подходящие аудиты не найдены.','Найдено аудитов'],
+  en:['Search audit titles','No matching audits.','Matching audits']
+ })[preferences.lang] || ['Аудит атауын іздеу','Сәйкес аудит табылмады.','Табылған аудиттер'];
+ search.placeholder=searchLabel;
+ search.setAttribute('aria-label',searchLabel);
+ const normalize=text=>String(text??'').normalize('NFKC').toLowerCase();
+ const query=normalize(search.value).trim();
+ const words=query?query.split(/\s+/):[];
+ const audits=getSavedAudits().filter(audit=>{
+  const title=normalize(audit.source);
+  return words.every(word=>title.includes(word));
+ });
  const today=new Date();
  const midnight=offset=>new Date(today.getFullYear(),today.getMonth(),today.getDate()-offset).getTime();
  const [dayStart,yesterdayStart,weekStart]=[0,1,6].map(midnight);
  const groups=[[],[],[],[]];
- for(const audit of getSavedAudits()){
+ for(const audit of audits){
   const savedAt=Date.parse(audit.date);
   const group=savedAt>=dayStart?0:savedAt>=yesterdayStart?1:savedAt>=weekStart?2:3;
   groups[group].push(`<div class="side-history-item"><button type="button" class="history-open" data-open-audit="${esc(audit.id)}" title="${esc(audit.source)}"><strong>${esc(audit.source)}</strong></button><button type="button" class="history-remove" data-remove-audit="${esc(audit.id)}" aria-label="${esc(labels[5]+': '+audit.source)}">×</button></div>`);
  }
  const items=groups.map((items,index)=>items.length?`<section class="history-group" aria-label="${esc(labels[index])}"><h3 class="history-group-title">${esc(labels[index])}</h3>${items.join('')}</section>`:'').join('');
  const warning=historyWarning?`<p class="history-warning" role="status">${esc(historyWarning)}</p>`:'';
- $('#sidebar-history').innerHTML=warning+(items||`<p class="note">${esc(labels[4])}</p>`);
+ $('#sidebar-history').innerHTML=warning+(items||`<p class="note">${esc(query?noMatches:labels[4])}</p>`);
+ $('#history-search-status').textContent=query?(audits.length?`${resultLabel}: ${audits.length}`:noMatches):'';
 }
+$('#history-search').addEventListener('input',showSavedAudits);
+$('#history-search').addEventListener('keydown',event=>{
+ if(event.key!=='Enter'||event.isComposing)return;
+ const firstMatch=$('#sidebar-history').querySelector('[data-open-audit]');
+ if(firstMatch){event.preventDefault();firstMatch.click()}
+});
 $('#sidebar-history').addEventListener('click',e=>{let open=e.target.closest('[data-open-audit]'),remove=e.target.closest('[data-remove-audit]');if(open){let item=getSavedAudits().find(r=>r.id===open.dataset.openAudit);if(item&&item.data){if(item.data.kind==='BRIEF'){restoreBrief(item.data);closeMenu()}else{render({...item.data,source_url:item.data.source_url||item.source});view('audit');closeMenu();$('#results').scrollIntoView({behavior:'smooth',block:'start'})}}}else if(remove){if(!confirm('Осы браузерден аудит нәтижесін өшіру керек пе?'))return;try{localStorage.setItem(HISTORY_KEY,JSON.stringify(getSavedAudits().filter(r=>r.id!==remove.dataset.removeAudit)));historyWarning='';showSavedAudits()}catch{historyWarning='Тарихты өзгерту мүмкін болмады.';showSavedAudits()}}});
 
 let briefKind='site',briefModel='chatgpt',briefPrompts={},generatedBriefText='',generatedBriefKind='site';
