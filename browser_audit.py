@@ -5,7 +5,7 @@ fulfilled into the browser. It is a local best-effort guard, not an OS sandbox.
 Use network/container isolation before exposing this to untrusted users.
 """
 import sys, os, re, json, time, socket, ipaddress, subprocess, signal, shutil, base64
-from urllib.parse import urlsplit, urljoin, quote
+from urllib.parse import parse_qs, urlencode, urlsplit, urljoin, urlunsplit, quote
 from collections import Counter
 import requests, urllib3
 
@@ -13,6 +13,73 @@ MAX_SECONDS=65
 MAX_REQUESTS=160
 MAX_BYTES=60_000_000
 MAX_RESOURCE=12_000_000
+YOUTUBE_HOSTS = {'youtube.com', 'www.youtube.com', 'm.youtube.com', 'youtu.be', 'www.youtu.be'}
+
+
+def source_url_candidates(value):
+    url = value.strip()
+    if not url or len(url) > 2048 or re.search(r'[\x00-\x20\x7f\\]', url):
+        raise ValueError('Сайт мекенжайын бос орынсыз, толық доменмен енгізіңіз.')
+    explicit = bool(re.match(r'^https?://', url, re.I))
+    if not explicit:
+        url = 'https://' + (url[2:] if url.startswith('//') else url)
+    try:
+        parts = urlsplit(url)
+        if parts.username or parts.password or not parts.hostname or parts.port not in (None, 80, 443):
+            raise ValueError()
+        host = parts.hostname.encode('idna').decode('ascii').rstrip('.')
+        try:
+            ipaddress.ip_address(host)
+        except ValueError:
+            if '.' not in host or not all(re.fullmatch(r'[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?', item, re.I)
+                                          for item in host.split('.')):
+                raise ValueError() from None
+        if host in ('youtube.com', 'www.youtu.be'):
+            host = 'www.youtube.com' if host == 'youtube.com' else 'youtu.be'
+        netloc = f'[{host}]' if ':' in host else host
+        if parts.port is not None:
+            netloc += f':{parts.port}'
+    except (ValueError, UnicodeError):
+        raise ValueError('Дұрыс сайт мекенжайын енгізіңіз. Мысалы: youtube.com немесе example.com/page.') from None
+    path = parts.path or '/'
+    if not explicit and parts.port == 80:
+        return (urlunsplit(('http', netloc, path, parts.query, '')),)
+    first = urlunsplit((parts.scheme, netloc, path, parts.query, ''))
+    if explicit or parts.port == 443 or host in YOUTUBE_HOSTS:
+        return (first,)
+    return first, urlunsplit(('http', netloc, path, parts.query, ''))
+
+
+def youtube_public_metadata(url):
+    """Use public video metadata only when the visible watch page cannot be read."""
+    site = urlsplit(url)
+    if site.hostname not in YOUTUBE_HOSTS:
+        return None
+    fields = site.path.strip('/').split('/')
+    video_id = (fields[0] if site.hostname in {'youtu.be', 'www.youtu.be'} else
+                fields[1] if len(fields) > 1 and fields[0] in {'shorts', 'live', 'embed'} else
+                parse_qs(site.query).get('v', [''])[0] if site.path == '/watch' else '')
+    if not re.fullmatch(r'[A-Za-z0-9_-]{11}', video_id):
+        return None
+    endpoint = 'https://www.youtube.com/oembed?' + urlencode({
+        'url': 'https://www.youtube.com/watch?v=' + video_id, 'format': 'json'})
+    try:
+        response, _, _ = _public_get(endpoint, time.monotonic() + 6, 65536)
+        item = json.loads(response)
+        title = item.get('title')
+        author = item.get('author_name')
+        if not isinstance(title, str) or not title.strip():
+            return None
+        title = ' '.join(title.split())[:240]
+        content = title + ('\n' + ' '.join(author.split())[:160] if isinstance(author, str) else '')
+    except (ValueError, AttributeError):
+        return None
+    note = 'YouTube ашық дерегі: бейненің атауы мен арнасы алынды. Беттің дизайны, видео мазмұны және ойнатқыш тексерілмеді.'
+    return [0] * 6, {
+        'palette': [], 'known': {}, 'detail': 'YouTube · ' + title, 'note': note,
+        'source_headings': [{'level': 'H1', 'text': title}], 'content_text': content,
+        'evidence': {'kind': 'URL', 'js_heavy': True}, 'metadata_only': True,
+    }, url
 
 
 def _public_get(url, deadline, max_bytes, request_headers=None):

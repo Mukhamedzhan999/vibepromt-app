@@ -1,5 +1,5 @@
 FROM python:3.12-slim
-ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PLAYWRIGHT_BROWSERS_PATH=/opt/ms-playwright TESSDATA_PREFIX=/usr/share/tesseract-ocr/5/tessdata PROMPT_ENGINE_CACHE_DIR=/tmp/prompt-engine VIBEAUDIT_VERCEL=1
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PLAYWRIGHT_BROWSERS_PATH=/opt/ms-playwright TESSDATA_PREFIX=/usr/share/tesseract-ocr/5/tessdata PROMPT_ENGINE_CACHE_DIR=/tmp/prompt-engine VIBEAUDIT_VERCEL=1 OMP_THREAD_LIMIT=1
 WORKDIR /app
 COPY requirements.txt requirements-vercel.txt ./
 RUN apt-get update && apt-get install -y --no-install-recommends libatomic1 tesseract-ocr-eng tesseract-ocr-rus tesseract-ocr-kaz && pip install --no-cache-dir -r requirements-vercel.txt && python -m playwright install --with-deps chromium && rm -rf /var/lib/apt/lists/*

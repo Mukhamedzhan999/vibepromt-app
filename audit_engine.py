@@ -118,13 +118,13 @@ def extract_url(url, safe_fetch):
     return features,meta,final
 
 
-def _sample_pdf_page(page, spans):
+def _sample_pdf_page(page, spans, max_pixels=400000):
     """Return bounded raster observations; not equivalent to a WCAG audit."""
     rect = page.rect
     if rect.width <= 0 or rect.height <= 0:
         return None
     # <=400k pixels and <=1600px on either axis, regardless of paper size.
-    scale = min(1.0, math.sqrt(400000/(rect.width*rect.height)), 1600/rect.width, 1600/rect.height)
+    scale = min(1.0, math.sqrt(max_pixels/(rect.width*rect.height)), 1600/rect.width, 1600/rect.height)
     pix = page.get_pixmap(matrix=fitz.Matrix(scale, scale), colorspace=fitz.csRGB, alpha=False, annots=True)
     if pix.n != 3 or pix.width * pix.height > 450000:
         return None
@@ -181,6 +181,7 @@ def _extract_pdf(data, progress):
         if doc.needs_pass: raise ValueError('Құпиясөзбен қорғалған PDF қолдау таппайды.')
         n=len(doc)
         if not n: raise ValueError('PDF ішінде бет жоқ.')
+        large_document = n >= 30
         per_page=[]; fonts=set(); links=0; no_text=0; heads=0; graphic=0
         raster_limit=min(n,12)
         raster_pages={round(i*(n-1)/max(1,raster_limit-1)) for i in range(raster_limit)}
@@ -218,9 +219,9 @@ def _extract_pdf(data, progress):
                 images=page.get_image_info(); graphic+=len(images); info['image_count']=len(images)
                 image_text_possible=bool(images) and (
                     native_words < 12 or any(
-                        fitz.Rect(image['bbox']).get_area() >= page.rect.get_area() * .65
+                        (fitz.Rect(image['bbox']) & page.rect).get_area() >= page.rect.get_area() * .65
                         for image in images
-                    )
+                    ) and (not large_document or native_words < 45)
                 )
                 if images and not image_text_possible:
                     info['image_text_not_checked']=True
@@ -229,7 +230,8 @@ def _extract_pdf(data, progress):
                     ocr_needed.append(page_no)
                     if ocr_available:
                         try:
-                            textpage=page.get_textpage_ocr(language=ocr_lang,dpi=150,full=(native_words<5),tessdata=tessdata or None)
+                            dpi = 120 if large_document else 150
+                            textpage=page.get_textpage_ocr(language=ocr_lang,dpi=dpi,full=(native_words<5),tessdata=tessdata or None)
                             ocr_blocks=page.get_text('dict',textpage=textpage,flags=fitz.TEXTFLAGS_DICT & ~fitz.TEXT_PRESERVE_IMAGES).get('blocks',[])
                             recognized=[sp for block in ocr_blocks for line in block.get('lines',[]) for sp in line.get('spans',[]) if sp.get('text','').strip()]
                             if recognized:
@@ -280,7 +282,7 @@ def _extract_pdf(data, progress):
                     sizes=sorted(sp.get('size',0) for sp in spans); median=sizes[len(sizes)//2]
                     heads+=sum(1 for sp in spans if sp.get('size',0)>median*1.25 and len(sp.get('text',''))<160)
                 try:
-                    observed=_sample_pdf_page(page, [] if used_ocr else spans) if i in raster_pages else None
+                    observed=_sample_pdf_page(page, [] if used_ocr else spans, 240000 if large_document else 400000) if i in raster_pages else None
                     if observed:
                         rendered+=1; raster_colors.update(observed['colors'])
                         page_pairs=observed['pairs']; page_low=[x for x in page_pairs if x['ratio']<x['threshold']]
@@ -305,8 +307,8 @@ def _extract_pdf(data, progress):
         font_known=bool(fonts) and not page_errors and not ocr_failed and ocr_pages==0
         text_known=not needs_ocr and bool(valid_words)
         features=[contrast,0,round(avg,2),min(30,len(fonts)),round(links/max(1,n),2),round(hierarchy,2)]
-        note=(f'Мәтін барлық беттен оқылды. Контраст {rendered} үлгі беттегі мәтін мен фоннан шамамен өлшенді. '
-              'Мәтіні аз немесе үлкен суреті бар беттерде OCR қолданылады. Басқа суреттердегі мәтін, градиент және толық қолжетімділік қолмен тексеріледі.')
+        note=(f'Барлық бет мәтінге тексерілді. Контраст {rendered} үлгі беттегі мәтін мен фоннан шамамен өлшенді. '
+              'OCR сканерленген немесе мәтіні аз суретті беттерде қолданылады. Басқа суреттердегі мәтін, градиент және толық қолжетімділік қолмен тексеріледі.')
         if ocr_failed: note+=f' OCR қолданылмаған немесе сәтсіз беттер: {len(ocr_failed)}; бет тізімі төменде көрсетілген.'
         if page_errors: note+=f' Оқу қатесі шыққан беттер: {len(page_errors)}.'
         if render_errors: note+=f' Растрланбаған беттер: {render_errors}.'

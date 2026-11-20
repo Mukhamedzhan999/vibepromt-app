@@ -37,6 +37,7 @@ def init():
             id TEXT PRIMARY KEY, filename TEXT NOT NULL, size INTEGER NOT NULL,
             prompt TEXT NOT NULL, created_at TIMESTAMPTZ NOT NULL DEFAULT now(), owner TEXT)''')
         db.execute('ALTER TABLE pdf_uploads ADD COLUMN IF NOT EXISTS owner TEXT')
+        db.execute('ALTER TABLE pdf_uploads ADD COLUMN IF NOT EXISTS running BOOLEAN NOT NULL DEFAULT false')
         db.execute('''CREATE TABLE IF NOT EXISTS pdf_chunks (
             upload_id TEXT REFERENCES pdf_uploads(id) ON DELETE CASCADE,
             part INTEGER NOT NULL, payload BYTEA NOT NULL, PRIMARY KEY(upload_id, part))''')
@@ -72,6 +73,7 @@ def start_upload(owner, filename, size, prompt):
 def lock_upload(db, owner, upload_id):
     row = db.execute("""SELECT filename, size, prompt FROM pdf_uploads
                          WHERE id = %s AND owner = %s AND created_at >= now() - interval '15 minutes'
+                         AND NOT running
                          FOR UPDATE""", (upload_id, owner)).fetchone()
     if row is None:
         raise UploadError('Жүктеу табылмады. Қайта бастаңыз.')
@@ -99,13 +101,20 @@ def take_upload(owner, upload_id):
         data = b''.join(row['payload'] for row in rows)
         if len(data) != upload['size'] or not data.startswith(b'%PDF-'):
             raise UploadError('PDF толық жүктелмеді. Қайта көріңіз.')
-        db.execute('DELETE FROM pdf_uploads WHERE id = %s', (upload_id,))
+        db.execute('DELETE FROM pdf_chunks WHERE upload_id = %s', (upload_id,))
+        db.execute('UPDATE pdf_uploads SET running = true, created_at = now() WHERE id = %s', (upload_id,))
     return data, upload['filename'], upload['prompt']
 
 
 def cancel_upload(owner, upload_id):
     with connect() as db:
         db.execute('DELETE FROM pdf_uploads WHERE id = %s AND owner = %s', (upload_id, owner))
+
+
+def upload_active(owner, upload_id):
+    with connect() as db:
+        return db.execute('SELECT 1 FROM pdf_uploads WHERE id = %s AND owner = %s AND running',
+                          (upload_id, owner)).fetchone() is not None
 
 
 def cached_result(key):

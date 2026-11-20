@@ -318,6 +318,12 @@ main.shell{padding:65px var(--page-gutter) 34px}
 }
 @media(prefers-reduced-motion:reduce){body .sidebar{transition:none}}
 
+.pdf-file-shell{position:relative}
+.pdf-file-shell .drop{padding-inline:52px}
+.pdf-file-shell #file-label{overflow-wrap:anywhere}
+.remove-pdf{position:absolute;right:8px;top:8px;z-index:2;width:44px;height:44px;border:1px solid var(--line);border-radius:10px;background:var(--theme-panel-deep,var(--surface));color:inherit;font:inherit;font-size:24px;cursor:pointer}
+.remove-pdf[hidden],.audit-stop[hidden]{display:none}
+.audit-stop{margin-top:10px;width:100%;min-height:44px;font:inherit}
 </style>
 <link rel="manifest" href="/static/manifest.webmanifest"><meta name="theme-color" content="#10131d"><link rel="apple-touch-icon" href="/static/vibepromt-icon-192.png"><noscript><style>.splash{display:none}</style></noscript><link rel="icon" type="image/svg+xml" href="/static/vibepromt-logo.svg"><meta name="apple-mobile-web-app-title" content="VibePrompt AI"></head>
 <body class="brief-mode">
@@ -352,11 +358,11 @@ main.shell{padding:65px var(--page-gutter) 34px}
 <div class="hero"><div class="eyebrow"><span class="dot"></span> ИНТЕРФЕЙСТІ АҚЫЛДЫ ТАЛДАУ</div><h1>Жақсы дизайн кездейсоқ<br><span>пайда болмайды.</span></h1><p>Сайтыңызды немесе PDF макетіңізді талдап, нақты ұсыныстар мен дайын AI промпт алыңыз.</p></div>
 <div class="layout"><section class="card input-card"><div class="card-head"><div><h2>Жаңа аудит</h2><p>Талдау үшін дереккөзді таңдаңыз</p></div><span class="step">01 / 02</span></div>
 <form id="audit-form"><div class="tabs" role="group" aria-label="Дереккөз түрі"><button type="button" class="active" data-mode="URL">↗ &nbsp; Сайт / PDF сілтемесі</button><button type="button" data-mode="PDF">▤ &nbsp; PDF құжат</button></div>
-<div id="url-field"><label class="label" for="url">САЙТ МЕКЕНЖАЙЫ <span>URL</span></label><div class="urlbox"><span class="chain">↗</span><input id="url" name="url" type="url" placeholder="https://example.com немесе PDF сілтемесі" autocomplete="url"></div><details style="margin-top:15px;border:1px solid #33394b;border-radius:10px;padding:12px"><summary style="cursor:pointer;font-weight:700;color:#d9dcff">Chrome-да өзім ашқан бетті талдау</summary><div class="note" style="line-height:1.8"><p>1. Chrome-да қалаған профиліңізді таңдаңыз. <strong>chrome://extensions</strong> ашып, «Developer mode» қосыңыз.</p><p>2. «Load unpacked» басып, мына қалтаны таңдаңыз:</p><code id="extension-path" style="display:block;overflow-wrap:anywhere;color:#d6d9ff">{{ extension_dir }}</code><button type="button" id="copy-extension-path" class="copy" style="margin-top:7px">Қалта жолын көшіру</button><p>3. Жұптау кодын көшіріп, Chrome кеңейтіміне қойыңыз. Сервер қайта іске қосылса, жаңа код керек.</p><button type="button" id="copy-chrome-key" class="copy">Жұптау кодын көшіру</button><span id="chrome-pair-status" role="status" style="margin-left:8px"></span><p>4. Сол Chrome профилінде қалаған сайтты өзіңіз ашып, қажет болса өзіңіз кіріңіз. Кеңейтімде «Осы бетті талдау» басыңыз; нәтиже осы қосымшада көрінеді.</p><p>Тек таңдалған қойындыдағы көрінетін дерек жергілікті қосымшаға жіберіледі. Құпиясөз өрістері, cookie және басқа қойындылар алынбайды. Кейбір ішкі браузер беттері мен iframe ішіндегі мазмұнды тексеру мүмкін емес.</p></div></details></div>
-<div id="pdf-field" class="hidden"><div class="label">PDF ҚҰЖАТЫ <span>30 МБ-ҚА ДЕЙІН</span></div><label class="drop" id="drop"><span class="drop-icon">⇧</span><span><strong>Файлды осында тастаңыз немесе таңдаңыз</strong><small id="file-label">PDF · ең көбі 30 МБ</small></span><input id="file" type="file" accept="application/pdf,.pdf" aria-describedby="file-label file-error"></label><p id="file-error" class="error" role="alert"></p></div>
+<div id="url-field"><label class="label" for="url">САЙТ МЕКЕНЖАЙЫ <span>URL</span></label><div class="urlbox"><span class="chain">↗</span><input id="url" name="url" type="text" inputmode="url" autocapitalize="none" spellcheck="false" placeholder="youtube.com немесе example.com/page" autocomplete="url"></div><details style="margin-top:15px;border:1px solid #33394b;border-radius:10px;padding:12px"><summary style="cursor:pointer;font-weight:700;color:#d9dcff">Chrome-да өзім ашқан бетті талдау</summary><div class="note" style="line-height:1.8"><p>1. Chrome-да қалаған профиліңізді таңдаңыз. <strong>chrome://extensions</strong> ашып, «Developer mode» қосыңыз.</p><p>2. «Load unpacked» басып, мына қалтаны таңдаңыз:</p><code id="extension-path" style="display:block;overflow-wrap:anywhere;color:#d6d9ff">{{ extension_dir }}</code><button type="button" id="copy-extension-path" class="copy" style="margin-top:7px">Қалта жолын көшіру</button><p>3. Жұптау кодын көшіріп, Chrome кеңейтіміне қойыңыз. Сервер қайта іске қосылса, жаңа код керек.</p><button type="button" id="copy-chrome-key" class="copy">Жұптау кодын көшіру</button><span id="chrome-pair-status" role="status" style="margin-left:8px"></span><p>4. Сол Chrome профилінде қалаған сайтты өзіңіз ашып, қажет болса өзіңіз кіріңіз. Кеңейтімде «Осы бетті талдау» басыңыз; нәтиже осы қосымшада көрінеді.</p><p>Тек таңдалған қойындыдағы көрінетін дерек жергілікті қосымшаға жіберіледі. Құпиясөз өрістері, cookie және басқа қойындылар алынбайды. Кейбір ішкі браузер беттері мен iframe ішіндегі мазмұнды тексеру мүмкін емес.</p></div></details></div>
+<div id="pdf-field" class="hidden"><div class="label">PDF ҚҰЖАТЫ <span>30 МБ-ҚА ДЕЙІН</span></div><div class="pdf-file-shell"><label class="drop" id="drop"><span class="drop-icon">⇧</span><span><strong>Файлды осында тастаңыз немесе таңдаңыз</strong><small id="file-label">PDF · ең көбі 30 МБ</small></span><input id="file" type="file" accept="application/pdf,.pdf" aria-describedby="file-label file-error"></label><button class="remove-pdf" id="remove-pdf" type="button" title="Файлды алып тастау" aria-label="PDF файлын алып тастау" hidden>×</button></div><p id="file-error" class="error" role="alert"></p></div>
 <label class="label" for="goal">ЖОБА МАҚСАТЫ <span>МІНДЕТТІ ЕМЕС</span></label><textarea id="goal" name="prompt" maxlength="5000" placeholder="Мысалы: студенттерге арналған ыңғайлы платформа жасағым келеді..."></textarea><button class="primary" id="submit" type="submit">Аудитті бастау <span>↗</span></button><div id="pdf-progress" class="progress-box hidden"><ol id="pdf-steps" class="pdf-steps">
 <li>Файл жүктелуде</li><li>Мәтін мен құрылым оқылуда</li><li>Аудит нәтижесі дайындалуда</li>
-</ol><strong id="pdf-progress-text" aria-live="polite"></strong><progress id="pdf-progress-bar" class="progress-bar" aria-label="PDF талдау барысы" max="100"></progress></div><p class="micro">✧ &nbsp; Браузерлік талдау · Нақты дәлелдер · Дайын промпт</p><div id="error" class="error" role="alert"></div></form></section>
+</ol><strong id="pdf-progress-text" aria-live="polite"></strong><progress id="pdf-progress-bar" class="progress-bar" aria-label="PDF талдау барысы" max="100"></progress></div><button type="button" id="stop-audit" class="copy audit-stop" hidden>Тексеруді тоқтату</button><p class="micro">✧ &nbsp; Браузерлік талдау · Нақты дәлелдер · Дайын промпт</p><div id="error" class="error" role="alert"></div></form></section>
 <section class="card preview" id="preview"><div class="preview-top"><strong>Талдау көрінісі</strong><span class="live"><span class="dot"></span> ТІКЕЛЕЙ ТАЛДАУ</span></div><div class="mock"><div class="mock-bar"><i></i><i></i><i></i><div class="mock-address">vibeprompt / талдау</div></div><div class="laser"></div><div class="mock-body" aria-live="polite"><img id="preview-shot" class="hidden" alt="Талданған беттің көрінісі" style="max-width:100%;max-height:190px;object-fit:contain;border:1px solid #34394b;border-radius:8px;margin-bottom:10px"><div class="scan-icon" id="scan-icon">⌁</div><strong id="preview-title">Талдауға дайын</strong><p id="preview-desc">Дереккөзді қосыңыз. Нәтижелеріңіз осы жерде пайда болады.</p></div><div class="mock-stats"><div><b id="stat-score">—</b><span>ТЕКСЕРУ ҰПАЙЫ</span></div><div><b id="stat-class">—</b><span>ЖІКТЕУ</span></div><div><b>06</b><span>КӨРСЕТКІШ</span></div></div></div></section></div>
 <div class="below-head" id="results"><div><div class="mini">02 / ТАЛДАУ НӘТИЖЕСІ</div><h2>Дизайнды тереңірек түсініңіз</h2><p>Әр көрсеткіш интерфейстің әлсіз және мықты тұстарын көрсетеді.</p></div><div class="tag">◈ &nbsp; 6 КӨРСЕТКІШ БОЙЫНША</div></div>
 <div class="bento"><section id="editorial-card" class="card result-wide hidden"><div class="mini">PDF ART DIRECTION · ҰСЫНЫС</div><h3 id="editorial-title"></h3><p id="editorial-domain" class="note"></p><div id="editorial-keywords" class="note"></div><div id="editorial-palette" class="palette-list"></div><p class="note">Ұсынылған палитра · төмендегі өлшенген түстерден бөлек. Жіктеу жуық.</p></section><section id="priority-card" class="card priority-card hidden"><div class="mini">БІРІНШІ КЕЗЕКТЕ</div><h3>Назар аударатын тұстар</h3><div id="priority-items" class="priority-items"></div></section><section class="card metric-card"><div class="metric-title"><span id="score-title" style="font-size:12px;color:inherit">Тексеру ұпайы</span><span>◌</span></div><div id="score-content" class="empty"><div class="empty-icon">◌</div>Ұпай талдаудан кейін көрсетіледі</div></section><section class="card metric-card"><div class="metric-title">Көрсеткіштер профилі <span>⌁</span></div><div id="radar-empty" class="empty"><div class="empty-icon">⬡</div>Дерек әлі жоқ</div><div id="radar-box" class="chart-box hidden"><canvas id="radar" aria-label="Алты көрсеткіш диаграммасы"></canvas></div></section><section class="card metric-card"><div class="metric-title">Түс палитрасы <span>◈</span></div><div id="palette" class="empty"><div class="empty-icon">◈</div>Анықталған түстер осында көрінеді</div></section>
@@ -470,6 +476,7 @@ $$('[data-mode]').forEach(b=>b.addEventListener('click',()=>{mode=b.dataset.mode
 const PDF_FILE_LIMIT=30*1024*1024;
 const fileInput=$('#file');
 const drop=$('#drop');
+const removePdfButton=$('#remove-pdf');
 let selectedPdf=null;
 
 function validatePdfFile(file){
@@ -489,9 +496,11 @@ function selectPdf(file){
   ?selectedPdf.name+' · '+(selectedPdf.size/1024/1024).toFixed(2)+' МБ'
   :'PDF · ең көбі 30 МБ';
  $('#file-label').classList.toggle('file-badge',Boolean(selectedPdf));
+ removePdfButton.hidden=!selectedPdf;
 }
 
 fileInput.addEventListener('change',()=>selectPdf(fileInput.files[0]));
+removePdfButton.addEventListener('click',()=>{selectPdf(null);fileInput.focus()});
 for(const eventName of ['dragenter','dragover','dragleave','drop']){
  drop.addEventListener(eventName,event=>{
   event.preventDefault();
@@ -1025,9 +1034,11 @@ function updatePdfProgress(phase,message,percent){
  else bar.value=percent;
 }
 
-function uploadPdf(body){
+function uploadPdf(body,signal){
  return new Promise((resolve,reject)=>{
+  signal.throwIfAborted();
   const xhr=new XMLHttpRequest();
+  const abort=()=>xhr.abort();
   xhr.open('POST','/api/pdf-jobs');
   xhr.responseType='json';
   xhr.timeout=120000;
@@ -1041,7 +1052,10 @@ function uploadPdf(body){
    else reject(new Error(xhr.response?.error||'Файлды жүктеу мүмкін болмады.'));
   };
   xhr.onerror=()=>reject(new Error('Сервермен байланыс үзілді.'));
+  xhr.onabort=()=>reject(signal.reason);
   xhr.ontimeout=()=>reject(new Error('Файлды жүктеу уақыты аяқталды.'));
+  xhr.onloadend=()=>signal.removeEventListener('abort',abort);
+  signal.addEventListener('abort',abort,{once:true});
   xhr.send(body);
  });
 }
@@ -1057,9 +1071,9 @@ function showPdfState(state){
  }
 }
 
-async function pollPdfJob(path,deadline){
+async function pollPdfJob(path,deadline,signal){
  while(Date.now()<deadline){
-  const response=await fetch(path,{cache:'no-store',signal:AbortSignal.timeout(15000)});
+  const response=await fetch(path,{cache:'no-store',signal});
   const state=await response.json();
   if(!response.ok||state.state==='error')throw new Error(state.error||'PDF талдау кезінде қате шықты.');
   if(state.state==='done')return state.result;
@@ -1069,34 +1083,46 @@ async function pollPdfJob(path,deadline){
  throw new Error('Талдау уақыты аяқталды. Қайта көріңіз.');
 }
 
-function streamPdfJob(id){
+function streamPdfJob(id,signal){
  const path='/api/pdf-jobs/'+encodeURIComponent(id);
  const deadline=Date.now()+PDF_ANALYSIS_TIMEOUT;
- if(!window.EventSource)return pollPdfJob(path,deadline);
+ if(!window.EventSource)return pollPdfJob(path,deadline,signal);
  return new Promise((resolve,reject)=>{
+  signal.throwIfAborted();
   const source=new EventSource(path+'/events');
-  const close=()=>{source.close();clearTimeout(timer)};
+  const abort=()=>{close();reject(signal.reason)};
+  const close=()=>{source.close();clearTimeout(timer);signal.removeEventListener('abort',abort)};
   const timer=setTimeout(()=>{
    close();reject(new Error('Талдау уақыты аяқталды. Қайта көріңіз.'));
   },PDF_ANALYSIS_TIMEOUT);
+  signal.addEventListener('abort',abort,{once:true});
   source.onmessage=event=>{
    let state;
-   try{state=JSON.parse(event.data)}catch{close();pollPdfJob(path,deadline).then(resolve,reject);return}
+   try{state=JSON.parse(event.data)}catch{close();pollPdfJob(path,deadline,signal).then(resolve,reject);return}
    if(state.state==='done'){close();resolve(state.result);return}
    if(state.state==='error'){close();reject(new Error(state.error));return}
    showPdfState(state);
   };
-  source.onerror=()=>{close();pollPdfJob(path,deadline).then(resolve,reject)};
+  source.onerror=()=>{close();pollPdfJob(path,deadline,signal).then(resolve,reject)};
  });
 }
+
+const stopAuditButton=$('#stop-audit');
+let activeAudit=null;
+stopAuditButton.addEventListener('click',()=>activeAudit?.abort());
 
 async function run(url,body,demo=false){
  const submit=$('#submit');
  if(submit.disabled)return;
  const isPdf=!demo&&body.get('kind')==='PDF';
+ const controller=new AbortController();
+ const {signal}=controller;
+ activeAudit=controller;
  $('#error').textContent='';
  submit.disabled=true;
  fileInput.disabled=true;
+ removePdfButton.disabled=true;
+ stopAuditButton.hidden=demo;
  $('#preview').classList.add('scanning');
  $('#preview-title').textContent='Талдау жүріп жатыр…';
  $('#preview-desc').textContent=isPdf
@@ -1108,23 +1134,24 @@ async function run(url,body,demo=false){
    $('#pdf-progress').classList.remove('hidden');
    updatePdfProgress(0,'Файл серверге жіберіліп жатыр…',null);
    const vercelUpload=typeof analyzeVercelPdf==='function';
-   const job=await (vercelUpload?analyzeVercelPdf(body,updatePdfProgress,showPdfState):uploadPdf(body));
+   const job=await (vercelUpload?analyzeVercelPdf(body,updatePdfProgress,showPdfState,signal):uploadPdf(body,signal));
    if(job.cached)data=job.result;
    else if(vercelUpload)data=job.result;
    else{
     updatePdfProgress(1,'Файл қабылданды. Құжат ашылып жатыр…',25);
-    data=await streamPdfJob(job.job_id);
+    data=await streamPdfJob(job.job_id,signal);
    }
    updatePdfProgress(3,job.cached?'Сақталған нәтиже ашылды.':'Талдау аяқталды.',100);
   }else{
-   const response=await fetch(url,{method:'POST',body});
+   const response=await fetch(url,{method:'POST',body,signal});
    data=await response.json();
    if(!response.ok)throw new Error(data.error||'Талдау кезінде қате шықты.');
   }
+  signal.throwIfAborted();
   if(!demo){
    const file=body.get('file');
-   const source=file instanceof File?file.name:body.get('url');
-   if(data.kind==='URL'&&source)data.source_url=source;
+   const source=file instanceof File?file.name:data.source_url||body.get('url');
+   if(data.kind==='URL'&&source&&!data.source_url)data.source_url=source;
    data.user_goal=body.get('prompt')||'';
    saveAudit(data,source);
   }
@@ -1132,14 +1159,24 @@ async function run(url,body,demo=false){
   if(demo)view('audit');
   $('#results').scrollIntoView({behavior:preferences.reduceMotion?'instant':'smooth',block:'start'});
  }catch(error){
+  if(signal.aborted){
+   $('#error').textContent='';
+   $('#preview-title').textContent='Тексеру тоқтатылды.';
+   $('#preview-desc').textContent='Дереккөзді өзгертіп немесе осы файлды қайта тексере аласыз.';
+   $('#pdf-progress').classList.add('hidden');
+   return;
+  }
   $('#error').textContent=error instanceof TypeError?'Сервермен байланыс үзілді. Қайта көріңіз.':error.message;
   $('#preview-title').textContent='Талдау орындалмады';
   $('#preview-desc').textContent='Дереккөзді тексеріп, қайта көріңіз.';
   $('#pdf-progress').classList.add('hidden');
  }finally{
+  activeAudit=null;
+  stopAuditButton.hidden=true;
   $('#preview').classList.remove('scanning');
   submit.disabled=false;
   fileInput.disabled=false;
+  removePdfButton.disabled=false;
  }
 }
 

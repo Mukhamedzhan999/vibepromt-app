@@ -328,6 +328,9 @@ def finish_evidence(features, meta, kind, source, prompt='', size=None, pages=No
         from hybrid_prompt import synchronize_pdf_palette
         synchronize_pdf_palette(meta)
     assessment = browser_audit.evaluate(features, meta, kind) if kind == 'URL' and meta.get('rendered') else audit_engine.evaluate(features, meta, kind)
+    if meta.get('metadata_only'):
+        assessment.update(score=None, coverage=0, checks=[], issues=[], limitations=[meta['note']],
+                          assessment_note='Тек ашық дерек алынды. Интерфейс ұпайы есептелмеді.')
     known = meta['known']
     f = [round(float(x), 2) if known.get(k, False) else None for k,x in zip(FEATURES, features)]
     failed = [c for c in assessment['checks'] if c['status'] == 'fail']
@@ -527,18 +530,29 @@ def stream_uploaded_pdf(upload_id):
         data, filename, prompt = vercel_storage.take_upload(owner, upload_id)
     except vercel_storage.UploadError as exc:
         return jsonify(error=str(exc)), 400
-    key = owner + ':' + hashlib.sha256(data).hexdigest() + ':' + hashlib.sha256(prompt.strip().encode()).hexdigest()
+    key = 'pdf-v2:' + owner + ':' + hashlib.sha256(data).hexdigest() + ':' + hashlib.sha256(prompt.strip().encode()).hexdigest()
     cached = vercel_storage.cached_result(key)
     if cached is not None:
+        vercel_storage.cancel_upload(owner, upload_id)
         return jsonify(result=cached, cached=True)
 
     updates = Queue()
     cancelled = threading.Event()
+    last_check = float('-inf')
+    last_update = float('-inf')
 
     def report_pages(done, total):
+        nonlocal last_check, last_update
+        now = time.monotonic()
         if cancelled.is_set():
             raise InterruptedError()
-        updates.put(dict(state='running', phase='reading', done=done, total=total))
+        if now - last_check >= 1 or done == total:
+            if not vercel_storage.upload_active(owner, upload_id):
+                raise InterruptedError()
+            last_check = now
+        if now - last_update >= .15 or done == total:
+            updates.put(dict(state='running', phase='reading', done=done, total=total))
+            last_update = now
 
     def analyze():
         try:
@@ -551,7 +565,7 @@ def stream_uploaded_pdf(upload_id):
             vercel_storage.cache_result(key, result)
             updates.put(dict(state='done', result=result))
         except InterruptedError:
-            return
+            updates.put(dict(state='error', error='Тексеру тоқтатылды.'))
         except Exception as exc:
             if not isinstance(exc, ValueError):
                 app.logger.exception('PDF analysis failed')
@@ -574,6 +588,7 @@ def stream_uploaded_pdf(upload_id):
         finally:
             cancelled.set()
             work.cancel()
+            vercel_storage.cancel_upload(owner, upload_id)
 
     return Response(events(), mimetype='text/event-stream',
                     headers={'X-Accel-Buffering': 'no', 'Cache-Control': 'no-store'})
@@ -742,30 +757,42 @@ def add_site_map_to_prompts(result, url):
     result['site_pages']={'pages':pages,'limited':remaining,'errors':errors}
     return result
 
+
+def read_site(value):
+    candidates = browser_audit.source_url_candidates(value)
+    for index, url in enumerate(candidates):
+        try:
+            return browser_audit.extract_url(url)
+        except ValueError as browser_error:
+            try:
+                features, meta, final = audit_engine.extract_url(url, safe_fetch)
+            except ValueError as html_error:
+                metadata = browser_audit.youtube_public_metadata(url)
+                if metadata is not None:
+                    return metadata
+                if index + 1 < len(candidates) and 'қосылу мүмкін болмады' in str(html_error):
+                    continue
+                raise browser_error from None
+            meta['fallback'] = True
+            meta['detail'] = 'HTML режимі · ' + meta['detail']
+            meta['note'] = ('Браузерде ашу мүмкін болмады: ' + str(browser_error)[:200]
+                            + '. Бастапқы HTML талданды. ' + meta.get('note', ''))
+            return features, meta, final
+
 @app.post('/api/audit')
 def audit():
     try:
         kind=request.form.get('kind'); prompt=request.form.get('prompt','')
         if len(prompt)>5000: raise ValueError('Сипаттама 5000 таңбадан аспауы керек.')
         if kind=='URL':
-            url=request.form.get('url','').strip()
-            if len(url)>2048: raise ValueError('Сілтеме тым ұзын.')
-            try:
-                features,meta,final=browser_audit.extract_url(url)
-            except ValueError as browser_error:
-                # A static fallback is explicitly labelled; it does not execute JS.
-                try:
-                    features,meta,final=audit_engine.extract_url(url,safe_fetch)
-                except Exception:
-                    raise browser_error
-                meta['fallback']=True
-                meta['detail']='HTML режимі · '+meta['detail']
-                meta['note']='Браузерде ашу мүмкін болмады: '+str(browser_error)[:200]+'. Тек бастапқы HTML талданды, JavaScript орындалмады. '+meta.get('note','')
+            features,meta,final=read_site(request.form.get('url',''))
             if meta.get('pdf_url'):
                 result=finish_evidence(features,meta,'PDF',final,prompt,meta.get('pdf_size_mb'),meta.get('pdf_pages'))
             else:
                 result=finish_evidence(features,meta,'URL',final,prompt)
-                result=add_site_map_to_prompts(result,final)
+                if not meta.get('metadata_only'):
+                    result=add_site_map_to_prompts(result,final)
+                result['source_url']=final
         elif kind=='PDF':
             data, filename = read_pdf_upload()
             features,meta,pages=audit_engine.extract_pdf(data); result=finish_evidence(features,meta,'PDF',filename,prompt,round(len(data)/1024/1024,2),pages)

@@ -35,13 +35,19 @@ async function readPdfEvents(response, showState) {
   throw new Error('Талдау нәтижесі толық келмеді. Қайта көріңіз.');
 }
 
-async function analyzeVercelPdf(body, showProgress, showState) {
+function pdfRequestSignal(signal, milliseconds) {
+  return typeof AbortSignal.any === 'function' && typeof AbortSignal.timeout === 'function'
+    ? AbortSignal.any([signal, AbortSignal.timeout(milliseconds)])
+    : signal;
+}
+
+async function analyzeVercelPdf(body, showProgress, showState, signal) {
   const file = body.get('file');
   const start = await requirePdfResponse(await fetch('/api/pdf-uploads', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({filename: file.name, size: file.size, prompt: body.get('prompt') || ''}),
-    signal: AbortSignal.timeout(30000),
+    signal: pdfRequestSignal(signal, 30000),
   }));
   const {upload_id, chunk_bytes} = await start.json();
   const path = '/api/pdf-uploads/' + encodeURIComponent(upload_id);
@@ -51,19 +57,20 @@ async function analyzeVercelPdf(body, showProgress, showState) {
       const end = Math.min(offset + chunk_bytes, file.size);
       const part = file.slice(offset, end, 'application/octet-stream');
       await requirePdfResponse(await fetch(path + '/' + offset / chunk_bytes, {
-        method: 'PUT', body: part, signal: AbortSignal.timeout(120000),
+        method: 'PUT', body: part, signal: pdfRequestSignal(signal, 120000),
       }));
       const percent = Math.round(100 * end / file.size);
       showProgress(0, 'Жүктелді: ' + percent + '%', Math.round(percent / 4));
     }
     showProgress(1, 'Файл қабылданды. Құжат ашылып жатыр…', 25);
     const response = await requirePdfResponse(await fetch(path + '/analyze', {
-      method: 'POST', signal: AbortSignal.timeout(310000),
+      method: 'POST', signal: pdfRequestSignal(signal, 310000),
     }));
     if (response.headers.get('Content-Type')?.includes('application/json')) return await response.json();
     return await readPdfEvents(response, showState);
   } catch (error) {
-    await fetch(path, {method: 'DELETE', signal: AbortSignal.timeout(5000)}).catch(() => {});
+    await fetch(path, {method: 'DELETE', keepalive: true,
+      signal: typeof AbortSignal.timeout === 'function' ? AbortSignal.timeout(5000) : undefined}).catch(() => {});
     throw error;
   }
 }
