@@ -36,8 +36,12 @@ app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 31 * 1024 * 1024  # Includes multipart overhead.
 # Web deployment requires an access password; local version remains unchanged.
 WEB_PASSWORD = os.environ.get('VIBEAUDIT_PASSWORD', '')
+if not WEB_PASSWORD:
+    runtime_env = 'present' if os.environ.get('VERCEL_ENV') else 'missing'
+    database_env = 'present' if os.environ.get('DATABASE_URL') else 'missing'
+    raise RuntimeError(f'VIBEAUDIT_PASSWORD is missing (VERCEL_ENV {runtime_env}, DATABASE_URL {database_env})')
 if len(WEB_PASSWORD) < 20:
-    raise RuntimeError('Set VIBEAUDIT_PASSWORD to a random value of at least 20 characters')
+    raise RuntimeError('VIBEAUDIT_PASSWORD is set but shorter than 20 characters')
 
 from datetime import timedelta
 import hashlib
