@@ -27,6 +27,9 @@ import prompt_engine
 BASE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(BASE, 'ui_audit_dataset.csv')
 DB = os.path.join(BASE, 'vibe_audit.db')
+VERCEL = os.environ.get('VIBEAUDIT_VERCEL') == '1'
+if VERCEL:
+    import vercel_storage
 FEATURES = ['contrast_ratio', 'whitespace_ratio', 'text_density', 'font_variety', 'cta_presence', 'visual_hierarchy_score']
 CLASSES = ['Жоғары деңгейлі UI', 'Контраст және типографика қатесі', 'Шамадан тыс жүктелген / мәтін тым көп', 'Аяқталмаған шикі макет']
 app = Flask(__name__)
@@ -70,12 +73,15 @@ def login():
         return redirect(url_for('index'))
     error=''
     if request.method == 'POST':
-        now=time.monotonic()
-        with _login_lock:
-            _login_attempts[:]=[x for x in _login_attempts if now-x < 300]
-            limited=len(_login_attempts)>=10
-            if not limited:
-                _login_attempts.append(now)
+        if VERCEL:
+            limited = not vercel_storage.allow_login_attempt()
+        else:
+            now=time.monotonic()
+            with _login_lock:
+                _login_attempts[:]=[x for x in _login_attempts if now-x < 300]
+                limited=len(_login_attempts)>=10
+                if not limited:
+                    _login_attempts.append(now)
         if limited:
             return render_template('login.html', error='Көп әрекет жасалды. Бес минуттан кейін қайталаңыз.'), 429
         password=request.form.get('password','')
@@ -83,7 +89,10 @@ def login():
             session.clear()
             session.permanent=True
             session['authenticated']=True
-            with _login_lock: _login_attempts.clear()
+            if VERCEL:
+                vercel_storage.clear_login_attempts()
+            else:
+                with _login_lock: _login_attempts.clear()
             return redirect(url_for('index'))
         error='Құпиясөз қате. Қайта енгізіңіз.'
     return render_template('login.html',error=error)
@@ -140,9 +149,21 @@ NLP = make_pipeline(TfidfVectorizer(ngram_range=(1,2), sublinear_tf=True), Linea
 NLP.fit([x[0] for x in PROMPT_EXAMPLES], [x[1] for x in PROMPT_EXAMPLES])
 
 def init_db():
+    if VERCEL:
+        vercel_storage.init()
+        return
     with sqlite3.connect(DB) as db:
         db.execute('CREATE TABLE IF NOT EXISTS scans (id INTEGER PRIMARY KEY, kind TEXT NOT NULL, source TEXT NOT NULL, size_mb REAL, pages INTEGER, score INTEGER NOT NULL, class_id INTEGER NOT NULL, created_at TEXT NOT NULL)')
 init_db()
+
+
+def record_scan(kind, source, size, pages, score, cls):
+    row = (kind, source[:250], size, pages, score, cls, datetime.now(timezone.utc).isoformat())
+    if VERCEL:
+        vercel_storage.record_scan(row)
+    else:
+        with sqlite3.connect(DB) as db:
+            db.execute('INSERT INTO scans(kind,source,size_mb,pages,score,class_id,created_at) VALUES(?,?,?,?,?,?,?)', row)
 
 def ratio(a,b):
     def lum(h):
@@ -263,7 +284,7 @@ def finish(features, meta, kind, source, prompt='', size=None, pages=None, persi
     if fonts > 8: snippet += '\nbody { font-family: system-ui, sans-serif; }\nh1 { font-size: clamp(2rem, 5vw, 3.5rem); }'
     grade=str(NLP.predict([prompt])[0]) if prompt.strip() else None
     if persist:
-        with sqlite3.connect(DB) as db: db.execute('INSERT INTO scans(kind,source,size_mb,pages,score,class_id,created_at) VALUES(?,?,?,?,?,?,?)',(kind,source[:250],size,pages,score,cls,datetime.now(timezone.utc).isoformat()))
+        record_scan(kind, source, size, pages, score, cls)
     return {'features':dict(zip(FEATURES,f)), 'class_id':cls,'class_name':CLASSES[cls], 'score':score,'issues':issues,'prompt':mega,'prompt_grade':grade,'css':snippet,**meta,'kind':kind,'size_mb':size,'pages':pages}
 
 
@@ -316,8 +337,7 @@ def finish_evidence(features, meta, kind, source, prompt='', size=None, pages=No
     prediction=real_model_prediction(features,meta,kind)
     grade = (str(grade_future.result()[0]) if grade_future else
              str(NLP.predict([prompt])[0]) if prompt.strip() else None)
-    with sqlite3.connect(DB) as db:
-        db.execute('INSERT INTO scans(kind,source,size_mb,pages,score,class_id,created_at) VALUES(?,?,?,?,?,?,?)', (kind,source[:250],size,pages,score if score is not None else -1,-1,datetime.now(timezone.utc).isoformat()))
+    record_scan(kind, source, size, pages, score if score is not None else -1, -1)
     return {'features':dict(zip(FEATURES,f)), 'class_id':None, 'class_name':'Шамамен баға' if score is not None else 'Көрсеткіш өлшенбеді',
             'score':score,'issues':assessment['issues'],'checks':assessment['checks'],'coverage':assessment['coverage'],
             'assessment_note':assessment['assessment_note'], 'limitations':assessment['limitations'], 'model_prediction':prediction, 'prompt':mega, 'prompts':variants,'prompt_grade':grade,'css':css,**meta,'kind':kind,'size_mb':size,'pages':pages}
@@ -330,7 +350,16 @@ def service_worker():
     return response
 
 @app.get('/')
-def index(): return render_template('index.html', extension_dir=os.path.join(BASE,'chrome-extension'))
+def index(): return render_template('index.html', extension_dir=os.path.join(BASE,'chrome-extension'), vercel_pdf_upload=VERCEL)
+
+
+@app.get('/history-transfer')
+def history_transfer():
+    if not VERCEL:
+        return '', 404
+    return render_template('history_transfer.html')
+
+
 def _local_app_request():
     try: host=urlsplit('http://'+request.host).hostname
     except ValueError: return False
@@ -423,6 +452,8 @@ def optimize_project_prompt():
 def models(): return jsonify({'models':MODEL_RESULTS, 'rows':DATA_ROWS,'classes':CLASSES})
 @app.get('/api/history')
 def history():
+    if VERCEL:
+        return jsonify(vercel_storage.recent_scans())
     with sqlite3.connect(DB) as db:
         db.row_factory=sqlite3.Row
         return jsonify([dict(x) for x in db.execute('SELECT * FROM scans ORDER BY id DESC LIMIT 20')])
@@ -433,6 +464,111 @@ PDF_MAX_RETAINED = 8
 PDF_JOBS = {}
 PDF_JOB_CHANGED = threading.Condition()
 PDF_WORKERS = ThreadPoolExecutor(max_workers=2, thread_name_prefix='pdf-audit')
+
+
+@app.post('/api/pdf-uploads')
+def create_pdf_upload():
+    if not VERCEL:
+        return '', 404
+    body = request.get_json(silent=True)
+    if not isinstance(body, dict):
+        return jsonify(error='Жүктеу деректері жарамсыз.'), 400
+    filename, size, prompt = body.get('filename'), body.get('size'), body.get('prompt', '')
+    if not isinstance(filename, str) or not filename.lower().endswith('.pdf') or len(filename) > 255 or '\0' in filename:
+        return jsonify(error='PDF файлын таңдаңыз.'), 400
+    if type(size) is not int or not 5 <= size <= PDF_FILE_LIMIT:
+        return jsonify(error='Файл көлемі 30 МБ-тан аспауы керек.'), 400
+    if not isinstance(prompt, str) or len(prompt) > 5000 or '\0' in prompt:
+        return jsonify(error='Сипаттама 5000 таңбадан аспауы керек.'), 400
+    try:
+        return jsonify(upload_id=vercel_storage.start_upload(filename, size, prompt),
+                       chunk_bytes=vercel_storage.CHUNK_BYTES), 201
+    except vercel_storage.UploadError as exc:
+        return jsonify(error=str(exc)), 429
+
+
+@app.put('/api/pdf-uploads/<upload_id>/<int:part>')
+def upload_pdf_part(upload_id, part):
+    if not VERCEL:
+        return '', 404
+    request.max_content_length = vercel_storage.CHUNK_BYTES
+    if request.content_length is None or request.content_length > vercel_storage.CHUNK_BYTES:
+        return jsonify(error='Файл бөлігінің көлемі дұрыс емес.'), 413
+    try:
+        vercel_storage.put_chunk(upload_id, part, request.get_data(cache=False))
+    except vercel_storage.UploadError as exc:
+        return jsonify(error=str(exc)), 400
+    return '', 204
+
+
+@app.delete('/api/pdf-uploads/<upload_id>')
+def cancel_pdf_upload(upload_id):
+    if not VERCEL:
+        return '', 404
+    vercel_storage.cancel_upload(upload_id)
+    return '', 204
+
+
+@app.post('/api/pdf-uploads/<upload_id>/analyze')
+def stream_uploaded_pdf(upload_id):
+    if not VERCEL:
+        return '', 404
+    from queue import Empty, Queue
+
+    try:
+        data, filename, prompt = vercel_storage.take_upload(upload_id)
+    except vercel_storage.UploadError as exc:
+        return jsonify(error=str(exc)), 400
+    key = hashlib.sha256(data).hexdigest() + ':' + hashlib.sha256(prompt.strip().encode()).hexdigest()
+    cached = vercel_storage.cached_result(key)
+    if cached is not None:
+        return jsonify(result=cached, cached=True)
+
+    updates = Queue()
+    cancelled = threading.Event()
+
+    def report_pages(done, total):
+        if cancelled.is_set():
+            raise InterruptedError()
+        updates.put(dict(state='running', phase='reading', done=done, total=total))
+
+    def analyze():
+        try:
+            features, meta, pages = audit_engine.extract_pdf(data, progress=report_pages)
+            if cancelled.is_set():
+                return
+            updates.put(dict(state='running', phase='analyzing', done=pages, total=pages))
+            result = finish_evidence(features, meta, 'PDF', filename, prompt,
+                                     round(len(data) / 1024 / 1024, 2), pages)
+            vercel_storage.cache_result(key, result)
+            updates.put(dict(state='done', result=result))
+        except InterruptedError:
+            return
+        except Exception as exc:
+            if not isinstance(exc, ValueError):
+                app.logger.exception('PDF analysis failed')
+            message = str(exc) if isinstance(exc, ValueError) else 'PDF талдау кезінде қате шықты.'
+            updates.put(dict(state='error', error=message))
+
+    def events():
+        work = PDF_WORKERS.submit(analyze)
+        try:
+            yield 'data: {"state":"running","phase":"queued"}\n\n'
+            while True:
+                try:
+                    state = updates.get(timeout=10)
+                except Empty:
+                    yield ': heartbeat\n\n'
+                    continue
+                yield 'data: ' + json.dumps(state, ensure_ascii=False) + '\n\n'
+                if state['state'] in ('done', 'error'):
+                    return
+        finally:
+            cancelled.set()
+            work.cancel()
+
+    return Response(events(), mimetype='text/event-stream',
+                    headers={'X-Accel-Buffering': 'no', 'Cache-Control': 'no-store'})
 
 
 def read_pdf_upload():

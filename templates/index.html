@@ -368,6 +368,7 @@ main.shell{padding:65px var(--page-gutter) 34px}
 <div class="lab-section"><div class="mini">03 / ҚАТЕЛЕР МАТРИЦАСЫ</div><h2>Random Forest жіктеуі</h2><p class="note">Жолдар — нақты класс, бағандар — болжам. 0–3 класс атаулары төменде көрсетілген.</p><div class="card" style="padding:20px"><div class="heat" id="matrix"></div><p class="note">0 — жоғары деңгей · 1 — контраст · 2 — жүктеме · 3 — шикі макет</p></div></div>
 <div class="lab-section lab-info"><div class="card"><div class="mini">ҚАТЕ ЖАҒДАЙЫ</div><h3>JavaScript арқылы салынатын сайт</h3><p>Браузерде көрінетін интерфейс бастапқы HTML ішінде болмауы мүмкін. Соның салдарынан толық сайт «шикі макет» деп қате жіктелуі ықтимал. Бұл — ықтимал мысал, тест жиынында тіркелген қате емес.</p></div><div class="card"><div class="mini">ЖҮЙЕ ШЕКТЕУІ</div><h3>Бұл — жуық бағалау</h3><p>PDF-тің барлық беті оқылады, ал контраст үзінділер бойынша жуық тексеріледі. OCR мәтінді қате тануы мүмкін; нақты орналасу мен толық CSS cascade толық бағаланбайды. Белгісіз мәндер ұпайға кірмейді. Синтетикалық деректердегі жоғары нәтиже нақты сайттардағы сапаны дәлелдемейді.</p></div></div></section>
 </main><footer class="shell"><div class="footer"><span><b>VibePrompt AI</b> &nbsp; / &nbsp; Интерфейсті саналы түрде жақсарт.</span><span>ОҚУ ЖОБАСЫ · 2026</span></div></footer></div>
+{% if vercel_pdf_upload %}<script src="{{ url_for('static', filename='vercel-pdf.js') }}"></script>{% endif %}
 <script>
 let mode='URL', radarChart=null, current=null, typingTimer=null, promptModel='chatgpt';
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
@@ -501,7 +502,7 @@ for(const eventName of ['dragenter','dragover','dragleave','drop']){
   }
  });
 }
-function esc(s){const d=document.createElement('div');d.textContent=String(s);return d.innerHTML}
+function esc(s){const d=document.createElement('div');d.textContent=String(s);return d.innerHTML.replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
 function pct(x){return Math.round(x*100)+'%'}
 const HISTORY_KEY='vibe-saved-audits-v1',HISTORY_LIMIT=12,HISTORY_MAX_CHARS=3000000;
 let historyWarning='';
@@ -1106,8 +1107,10 @@ async function run(url,body,demo=false){
   if(isPdf){
    $('#pdf-progress').classList.remove('hidden');
    updatePdfProgress(0,'Файл серверге жіберіліп жатыр…',null);
-   const job=await uploadPdf(body);
+   const vercelUpload=typeof analyzeVercelPdf==='function';
+   const job=await (vercelUpload?analyzeVercelPdf(body,updatePdfProgress,showPdfState):uploadPdf(body));
    if(job.cached)data=job.result;
+   else if(vercelUpload)data=job.result;
    else{
     updatePdfProgress(1,'Файл қабылданды. Құжат ашылып жатыр…',25);
     data=await streamPdfJob(job.job_id);

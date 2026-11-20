@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="kk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Тарихты көшіру · VibePrompt AI</title>
+  <style>
+    :root { color-scheme: dark; font: 1rem/1.6 system-ui, sans-serif; color: #f3f0ff; background: #11101d; }
+    body { max-width: 40rem; padding: 1.25rem; margin: 8vh auto; }
+    section { background: #1d1931; border: 1px solid #4c426e; border-radius: 1rem; padding: 1rem 1.25rem; }
+    a { color: #cfc2ff; }
+    input { display: block; margin: 1rem 0; max-width: 100%; min-height: 44px; font: inherit; }
+  </style>
+  <script src="{{ url_for('static', filename='history-transfer.js') }}" defer></script>
+</head>
+<body>
+  <main>
+    <a href="/">← Басты бет</a>
+    <h1>Аудит тарихын көшіру</h1>
+    <section aria-label="Аудит тарихын жүктеу">
+      <p>Бұрын сақталған VibePrompt AI тарих файлын таңдаңыз. Аудиттер осы браузерде сақталады және «Соңғы аудиттер» бөлімінен ашылады.</p>
+      <label for="history-file">Тарих файлы (.json)</label>
+      <input type="file" id="history-file" accept="application/json,.json">
+      <p id="history-status" role="status"></p>
+    </section>
+  </main>
+</body>
+</html>
