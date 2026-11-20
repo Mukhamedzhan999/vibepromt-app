@@ -8,7 +8,7 @@ import fitz
 import numpy as np
 import requests
 from bs4 import BeautifulSoup
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, g, request, jsonify, render_template
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import make_pipeline
 from sklearn.impute import SimpleImputer
@@ -34,19 +34,16 @@ FEATURES = ['contrast_ratio', 'whitespace_ratio', 'text_density', 'font_variety'
 CLASSES = ['Жоғары деңгейлі UI', 'Контраст және типографика қатесі', 'Шамадан тыс жүктелген / мәтін тым көп', 'Аяқталмаған шикі макет']
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 31 * 1024 * 1024  # Includes multipart overhead.
-# Web deployment requires an access password; local version remains unchanged.
 WEB_PASSWORD = os.environ.get('VIBEAUDIT_PASSWORD', '')
-if not WEB_PASSWORD:
-    runtime_env = 'present' if os.environ.get('VERCEL_ENV') else 'missing'
-    database_env = 'present' if os.environ.get('DATABASE_URL') else 'missing'
-    raise RuntimeError(f'VIBEAUDIT_PASSWORD is missing (VERCEL_ENV {runtime_env}, DATABASE_URL {database_env})')
-if len(WEB_PASSWORD) < 20:
-    raise RuntimeError('VIBEAUDIT_PASSWORD is set but shorter than 20 characters')
+AUDIT_COOKIE = '__Host-vibeprompt-audit'
+if not VERCEL and len(WEB_PASSWORD) < 20:
+    raise RuntimeError('Set VIBEAUDIT_PASSWORD to a random value of at least 20 characters')
 
 from datetime import timedelta
 import hashlib
 from flask import Response, session, redirect, url_for
-app.secret_key = hashlib.sha256(('vibeaudit-session-v1:' + WEB_PASSWORD).encode('utf-8')).digest()
+if not VERCEL:
+    app.secret_key = hashlib.sha256(('vibeaudit-session-v1:' + WEB_PASSWORD).encode('utf-8')).digest()
 app.config.update(SESSION_COOKIE_HTTPONLY=True, SESSION_COOKIE_SECURE=True,
                   SESSION_COOKIE_SAMESITE='Lax', PERMANENT_SESSION_LIFETIME=timedelta(days=30))
 _login_attempts = []
@@ -58,10 +55,17 @@ def protect_web():
         origin=request.headers.get('Origin', '')
         if origin and urlsplit(origin).netloc.lower() != request.host.lower():
             return Response('Cross-origin request denied', 403)
-    if request.path == '/login' or (request.method == 'GET' and request.path in ('/static/vibepromt-logo.svg', '/static/vibepromt-icon-192.png', '/static/vibepromt-icon-512.png', '/static/manifest.webmanifest')):
-        return None
     if request.path.startswith('/api/chrome-'):
         return Response('Local Chrome extension is unavailable on hosted deployments.', 404)
+    if VERCEL:
+        owner = request.cookies.get(AUDIT_COOKIE, '')
+        if not re.fullmatch(r'[A-Za-z0-9_-]{43}', owner):
+            owner = secrets.token_urlsafe(32)
+            g.new_audit_owner = True
+        g.audit_owner = owner
+        return None
+    if request.path == '/login' or (request.method == 'GET' and request.path in ('/static/vibepromt-logo.svg', '/static/vibepromt-icon-192.png', '/static/vibepromt-icon-512.png', '/static/manifest.webmanifest')):
+        return None
     supplied = request.authorization
     if supplied and supplied.username == 'vibeaudit' and hmac.compare_digest((supplied.password or '').encode('utf-8'), WEB_PASSWORD.encode('utf-8')):
         session.permanent=True
@@ -73,19 +77,18 @@ def protect_web():
 
 @app.route('/login', methods=['GET','POST'])
 def login():
+    if VERCEL:
+        return redirect(url_for('index'))
     if session.get('authenticated'):
         return redirect(url_for('index'))
     error=''
     if request.method == 'POST':
-        if VERCEL:
-            limited = not vercel_storage.allow_login_attempt()
-        else:
-            now=time.monotonic()
-            with _login_lock:
-                _login_attempts[:]=[x for x in _login_attempts if now-x < 300]
-                limited=len(_login_attempts)>=10
-                if not limited:
-                    _login_attempts.append(now)
+        now=time.monotonic()
+        with _login_lock:
+            _login_attempts[:]=[x for x in _login_attempts if now-x < 300]
+            limited=len(_login_attempts)>=10
+            if not limited:
+                _login_attempts.append(now)
         if limited:
             return render_template('login.html', error='Көп әрекет жасалды. Бес минуттан кейін қайталаңыз.'), 429
         password=request.form.get('password','')
@@ -93,16 +96,16 @@ def login():
             session.clear()
             session.permanent=True
             session['authenticated']=True
-            if VERCEL:
-                vercel_storage.clear_login_attempts()
-            else:
-                with _login_lock: _login_attempts.clear()
+            with _login_lock: _login_attempts.clear()
             return redirect(url_for('index'))
         error='Құпиясөз қате. Қайта енгізіңіз.'
     return render_template('login.html',error=error)
 
 @app.after_request
 def web_privacy_headers(response):
+    if VERCEL and getattr(g, 'new_audit_owner', False):
+        response.set_cookie(AUDIT_COOKIE, g.audit_owner, max_age=30 * 24 * 3600,
+                            path='/', secure=True, httponly=True, samesite='Lax')
     response.headers['Cache-Control'] = 'no-store'
     response.headers['X-Content-Type-Options'] = 'nosniff'
     return response
@@ -161,10 +164,10 @@ def init_db():
 init_db()
 
 
-def record_scan(kind, source, size, pages, score, cls):
+def record_scan(kind, source, size, pages, score, cls, owner=None):
     row = (kind, source[:250], size, pages, score, cls, datetime.now(timezone.utc).isoformat())
     if VERCEL:
-        vercel_storage.record_scan(row)
+        vercel_storage.record_scan(owner if owner is not None else g.audit_owner, row)
     else:
         with sqlite3.connect(DB) as db:
             db.execute('INSERT INTO scans(kind,source,size_mb,pages,score,class_id,created_at) VALUES(?,?,?,?,?,?,?)', row)
@@ -316,7 +319,7 @@ def real_model_prediction(features, meta, kind):
 PDF_CHECK_WORKERS = ThreadPoolExecutor(max_workers=2, thread_name_prefix='pdf-check')
 
 
-def finish_evidence(features, meta, kind, source, prompt='', size=None, pages=None):
+def finish_evidence(features, meta, kind, source, prompt='', size=None, pages=None, owner=None):
     grade_future = None
     if kind == 'PDF' and prompt.strip():
         # Text classification doesn't depend on the PDF's visual evidence.
@@ -341,7 +344,7 @@ def finish_evidence(features, meta, kind, source, prompt='', size=None, pages=No
     prediction=real_model_prediction(features,meta,kind)
     grade = (str(grade_future.result()[0]) if grade_future else
              str(NLP.predict([prompt])[0]) if prompt.strip() else None)
-    record_scan(kind, source, size, pages, score if score is not None else -1, -1)
+    record_scan(kind, source, size, pages, score if score is not None else -1, -1, owner)
     return {'features':dict(zip(FEATURES,f)), 'class_id':None, 'class_name':'Шамамен баға' if score is not None else 'Көрсеткіш өлшенбеді',
             'score':score,'issues':assessment['issues'],'checks':assessment['checks'],'coverage':assessment['coverage'],
             'assessment_note':assessment['assessment_note'], 'limitations':assessment['limitations'], 'model_prediction':prediction, 'prompt':mega, 'prompts':variants,'prompt_grade':grade,'css':css,**meta,'kind':kind,'size_mb':size,'pages':pages}
@@ -457,7 +460,7 @@ def models(): return jsonify({'models':MODEL_RESULTS, 'rows':DATA_ROWS,'classes'
 @app.get('/api/history')
 def history():
     if VERCEL:
-        return jsonify(vercel_storage.recent_scans())
+        return jsonify(vercel_storage.recent_scans(g.audit_owner))
     with sqlite3.connect(DB) as db:
         db.row_factory=sqlite3.Row
         return jsonify([dict(x) for x in db.execute('SELECT * FROM scans ORDER BY id DESC LIMIT 20')])
@@ -485,7 +488,7 @@ def create_pdf_upload():
     if not isinstance(prompt, str) or len(prompt) > 5000 or '\0' in prompt:
         return jsonify(error='Сипаттама 5000 таңбадан аспауы керек.'), 400
     try:
-        return jsonify(upload_id=vercel_storage.start_upload(filename, size, prompt),
+        return jsonify(upload_id=vercel_storage.start_upload(g.audit_owner, filename, size, prompt),
                        chunk_bytes=vercel_storage.CHUNK_BYTES), 201
     except vercel_storage.UploadError as exc:
         return jsonify(error=str(exc)), 429
@@ -499,7 +502,7 @@ def upload_pdf_part(upload_id, part):
     if request.content_length is None or request.content_length > vercel_storage.CHUNK_BYTES:
         return jsonify(error='Файл бөлігінің көлемі дұрыс емес.'), 413
     try:
-        vercel_storage.put_chunk(upload_id, part, request.get_data(cache=False))
+        vercel_storage.put_chunk(g.audit_owner, upload_id, part, request.get_data(cache=False))
     except vercel_storage.UploadError as exc:
         return jsonify(error=str(exc)), 400
     return '', 204
@@ -509,7 +512,7 @@ def upload_pdf_part(upload_id, part):
 def cancel_pdf_upload(upload_id):
     if not VERCEL:
         return '', 404
-    vercel_storage.cancel_upload(upload_id)
+    vercel_storage.cancel_upload(g.audit_owner, upload_id)
     return '', 204
 
 
@@ -519,11 +522,12 @@ def stream_uploaded_pdf(upload_id):
         return '', 404
     from queue import Empty, Queue
 
+    owner = g.audit_owner
     try:
-        data, filename, prompt = vercel_storage.take_upload(upload_id)
+        data, filename, prompt = vercel_storage.take_upload(owner, upload_id)
     except vercel_storage.UploadError as exc:
         return jsonify(error=str(exc)), 400
-    key = hashlib.sha256(data).hexdigest() + ':' + hashlib.sha256(prompt.strip().encode()).hexdigest()
+    key = owner + ':' + hashlib.sha256(data).hexdigest() + ':' + hashlib.sha256(prompt.strip().encode()).hexdigest()
     cached = vercel_storage.cached_result(key)
     if cached is not None:
         return jsonify(result=cached, cached=True)
@@ -543,7 +547,7 @@ def stream_uploaded_pdf(upload_id):
                 return
             updates.put(dict(state='running', phase='analyzing', done=pages, total=pages))
             result = finish_evidence(features, meta, 'PDF', filename, prompt,
-                                     round(len(data) / 1024 / 1024, 2), pages)
+                                     round(len(data) / 1024 / 1024, 2), pages, owner)
             vercel_storage.cache_result(key, result)
             updates.put(dict(state='done', result=result))
         except InterruptedError:
@@ -612,6 +616,8 @@ def run_pdf_job(job_id, data, filename, prompt):
 
 @app.post('/api/pdf-jobs')
 def start_pdf_job():
+    if VERCEL:
+        return '', 404
     prompt = request.form.get('prompt', '')
     if len(prompt) > 5000:
         return jsonify(error='Сипаттама 5000 таңбадан аспауы керек.'), 400
@@ -653,6 +659,8 @@ def pdf_public_state(job_id):
 
 @app.get('/api/pdf-jobs/<job_id>')
 def pdf_job_status(job_id):
+    if VERCEL:
+        return '', 404
     with PDF_JOB_CHANGED:
         state = pdf_public_state(job_id)
     if state is None:
@@ -662,6 +670,8 @@ def pdf_job_status(job_id):
 
 @app.get('/api/pdf-jobs/<job_id>/events')
 def pdf_job_events(job_id):
+    if VERCEL:
+        return '', 404
     with PDF_JOB_CHANGED:
         if job_id not in PDF_JOBS:
             return jsonify(error='Талдау табылмады. Қайта бастаңыз.'), 404
