@@ -579,6 +579,7 @@ body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) .visua
 </main><footer class="shell"><div class="footer"><span><b>VibePrompt AI</b> &nbsp; / &nbsp; Интерфейсті саналы түрде жақсарт.</span><span>ОҚУ ЖОБАСЫ · 2026</span></div></footer></div>
 {% if vercel_pdf_upload %}<script src="{{ url_for('static', filename='vercel-pdf.js') }}"></script>{% endif %}
 <script src="/static/audit-photos.js"></script>
+<script src="/static/prompt-quality.js"></script>
 <script>
 let mode='URL', radarChart=null, current=null, typingTimer=null, promptModel='chatgpt';
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
@@ -1378,10 +1379,29 @@ $('#language-choice').addEventListener('change',()=>{
  if(current)refreshAuditPrompt();
 });
 
-function refreshBriefPrompt(){
- const topic=generatedBriefText||'';
- optimizeDisplayedPrompt('brief',chosenBriefPrompt(),topic,briefModel,text=>{
+let briefRefreshVersion=0;
+async function refreshBriefPrompt(){
+ const version=++briefRefreshVersion;
+ const topic=generatedBriefText||'', model=briefModel, tier=selectedLength, id=currentBriefId;
+ let prompt=chosenBriefPrompt();
+ if(tier==='full'&&prompt){
+  prompt=window.VibePromptQuality?.enhance(prompt,{kind:generatedBriefKind,topic})||prompt;
+  const photos=window.VibeAuditPhotos;
+  if(photoSource()==='web'&&photos?.projectReferences){
+   const previous=promptEngineRequests.brief;
+   delete promptEngineRequests.brief;
+   previous?.abort();
+   $('#brief-copy').disabled=true;
+   let catalog=[];
+   try{catalog=await photos.load()}catch{}
+   if(version!==briefRefreshVersion)return;
+   const references=photos.projectReferences(topic,catalog);
+   if(references)prompt+='\n\n'+references;
+  }
+ }
+ optimizeDisplayedPrompt('brief',prompt,topic,model,text=>{
   $('#brief-output').textContent=text;
+  window.VibeReport?.feedback('brief',id,tier,model,Boolean(text));
  });
 }
 
@@ -1455,7 +1475,11 @@ async function refreshAuditPrompt(){
   renderAuditPhotoPlan(plan,path);
   instructions=photoTool.instructions(plan,path?new URL(path,location.origin).href:'');
  }
- optimizeDisplayedPrompt('audit',selectedPrompt(instructions),topic,model,text=>{
+ let prompt=selectedPrompt(instructions);
+ if(audit&&prompt){
+  prompt=window.VibePromptQuality?.enhance(prompt,{kind:audit.kind==='PDF'?'presentation':'site',topic,audit})||prompt;
+ }
+ optimizeDisplayedPrompt('audit',prompt,topic,model,text=>{
   renderPrompt(text);
   window.VibeReport?.prompt(text,model);
   window.VibeReport?.feedback('audit',audit?.audit_id,'full',model,Boolean(text));

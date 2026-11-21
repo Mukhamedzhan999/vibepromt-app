@@ -66,5 +66,17 @@
    'Complete pages without a catalog match through targeted web search. Verify the image bytes before embedding. Keep photos at or under half the page, alongside an explanation. Treat an unfilled image, created illustration, drawn icon, slide screenshot or shape as zero real photographs. Do not call a partial file finished.'
   ].join('\n');
  }
- window.VibeAuditPhotos={load,build,packPath,instructions};
+ function projectReferences(topic,catalog){
+  const text=fold(topic||'');
+  const matched=catalog.filter(asset=>asset.terms.some(term=>{
+   const phrase=fold(term);
+   return phrase.length>=6&&text.includes(phrase);
+  })).slice(0,5);
+  if(!matched.length)return '';
+  return [
+   'OPTIONAL VERIFIED WEB PHOTO STARTERS — Use a candidate only where its subject fits the actual page. Find a distinct and more precise photo for any other required slot. Keep your existing quota and embed actual bytes.',
+   ...matched.map(asset=>asset.subject+' | direct file: '+asset.imageUrl+' | credit: '+asset.credit+' · '+asset.license+' | original source: '+asset.sourceUrl)
+  ].join('\n');
+ }
+ window.VibeAuditPhotos={load,build,packPath,instructions,projectReferences};
 })();
