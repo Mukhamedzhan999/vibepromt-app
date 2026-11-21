@@ -1382,7 +1382,8 @@ $('#language-choice').addEventListener('change',()=>{
 let briefRefreshVersion=0;
 async function refreshBriefPrompt(){
  const version=++briefRefreshVersion;
- const topic=generatedBriefText||'', model=briefModel, tier=selectedLength, id=currentBriefId;
+ const topic=generatedBriefText||'', model=briefModel, tier=selectedLength;
+ const id=typeof currentBriefId==='string'?currentBriefId:'';
  let prompt=chosenBriefPrompt();
  if(tier==='full'&&prompt){
   prompt=window.VibePromptQuality?.enhance(prompt,{kind:generatedBriefKind,topic})||prompt;

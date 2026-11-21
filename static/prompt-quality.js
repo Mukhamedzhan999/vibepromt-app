@@ -49,7 +49,7 @@
    verify:'Check terminology and example outputs. Distinguish a simplified illustration from actual equipment or measured data.'
   },
   {
-   name:'Historical or cultural narrative', signals:['тарих','өркениет','мәдени','жәдігер','архив','history','heritage','истори','архивн'],
+   name:'Historical or cultural narrative', signals:['тарих','қазақ ханды','хандық','өркениет','мәдени','жәдігер','архив','history','khanate','heritage','истори','ханство','архивн'],
    flow:'time and place → causes → turning points → consequences → source-based conclusion',
    design:'Use a chronology, a document or artifact close-up and comparative spreads. Identify the period, place and provenance of real photos. Mark later photographs, maps or reconstructions with their proper context.',
    verify:'Check dates, spellings and place names. Keep historical evidence separate from interpretation. Use Roman numerals for centuries where the document language and conventions make them appropriate.'
