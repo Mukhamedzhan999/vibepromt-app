@@ -115,8 +115,6 @@ main.shell{max-width:1200px;padding:30px 36px 70px}
 .brief-result pre{font-family:inherit;font-size:14px;line-height:1.75;background:#111b2a}
 body[data-theme='warm']{background:radial-gradient(ellipse at 65% 85%,#433126,transparent 48%),#1a1311}
 body[data-theme='warm'] .sidebar{background:#1a1210}
-body[data-theme='navy']{background:radial-gradient(ellipse at 70% 85%,#213b62,transparent 48%),#071426}
-body[data-theme='navy'] .sidebar{background:#09192c}
 @media(max-width:900px){
  .workspace{margin-left:0}
  .sidebar{display:none;transform:translateX(-100%);width:min(320px,88vw);padding:20px 14px;z-index:50;box-shadow:20px 0 60px #0008}
@@ -133,18 +131,23 @@ body[data-theme='navy'] .sidebar{background:#09192c}
 
 
 /* Unified theme colors and compact history */
-body,body[data-theme='dark']{
+body,body[data-theme='navy']{
  --theme-bg:#090912;--theme-glow:#2b2250;--theme-sidebar:#10101d;--theme-top:#111120;
  --theme-panel:#19192b;--theme-panel-deep:#121222;--theme-border:#39314f;
  --theme-selected:#2d2949;--theme-muted:#b0a9c5;--theme-footer:#090912;
  background:radial-gradient(ellipse at 65% 90%,#352355 0,transparent 42%),var(--theme-bg);
 }
-body[data-theme='navy']{
- --theme-bg:#071426;--theme-glow:#1b3658;--theme-sidebar:#09192c;--theme-top:#0c2037;
- --theme-panel:#152c49;--theme-panel-deep:#0d1d31;--theme-border:#375577;
- --theme-selected:#253f60;--theme-muted:#b2c4d8;--theme-footer:#071426;
- background:radial-gradient(ellipse at 65% 90%,#203e65 0,transparent 42%),var(--theme-bg);
+body[data-theme='black']{
+ color-scheme:dark;--theme-bg:#000;--theme-glow:transparent;
+ --theme-sidebar:#090a0c;--theme-top:#090a0c;--theme-panel:#111214;
+ --theme-panel-deep:#08090a;--theme-border:#33363b;--theme-selected:#24272c;
+ --theme-muted:#b7bbc3;--theme-footer:#000;--theme-ink:#f5f6f8;
+ --theme-accent:#b9c5d7;--theme-accent-soft:#f3f6fc;
+ --theme-action-start:#383e49;--theme-action-end:#22262d;
+ background:#000;
 }
+body[data-theme='black']::before{background:none}
+body[data-theme='black'] .settings-modal[open]{background:#000}
 body[data-theme='warm']{
  --theme-bg:#0e0b09;--theme-glow:#3b2419;--theme-sidebar:#14100d;--theme-top:#17110e;
  --theme-panel:#201711;--theme-panel-deep:#17110d;--theme-border:#61402e;
@@ -442,82 +445,82 @@ body[data-theme='light'] .hero-gradient{
 }
 body[data-theme='light'] .brief-card,body[data-theme='light'] .settings-card{box-shadow:0 10px 32px #35245514}
 
-/* Brown and burgundy share black surfaces and separate accent palettes. */
-body:is([data-theme='warm'],[data-theme='burgundy']){
+/* Shared component colors for the graphite, brown, and burgundy palettes. */
+body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']){
  --white:var(--theme-ink);--line:var(--theme-border);--muted:var(--theme-muted);--purple:var(--theme-accent);
  color:var(--theme-ink);
 }
-body:is([data-theme='warm'],[data-theme='burgundy']) :is(.brand em,.splash-brand i,.mini,.tag,.eyebrow,.demo-num,.drop-icon,.metric-title span){
+body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) :is(.brand em,.splash-brand i,.mini,.tag,.eyebrow,.demo-num,.drop-icon,.metric-title span){
  color:var(--theme-accent);
 }
-body:is([data-theme='warm'],[data-theme='burgundy']) .splash{background:var(--theme-bg)}
-body:is([data-theme='warm'],[data-theme='burgundy']) .side-overlay{background:color-mix(in srgb,var(--theme-bg) 80%,transparent)}
-body:is([data-theme='warm'],[data-theme='burgundy']) :is(.brief-card,.brief-result){
+body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) .splash{background:var(--theme-bg)}
+body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) .side-overlay{background:color-mix(in srgb,var(--theme-bg) 80%,transparent)}
+body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) :is(.brief-card,.brief-result){
  box-shadow:0 20px 60px #0005,0 -10px 48px color-mix(in srgb,var(--theme-accent) 10%,transparent);
 }
-body:is([data-theme='warm'],[data-theme='burgundy']) .hero-gradient{
+body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) .hero-gradient{
  background-image:linear-gradient(110deg,var(--theme-accent-soft),var(--theme-accent));color:var(--theme-accent);
 }
-body:is([data-theme='warm'],[data-theme='burgundy']) .hero h1 span:not(.hero-gradient){
+body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) .hero h1 span:not(.hero-gradient){
  background-image:linear-gradient(110deg,var(--theme-accent-soft),var(--theme-accent));
 }
-body:is([data-theme='warm'],[data-theme='burgundy']) :is(.brief-intro .hero-headline,.settings-card label,.settings-card select,.prompt-section summary,.sidebar .side-button,.score-text strong){
+body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) :is(.brief-intro .hero-headline,.settings-card label,.settings-card select,.prompt-section summary,.sidebar .side-button,.score-text strong){
  color:var(--theme-ink);
 }
-body:is([data-theme='warm'],[data-theme='burgundy']) :is(.hero p,.brief-label,.label,.label span,.note,.prompt-size-note,.settings-card small,.side-bottom .note,.side-label,.brief-tools span,.demo-card p,.lab-info p,.empty,.score-text p,.mock-body p,.mock-stats span,.footer,.footer b){
+body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) :is(.hero p,.brief-label,.label,.label span,.note,.prompt-size-note,.settings-card small,.side-bottom .note,.side-label,.brief-tools span,.demo-card p,.lab-info p,.empty,.score-text p,.mock-body p,.mock-stats span,.footer,.footer b){
  color:var(--theme-muted);
 }
-body:is([data-theme='warm'],[data-theme='burgundy']) :is(input,textarea)::placeholder{color:var(--theme-muted)}
-body:is([data-theme='warm'],[data-theme='burgundy']) :is(.sidebar-top,.side-bottom,.side-history,.settings-header,.issue,.table th,.table td,.mock-bar,.mock-stats,.footer){
+body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) :is(input,textarea)::placeholder{color:var(--theme-muted)}
+body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) :is(.sidebar-top,.side-bottom,.side-history,.settings-header,.issue,.table th,.table td,.mock-bar,.mock-stats,.footer){
  border-color:var(--theme-border);
 }
-body:is([data-theme='warm'],[data-theme='burgundy']) :is(.menu-toggle,.side-close,.copy,.prompt-controls select,.prompt-controls a,.tabs,.mock,.mock-address,.swatch,.scan-icon,.eyebrow,.full-prompt,.full-prompt-text,.prompt-output,.prompt-section,.progress-box,.priority-item,.remove-pdf,.audit-feedback button){
+body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) :is(.menu-toggle,.side-close,.copy,.prompt-controls select,.prompt-controls a,.tabs,.mock,.mock-address,.swatch,.scan-icon,.eyebrow,.full-prompt,.full-prompt-text,.prompt-output,.prompt-section,.progress-box,.priority-item,.remove-pdf,.audit-feedback button){
  background:var(--theme-panel-deep);border-color:var(--theme-border);color:var(--theme-ink);
 }
-body:is([data-theme='warm'],[data-theme='burgundy']) :is(.brief-card textarea,.urlbox,.drop,.top-language option,.select){
+body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) :is(.brief-card textarea,.urlbox,.drop,.top-language option,.select){
  background:var(--theme-panel-deep);border-color:var(--theme-border);color:var(--theme-ink);
 }
-body:is([data-theme='warm'],[data-theme='burgundy']) :is(.brief-card textarea,.scan-icon){box-shadow:none}
-body:is([data-theme='warm'],[data-theme='burgundy']) :is(.prompt-section p,.tabs button,.brief-types button,.brief-models button,.brief-tools button,.mock-stats b,.preview-top,.chart-box .empty-icon,.table th,.heat .axis){
+body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) :is(.brief-card textarea,.scan-icon){box-shadow:none}
+body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) :is(.prompt-section p,.tabs button,.brief-types button,.brief-models button,.brief-tools button,.mock-stats b,.preview-top,.chart-box .empty-icon,.table th,.heat .axis){
  color:var(--theme-muted);
 }
-body:is([data-theme='warm'],[data-theme='burgundy']) :is(.tabs button.active,.brief-types button.active,.brief-models button.active,.tier-card:has(input:checked),.photo-source-options input:checked+span){
+body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) :is(.tabs button.active,.brief-types button.active,.brief-models button.active,.tier-card:has(input:checked),.photo-source-options input:checked+span){
  background:var(--theme-selected);border-color:var(--theme-accent);color:var(--theme-ink);
 }
-body:is([data-theme='warm'],[data-theme='burgundy']) .top-language{
+body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) .top-language{
  box-shadow:0 5px 18px #0005;
 }
-body:is([data-theme='warm'],[data-theme='burgundy']) :is(.top-language select,.brief-submit,.primary,.settings-footer .settings-close){
+body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) :is(.top-language select,.brief-submit,.primary,.settings-footer .settings-close){
  background:linear-gradient(135deg,var(--theme-action-start),var(--theme-action-end));
  border-color:var(--theme-accent);color:var(--theme-ink);
  box-shadow:0 7px 22px color-mix(in srgb,var(--theme-accent) 15%,transparent);
 }
-body:is([data-theme='warm'],[data-theme='burgundy']) .top-language svg{stroke:var(--theme-ink)}
-body:is([data-theme='warm'],[data-theme='burgundy']) .top-language::after{border-color:var(--theme-ink)}
-body:is([data-theme='warm'],[data-theme='burgundy']).brief-mode .sidebar .side-new{border-left-color:var(--theme-accent)}
-body:is([data-theme='warm'],[data-theme='burgundy']) :is(.history-search input,.top-language,.brief-card textarea,.urlbox,.drop,.settings-card,.tier-card,.photo-source-options label,.demo-card,.prompt-controls a):is(:hover,:focus-within){
+body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) .top-language svg{stroke:var(--theme-ink)}
+body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) .top-language::after{border-color:var(--theme-ink)}
+body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']).brief-mode .sidebar .side-new{border-left-color:var(--theme-accent)}
+body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) :is(.history-search input,.top-language,.brief-card textarea,.urlbox,.drop,.settings-card,.tier-card,.photo-source-options label,.demo-card,.prompt-controls a):is(:hover,:focus-within){
  border-color:var(--theme-accent);
 }
-body:is([data-theme='warm'],[data-theme='burgundy']) :is(button,a,input,textarea,select):focus-visible,
-body:is([data-theme='warm'],[data-theme='burgundy']) :is(.top-language:focus-within,.tier-card:focus-within,.photo-source-options input:focus-visible+span,#drop:focus-within){
+body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) :is(button,a,input,textarea,select):focus-visible,
+body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) :is(.top-language:focus-within,.tier-card:focus-within,.photo-source-options input:focus-visible+span,#drop:focus-within){
  outline:2px solid var(--theme-accent);outline-offset:2px;
 }
-body:is([data-theme='warm'],[data-theme='burgundy']) :is(.tier-card input,.progress-bar){accent-color:var(--theme-accent)}
-body:is([data-theme='warm'],[data-theme='burgundy']) .gauge{
+body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) :is(.tier-card input,.progress-bar){accent-color:var(--theme-accent)}
+body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) .gauge{
  background:conic-gradient(var(--theme-accent) calc(var(--score)*1%),var(--theme-border) 0);
 }
-body:is([data-theme='warm'],[data-theme='burgundy']) .gauge:before{background:var(--theme-panel-deep)}
-body:is([data-theme='warm'],[data-theme='burgundy']) .mock-bar i{background:var(--theme-border)}
-body:is([data-theme='warm'],[data-theme='burgundy']) .laser{
+body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) .gauge:before{background:var(--theme-panel-deep)}
+body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) .mock-bar i{background:var(--theme-border)}
+body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) .laser{
  background:var(--theme-accent);box-shadow:0 0 22px var(--theme-accent);
 }
-body:is([data-theme='warm'],[data-theme='burgundy']) .visual-audit-banner{border-color:var(--theme-accent)}
+body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) .visual-audit-banner{border-color:var(--theme-accent)}
 </style>
 <link rel="manifest" href="/static/manifest.webmanifest?v=4"><meta name="theme-color" content="#10131d"><link rel="apple-touch-icon" href="/static/vibeprompt-v-192.png?v=4"><noscript><style>.splash{display:none}</style></noscript><link rel="icon" type="image/png" sizes="192x192" href="/static/vibeprompt-v-192.png?v=4"><meta name="apple-mobile-web-app-title" content="VibePrompt AI"></head>
 <body class="brief-mode">
 <div id="splash" class="splash" role="status" aria-label="VibePrompt AI жүктелуде"><div class="splash-brand"><img class="splash-logo" src="/static/vibeprompt-v.svg?v=4" width="48" height="48" alt="">VibePrompt <i>AI</i></div></div>
 <div class="side-overlay" id="side-overlay"></div><aside class="sidebar" id="sidebar" aria-label="Қосымша навигация"><div class="sidebar-top"><a class="brand" href="#"><img class="brand-icon" src="/static/vibeprompt-v.svg?v=4" alt="" aria-hidden="true"><span>VibePrompt <em>AI</em></span></a><button type="button" class="side-close" id="close-menu" aria-label="Мәзірді жабу">×</button></div><button type="button" class="side-button side-new" id="new-audit">⌂ &nbsp; Басты бет</button><div><button type="button" class="side-button current" id="side-audit">◈ &nbsp; Аудит</button><button type="button" class="side-button" id="side-lab">▦ &nbsp; Оқытушы режимі</button></div><div class="side-history"><div class="side-label">СОҢҒЫ АУДИТТЕР</div><div class="history-search" role="search"><input id="history-search" type="search" aria-label="Аудит атауын іздеу" placeholder="Аудит атауын іздеу" aria-controls="sidebar-history" autocomplete="off"><span id="history-search-status" class="history-search-status" role="status"></span></div><div id="sidebar-history"><p class="note">Тарих жүктелуде...</p></div></div><div class="side-bottom"><button type="button" class="side-button" id="open-settings">⚙ &nbsp; Баптаулар</button><p class="note" style="margin:8px 10px">Жаңа нәтижелер мен промпттар осы браузерде сақталады. Браузер деректерін тазаласаңыз, олар өшеді. </p></div></aside><div class="workspace">
-<dialog class="settings-modal" id="settings-dialog" aria-labelledby="settings-title"><div class="settings-inner"><div class="settings-header"><div><div class="mini">ЖҰМЫС КЕҢІСТІГІ</div><h2 id="settings-title">Баптаулар</h2></div><button type="button" class="side-close" id="close-settings-top" aria-label="Баптауларды жабу">×</button></div><div class="settings-body"><div class="settings-card"><label for="default-ai">Әдепкі AI нұсқасы</label><small>Промптты ашқанда көрсетілетін модельді таңдаңыз.</small><select id="default-ai" class="select"><option value="chatgpt">ChatGPT</option><option value="gemini">Gemini</option><option value="claude">Claude</option></select></div><div class="settings-card"><label for="theme-choice">Фон түсі</label><small>Жұмыс кеңістігінің өзіңізге ыңғайлы түсін таңдаңыз.</small><select id="theme-choice" class="select"><option value="dark">Қара</option><option value="navy">Қою көк</option><option value="warm">Қоңыр</option><option value="light">Ақ</option><option value="burgundy">Қою қызыл</option></select></div><div class="settings-card"><label for="language-choice">Интерфейс тілі</label><small>Негізгі мәзір мен басқару элементтерінің тілі.</small><select id="language-choice" class="select"><option value="kk">Қазақша</option><option value="ru">Русский</option><option value="en">English</option></select></div><div class="settings-card"><label for="text-scale">Масштаб</label><small>Әр ашылғанда масштаб 100% болады. Өзгеріс осы бетке қолданылады.</small><select id="text-scale" class="select"><option value="90">90%</option><option value="100">100%</option><option value="120">120%</option><option value="150">150%</option></select></div><p class="note">Баптаулар мен аудит тарихы осы браузерде сақталады. Браузер деректерін тазаласаңыз, олар өшеді.</p></div><div class="settings-footer"><button type="button" class="copy settings-close" id="close-settings">Дайын</button></div></div></dialog>
+<dialog class="settings-modal" id="settings-dialog" aria-labelledby="settings-title"><div class="settings-inner"><div class="settings-header"><div><div class="mini">ЖҰМЫС КЕҢІСТІГІ</div><h2 id="settings-title">Баптаулар</h2></div><button type="button" class="side-close" id="close-settings-top" aria-label="Баптауларды жабу">×</button></div><div class="settings-body"><div class="settings-card"><label for="default-ai">Әдепкі AI нұсқасы</label><small>Промптты ашқанда көрсетілетін модельді таңдаңыз.</small><select id="default-ai" class="select"><option value="chatgpt">ChatGPT</option><option value="gemini">Gemini</option><option value="claude">Claude</option></select></div><div class="settings-card"><label for="theme-choice">Фон түсі</label><small>Жұмыс кеңістігінің өзіңізге ыңғайлы түсін таңдаңыз.</small><select id="theme-choice" class="select"><option value="black">Қара</option><option value="navy">Қою көк</option><option value="warm">Қоңыр</option><option value="light">Ақ</option><option value="burgundy">Қою қызыл</option></select></div><div class="settings-card"><label for="language-choice">Интерфейс тілі</label><small>Негізгі мәзір мен басқару элементтерінің тілі.</small><select id="language-choice" class="select"><option value="kk">Қазақша</option><option value="ru">Русский</option><option value="en">English</option></select></div><div class="settings-card"><label for="text-scale">Масштаб</label><small>Әр ашылғанда масштаб 100% болады. Өзгеріс осы бетке қолданылады.</small><select id="text-scale" class="select"><option value="90">90%</option><option value="100">100%</option><option value="120">120%</option><option value="150">150%</option></select></div><p class="note">Баптаулар мен аудит тарихы осы браузерде сақталады. Браузер деректерін тазаласаңыз, олар өшеді.</p></div><div class="settings-footer"><button type="button" class="copy settings-close" id="close-settings">Дайын</button></div></div></dialog>
 <header class="top"><div class="shell"><button type="button" class="menu-toggle" id="menu-toggle" aria-label="Мәзірді ашу" aria-controls="sidebar" aria-expanded="false">☰</button><a href="#" class="brand"><img class="brand-icon" src="/static/vibeprompt-v.svg?v=4" alt="" aria-hidden="true"><span>VibePrompt <em>AI</em></span></a><nav class="nav" aria-label="Негізгі навигация"><button class="active" data-view="audit">✦ &nbsp; Аудит</button><button data-view="academic">▦ &nbsp; Оқытушы режимі</button></nav><div class="top-language"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 4 6 4 9s-1 6-4 9c-3-3-4-6-4-9s1-6 4-9Z"/></svg><select id="home-language" aria-label="Интерфейс тілі"><option value="kk">ҚАЗ</option><option value="ru">РУС</option><option value="en">ENG</option></select></div></div></header>
 <main class="shell mx-auto">
 <section id="brief-home" class="brief-home">
@@ -622,7 +625,7 @@ $('#text-scale').addEventListener('change',e=>{
 });
 window.addEventListener('pageshow',event=>{if(event.persisted)applyTextScale()});
 applyTextScale();
-$('#open-settings').addEventListener('click',()=>{closeMenu();$('#theme-choice').value=document.body.dataset.theme||'dark';$('#language-choice').value=preferences.lang||'kk';$('#default-ai').value=promptModel;$('#settings-dialog').showModal()});
+$('#open-settings').addEventListener('click',()=>{closeMenu();$('#theme-choice').value=document.body.dataset.theme||'navy';$('#language-choice').value=preferences.lang||'kk';$('#default-ai').value=promptModel;$('#settings-dialog').showModal()});
 $('#close-settings').addEventListener('click',()=>$('#settings-dialog').close());$('#close-settings-top').addEventListener('click',()=>$('#settings-dialog').close());$('#default-ai').addEventListener('change',e=>{preferences.ai=e.target.value;savePreferences();$(`[data-prompt-model="${preferences.ai}"]`).click()});
 const uiTranslations={
 'Ақ':['Белый','White'],
@@ -808,7 +811,8 @@ function applyLanguage(){
  });
 }
 function applyTheme(){
- const theme=['dark','navy','warm','light','burgundy'].includes(preferences.theme)?preferences.theme:'dark';
+ // Existing “dark” preferences keep their original appearance under Қою көк.
+ const theme=['black','navy','warm','light','burgundy'].includes(preferences.theme)?preferences.theme:'navy';
  document.body.dataset.theme=theme;
  document.querySelector('meta[name="theme-color"]').content=getComputedStyle(document.body).getPropertyValue('--theme-bg').trim();
 }
