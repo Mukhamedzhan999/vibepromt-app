@@ -269,6 +269,14 @@ main.shell{padding:65px var(--page-gutter) 34px}
 .tier-card small{color:var(--theme-muted);font-size:.78rem;line-height:1.45}
 #site-tier-control{display:contents}
 #site-tier-control[hidden],.presentation-tiers[hidden]{display:none}
+.photo-source{min-width:0;border:0;margin:12px 0 0;padding:0}
+.photo-source legend{padding:0;margin-bottom:6px;font-size:.85rem;font-weight:700}
+.photo-source-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;padding:4px;border:1px solid var(--theme-border);border-radius:12px;background:var(--theme-panel-deep)}
+.photo-source-options label{position:relative;display:flex;min-width:0}
+.photo-source-options input{position:absolute;opacity:0;width:1px;height:1px}
+.photo-source-options span{display:grid;place-items:center;width:100%;min-height:44px;box-sizing:border-box;padding:7px 8px;border:1px solid transparent;border-radius:8px;text-align:center;font-size:.8rem;color:var(--theme-muted);overflow-wrap:anywhere;cursor:pointer}
+.photo-source-options input:checked+span{background:var(--theme-selected);border-color:#a998ff;color:var(--white);font-weight:700}
+.photo-source-options input:focus-visible+span{outline:2px solid #bdb2ff;outline-offset:2px}
 @media(max-width:767px){.tier-grid{grid-template-columns:minmax(0,1fr)}}
 #drop{position:relative;min-height:64px}
 #drop input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
@@ -328,7 +336,7 @@ main.shell{padding:65px var(--page-gutter) 34px}
 <link rel="manifest" href="/static/manifest.webmanifest"><meta name="theme-color" content="#10131d"><link rel="apple-touch-icon" href="/static/vibepromt-icon-192.png"><noscript><style>.splash{display:none}</style></noscript><link rel="icon" type="image/svg+xml" href="/static/vibepromt-logo.svg"><meta name="apple-mobile-web-app-title" content="VibePrompt AI"></head>
 <body class="brief-mode">
 <div id="splash" class="splash" role="status" aria-label="VibePrompt AI жүктелуде"><div class="splash-brand"><img class="splash-logo" src="/static/vibepromt-logo.svg" alt="" aria-hidden="true">VibePrompt <i>AI</i></div></div>
-<div class="side-overlay" id="side-overlay"></div><aside class="sidebar" id="sidebar" aria-label="Қосымша навигация"><div class="sidebar-top"><a class="brand" href="#"><img class="brand-icon" src="/static/vibepromt-logo.svg" alt="" aria-hidden="true"><span>VibePrompt <em>AI</em></span></a><button type="button" class="side-close" id="close-menu" aria-label="Мәзірді жабу">×</button></div><button type="button" class="side-button side-new" id="new-audit">⌂ &nbsp; Басты бет</button><div><button type="button" class="side-button current" id="side-audit">◈ &nbsp; Аудит</button><button type="button" class="side-button" id="side-lab">▦ &nbsp; Оқытушы режимі</button></div><div class="side-history"><div class="side-label">СОҢҒЫ АУДИТТЕР</div><div class="history-search" role="search"><input id="history-search" type="search" aria-label="Аудит атауын іздеу" placeholder="Аудит атауын іздеу" aria-controls="sidebar-history" autocomplete="off"><span id="history-search-status" class="history-search-status" role="status"></span></div><div id="sidebar-history"><p class="note">Тарих жүктелуде...</p></div></div><div class="side-bottom"><button type="button" class="side-button" id="open-settings">⚙ &nbsp; Баптаулар</button><p class="note" style="margin:8px 10px">Жаңа нәтижелер мен промпттар осы браузерде сақталады. Басқа құрылғыға көшпейді; браузер деректерін тазаласаңыз, өшеді.</p></div></aside><div class="workspace">
+<div class="side-overlay" id="side-overlay"></div><aside class="sidebar" id="sidebar" aria-label="Қосымша навигация"><div class="sidebar-top"><a class="brand" href="#"><img class="brand-icon" src="/static/vibepromt-logo.svg" alt="" aria-hidden="true"><span>VibePrompt <em>AI</em></span></a><button type="button" class="side-close" id="close-menu" aria-label="Мәзірді жабу">×</button></div><button type="button" class="side-button side-new" id="new-audit">⌂ &nbsp; Басты бет</button><div><button type="button" class="side-button current" id="side-audit">◈ &nbsp; Аудит</button><button type="button" class="side-button" id="side-lab">▦ &nbsp; Оқытушы режимі</button></div><div class="side-history"><div class="side-label">СОҢҒЫ АУДИТТЕР</div><div class="history-search" role="search"><input id="history-search" type="search" aria-label="Аудит атауын іздеу" placeholder="Аудит атауын іздеу" aria-controls="sidebar-history" autocomplete="off"><span id="history-search-status" class="history-search-status" role="status"></span></div><div id="sidebar-history"><p class="note">Тарих жүктелуде...</p></div></div><div class="side-bottom"><button type="button" class="side-button" id="open-settings">⚙ &nbsp; Баптаулар</button><p class="note" style="margin:8px 10px">Жаңа нәтижелер мен промпттар осы браузерде сақталады. Браузер деректерін тазаласаңыз, олар өшеді. </p></div></aside><div class="workspace">
 <dialog class="settings-modal" id="settings-dialog" aria-labelledby="settings-title"><div class="settings-inner"><div class="settings-header"><div><div class="mini">ЖҰМЫС КЕҢІСТІГІ</div><h2 id="settings-title">Баптаулар</h2></div><button type="button" class="side-close" id="close-settings-top" aria-label="Баптауларды жабу">×</button></div><div class="settings-card"><label for="default-ai">Әдепкі AI нұсқасы</label><small>Промптты ашқанда көрсетілетін модельді таңдаңыз.</small><select id="default-ai" class="select"><option value="chatgpt">ChatGPT</option><option value="gemini">Gemini</option><option value="claude">Claude</option></select></div><div class="settings-card"><label for="theme-choice">Фон түсі</label><small>Жұмыс кеңістігінің өзіңізге ыңғайлы түсін таңдаңыз.</small><select id="theme-choice" class="select"><option value="dark">Қара</option><option value="navy">Қою көк</option><option value="warm">Қоңыр</option></select></div><div class="settings-card"><label for="language-choice">Интерфейс тілі</label><small>Негізгі мәзір мен басқару элементтерінің тілі.</small><select id="language-choice" class="select"><option value="kk">Қазақша</option><option value="ru">Русский</option><option value="en">English</option></select></div><div class="settings-card"><label for="text-scale">Масштаб</label><small>Таңдалған масштаб осы браузерде сақталады.</small><select id="text-scale" class="select"><option value="90">90%</option><option value="100">100%</option><option value="110">110%</option><option value="125">125%</option><option value="150">150%</option></select></div><div class="settings-card"><label class="settings-check"><input type="checkbox" id="reduce-motion"> Анимацияны азайту</label><small>Ашылу және өту анимацияларын қысқартады.</small></div><p class="note">Баптаулар мен аудит тарихы осы браузерде сақталады. Браузер деректерін тазаласаңыз, олар өшеді.</p><div class="settings-footer"><button type="button" class="copy settings-close" id="close-settings">Дайын</button></div></div></dialog>
 <header class="top"><div class="shell"><button type="button" class="menu-toggle" id="menu-toggle" aria-label="Мәзірді ашу" aria-controls="sidebar" aria-expanded="false">☰</button><a href="#" class="brand"><img class="brand-icon" src="/static/vibepromt-logo.svg" alt="" aria-hidden="true"><span>VibePrompt <em>AI</em></span></a><nav class="nav" aria-label="Негізгі навигация"><button class="active" data-view="audit">✦ &nbsp; Аудит</button><button data-view="academic">▦ &nbsp; Оқытушы режимі</button></nav><div class="top-language"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 4 6 4 9s-1 6-4 9c-3-3-4-6-4-9s1-6 4-9Z"/></svg><select id="home-language" aria-label="Интерфейс тілі"><option value="kk">ҚАЗ</option><option value="ru">РУС</option><option value="en">ENG</option></select></div></div></header>
 <main class="shell mx-auto">
@@ -350,10 +358,16 @@ main.shell{padding:65px var(--page-gutter) 34px}
 <legend>Промпт көлемі</legend>
 <div class="tier-grid">
 <label class="tier-card"><input type="radio" name="presentation-tier" value="short" checked><span><strong>Қысқа</strong><small>Фотосыз · Тек жүйелі мәтін мен кестелер</small></span></label>
-<label class="tier-card"><input type="radio" name="presentation-tier" value="medium"><span><strong>Орташа</strong><small>Әр 2 бет сайын 1 фото · Теңгерімді дизайн</small></span></label>
-<label class="tier-card"><input type="radio" name="presentation-tier" value="full"><span><strong>Толық</strong><small>Әр бетте фото · Кәсіби визуалды макет</small></span></label>
+<label class="tier-card"><input type="radio" name="presentation-tier" value="medium"><span><strong>Орташа</strong><small>Әр екі беттің бірінде визуал · Теңгерімді дизайн</small></span></label>
+<label class="tier-card"><input type="radio" name="presentation-tier" value="full"><span><strong>Толық</strong><small>Әр бетте визуал · Кәсіби беттеу</small></span></label>
 </div>
-</fieldset><div class="prompt-controls"><span id="site-tier-control"><label for="brief-size">Промпт көлемі</label><select id="brief-size"><option value="short">Қысқа</option><option value="medium">Орташа</option><option value="full">Толық</option></select></span><a id="brief-ai-link" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">AI ашу ↗</a></div><p class="prompt-size-note">Промптты көшіріп, AI бетіне қойыңыз. PDF болса, бастапқы файлды да тіркеңіз.</p><p id="brief-engine-status" class="note" role="status" hidden></p><pre id="brief-output"></pre></div></section>
+</fieldset><div class="prompt-controls"><span id="site-tier-control"><label for="brief-size">Промпт көлемі</label><select id="brief-size"><option value="short">Қысқа</option><option value="medium">Орташа</option><option value="full">Толық</option></select></span><a id="brief-ai-link" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">AI ашу ↗</a></div><fieldset id="brief-photo-source" class="photo-source" hidden>
+<legend>Фото көзі</legend>
+<div class="photo-source-options">
+<label><input type="radio" name="brief-photo-source" value="web" checked><span>Интернеттен дайын фото</span></label>
+<label><input type="radio" name="brief-photo-source" value="ai"><span>AI арқылы жасау</span></label>
+</div>
+</fieldset><p class="prompt-size-note">Промптты көшіріп, AI бетіне қойыңыз. PDF болса, бастапқы файлды да тіркеңіз.</p><p id="brief-engine-status" class="note" role="status" hidden></p><pre id="brief-output"></pre></div></section>
 <section id="audit" class="audit active">
 <div class="hero"><div class="eyebrow"><span class="dot"></span> ИНТЕРФЕЙСТІ АҚЫЛДЫ ТАЛДАУ</div><h1>Жақсы дизайн кездейсоқ<br><span>пайда болмайды.</span></h1><p>Сайтыңызды немесе PDF макетіңізді талдап, нақты ұсыныстар мен дайын AI промпт алыңыз.</p></div>
 <div class="layout"><section class="card input-card"><div class="card-head"><div><h2>Жаңа аудит</h2><p>Талдау үшін дереккөзді таңдаңыз</p></div><span class="step">01 / 02</span></div>
@@ -366,7 +380,13 @@ main.shell{padding:65px var(--page-gutter) 34px}
 <section class="card preview" id="preview"><div class="preview-top"><strong>Талдау көрінісі</strong><span class="live"><span class="dot"></span> ТІКЕЛЕЙ ТАЛДАУ</span></div><div class="mock"><div class="mock-bar"><i></i><i></i><i></i><div class="mock-address">vibeprompt / талдау</div></div><div class="laser"></div><div class="mock-body" aria-live="polite"><img id="preview-shot" class="hidden" alt="Талданған беттің көрінісі" style="max-width:100%;max-height:190px;object-fit:contain;border:1px solid #34394b;border-radius:8px;margin-bottom:10px"><div class="scan-icon" id="scan-icon">⌁</div><strong id="preview-title">Талдауға дайын</strong><p id="preview-desc">Дереккөзді қосыңыз. Нәтижелеріңіз осы жерде пайда болады.</p></div><div class="mock-stats"><div><b id="stat-score">—</b><span>ТЕКСЕРУ ҰПАЙЫ</span></div><div><b id="stat-class">—</b><span>ЖІКТЕУ</span></div><div><b>06</b><span>КӨРСЕТКІШ</span></div></div></div></section></div>
 <div class="below-head" id="results"><div><div class="mini">02 / ТАЛДАУ НӘТИЖЕСІ</div><h2>Дизайнды тереңірек түсініңіз</h2><p>Әр көрсеткіш интерфейстің әлсіз және мықты тұстарын көрсетеді.</p></div><div class="tag">◈ &nbsp; 6 КӨРСЕТКІШ БОЙЫНША</div></div>
 <div class="bento"><section id="editorial-card" class="card result-wide hidden"><div class="mini">PDF ART DIRECTION · ҰСЫНЫС</div><h3 id="editorial-title"></h3><p id="editorial-domain" class="note"></p><div id="editorial-keywords" class="note"></div><div id="editorial-palette" class="palette-list"></div><p class="note">Ұсынылған палитра · төмендегі өлшенген түстерден бөлек. Жіктеу жуық.</p></section><section id="priority-card" class="card priority-card hidden"><div class="mini">БІРІНШІ КЕЗЕКТЕ</div><h3>Назар аударатын тұстар</h3><div id="priority-items" class="priority-items"></div></section><section class="card metric-card"><div class="metric-title"><span id="score-title" style="font-size:12px;color:inherit">Тексеру ұпайы</span><span>◌</span></div><div id="score-content" class="empty"><div class="empty-icon">◌</div>Ұпай талдаудан кейін көрсетіледі</div></section><section class="card metric-card"><div class="metric-title">Көрсеткіштер профилі <span>⌁</span></div><div id="radar-empty" class="empty"><div class="empty-icon">⬡</div>Дерек әлі жоқ</div><div id="radar-box" class="chart-box hidden"><canvas id="radar" aria-label="Алты көрсеткіш диаграммасы"></canvas></div></section><section class="card metric-card"><div class="metric-title">Түс палитрасы <span>◈</span></div><div id="palette" class="empty"><div class="empty-icon">◈</div>Анықталған түстер осында көрінеді</div></section>
-<section class="card result-wide"><div class="prompt-head"><div><div class="mini">ПРОМПТ ҚҰРАСТЫРУ</div><h3 style="margin:5px 0 0;font-size:15px">Жақсартуға арналған промпт</h3></div><button type="button" class="copy" data-copy="prompt">Барлығын көшіру ↗</button></div><div class="tabs" role="group" aria-label="AI түрі" style="margin-top:15px;grid-template-columns:repeat(3,1fr)"><button type="button" class="active" data-prompt-model="chatgpt">ChatGPT</button><button type="button" data-prompt-model="gemini">Gemini</button><button type="button" data-prompt-model="claude">Claude</button></div><p class="note">Таңдалған AI нұсқасы көшіріледі. Сайт промптына CSS үлгісі де кіреді; PDF промпты құжатты түзетуге арналған. Промптқа оқылған мәтін үзінділері кіреді. Оны сыртқы AI сервисіне жіберер алдында құпия деректерді тексеріңіз.</p><div class="prompt-controls"><span class="note">Толық промпт</span><a id="audit-ai-link" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">AI ашу ↗</a></div><p class="prompt-size-note">Промптты көшіріп, AI бетіне қойыңыз. PDF болса, бастапқы файлды да тіркеңіз.</p><p id="audit-engine-status" class="note" role="status" hidden></p><div class="prompt-output" id="prompt-output">Аудитті бастаңыз — сізге бейімделген промпт осы жерде пайда болады.</div><div class="note" id="prompt-grade"></div><section id="full-prompt-section" class="full-prompt hidden" aria-label="Толық промпт"><div class="prompt-head"><div><div class="mini">ДАЙЫН МӘТІН</div><h3>Таңдалған промпт</h3></div><button type="button" class="copy" data-copy="prompt">Таңдалған промптты көшіру ↗</button></div><p class="note">Таңдалған AI үшін толық промпт төменде көрсетілген.</p><pre id="full-prompt-text" class="full-prompt-text"></pre></section></section><section class="card result-side"><div class="mini">ҰСЫНЫСТАР</div><h3 style="font-size:15px;margin:5px 0 12px">Неге назар аудару керек?</h3><div id="issues" class="note">Нәтиже шыққан соң ұсыныстар көрсетіледі.</div><div class="note" id="method-note"></div><div id="page-details"></div></section>
+<section class="card result-wide"><div class="prompt-head"><div><div class="mini">ПРОМПТ ҚҰРАСТЫРУ</div><h3 style="margin:5px 0 0;font-size:15px">Жақсартуға арналған промпт</h3></div><button type="button" class="copy" data-copy="prompt">Барлығын көшіру ↗</button></div><div class="tabs" role="group" aria-label="AI түрі" style="margin-top:15px;grid-template-columns:repeat(3,1fr)"><button type="button" class="active" data-prompt-model="chatgpt">ChatGPT</button><button type="button" data-prompt-model="gemini">Gemini</button><button type="button" data-prompt-model="claude">Claude</button></div><p class="note">Таңдалған AI нұсқасы көшіріледі. Сайт промптына CSS үлгісі де кіреді; PDF промпты құжатты түзетуге арналған. Промптқа оқылған мәтін үзінділері кіреді. Оны сыртқы AI сервисіне жіберер алдында құпия деректерді тексеріңіз.</p><div class="prompt-controls"><span class="note">Толық промпт</span><a id="audit-ai-link" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">AI ашу ↗</a></div><fieldset id="audit-photo-source" class="photo-source" hidden>
+<legend>Фото көзі</legend>
+<div class="photo-source-options">
+<label><input type="radio" name="audit-photo-source" value="web" checked><span>Интернеттен дайын фото</span></label>
+<label><input type="radio" name="audit-photo-source" value="ai"><span>AI арқылы жасау</span></label>
+</div>
+</fieldset><p class="prompt-size-note">Промптты көшіріп, AI бетіне қойыңыз. PDF болса, бастапқы файлды да тіркеңіз.</p><p id="audit-engine-status" class="note" role="status" hidden></p><div class="prompt-output" id="prompt-output">Аудитті бастаңыз — сізге бейімделген промпт осы жерде пайда болады.</div><div class="note" id="prompt-grade"></div><section id="full-prompt-section" class="full-prompt hidden" aria-label="Толық промпт"><div class="prompt-head"><div><div class="mini">ДАЙЫН МӘТІН</div><h3>Таңдалған промпт</h3></div><button type="button" class="copy" data-copy="prompt">Таңдалған промптты көшіру ↗</button></div><p class="note">Таңдалған AI үшін толық промпт төменде көрсетілген.</p><pre id="full-prompt-text" class="full-prompt-text"></pre></section></section><section class="card result-side"><div class="mini">ҰСЫНЫСТАР</div><h3 style="font-size:15px;margin:5px 0 12px">Неге назар аудару керек?</h3><div id="issues" class="note">Нәтиже шыққан соң ұсыныстар көрсетіледі.</div><div class="note" id="method-note"></div><div id="page-details"></div></section>
 <section class="card result-wide"><div class="prompt-head"><div><div class="mini">ДАЙЫН КОД</div><h3 style="margin:5px 0 0;font-size:15px">CSS түзету үлгісі</h3></div><button type="button" class="copy" data-copy="css">Көшіру ↗</button></div><pre class="prompt-output" id="css-output">CSS үлгісі аудиттен кейін пайда болады.</pre></section><section class="card result-side"><div class="mini">СОҢҒЫ ӘРЕКЕТТЕР</div><h3 style="font-size:15px;margin:5px 0 12px">Аудит тарихы</h3><div id="history" class="history-list">Әзірге аудит жоқ.</div></section></div>
 </section>
 <section id="academic" class="academic"><div class="hero lab-hero"><div class="eyebrow">▦ &nbsp; АКАДЕМИЯЛЫҚ ЗЕРТХАНА</div><h1>Оқытушы <span>режимі.</span></h1><p>Үлгілерді салыстырыңыз, модель нәтижелерін қарап, әдістеменің шектеулерін зерттеңіз.</p></div><div class="below-head" style="margin-top:0"><div><div class="mini">01 / ДАЙЫН СЦЕНАРИЙЛЕР</div><h2>Бір басумен тексеру</h2><p>Симуляция нақты файлды немесе сайтты өңдемейді.</p></div><label class="tag">ДЕРЕККӨЗ &nbsp; <select id="demo-kind" class="select"><option value="URL">URL</option><option value="PDF">PDF</option></select></label></div><div class="lab-grid"><button class="card demo-card" data-demo="1"><span class="demo-num">01 / ЖАҚСЫ</span><h3>Жоғары деңгейлі интерфейс ↗</h3><p>Теңгерімді құрылым және айқын контраст</p></button><button class="card demo-card" data-demo="2"><span class="demo-num">02 / КОНТРАСТ</span><h3>Контраст қатесі ↗</h3><p>Оқылуы қиын мәтін және типографика</p></button><button class="card demo-card" data-demo="3"><span class="demo-num">03 / ТЫҒЫЗДЫҚ</span><h3>Мәтін тым көп ↗</h3><p>Шамадан тыс жүктелген бет</p></button></div>
@@ -423,6 +443,118 @@ function applyMotion(){document.documentElement.classList.toggle('reduce-motion'
 $('#open-settings').addEventListener('click',()=>{closeMenu();$('#theme-choice').value=preferences.theme||'dark';$('#language-choice').value=preferences.lang||'kk';$('#default-ai').value=promptModel;$('#reduce-motion').checked=!!preferences.reduceMotion;$('#settings-dialog').showModal()});
 $('#close-settings').addEventListener('click',()=>$('#settings-dialog').close());$('#close-settings-top').addEventListener('click',()=>$('#settings-dialog').close());$('#default-ai').addEventListener('change',e=>{preferences.ai=e.target.value;savePreferences();$(`[data-prompt-model="${preferences.ai}"]`).click()});$('#reduce-motion').addEventListener('change',e=>{preferences.reduceMotion=e.target.checked;savePreferences();applyMotion()});
 const uiTranslations={
+"Сайтқа не презентацияға арналған промпт жасаңыз немесе дайын жұмысты талдаңыз.":["Создайте промт для сайта или презентации, либо проверьте готовую работу.","Generate prompts for websites and presentations, or audit your existing work."],
+"Жеке портфолио":["Личное портфолио","Personal portfolio"],
+"IT стартап презентациясы":["Презентация IT-стартапа","IT startup pitch deck"],
+"Онлайн дүкен лендингі":["Лендинг интернет-магазина","E-commerce landing page"],
+"Жаңа нәтижелер мен промпттар осы браузерде сақталады. Браузер деректерін тазаласаңыз, олар өшеді.":["Новые результаты и промты сохраняются в этом браузере. При очистке данных они будут удалены.","New results and prompts are saved locally in this browser. Clearing browser data will remove them."],
+"Google арқылы кірсеңіз, тарихты құрылғылар арасында синхрондай аласыз.":["Войдите через Google, чтобы синхронизировать историю между устройствами.","Sign in with Google to sync your history across devices."],
+"Фото көзі":["Источник изображений","Photo source"],
+"Интернеттен дайын фото":["Готовые фото из интернета","Real web photos"],
+"AI арқылы жасау":["Сгенерировать через AI","AI-generated visuals"],
+"Фотосыз · Тек жүйелі мәтін мен кестелер":["Без фотографий · Структурированный текст и таблицы","No photos · Structured text and tables"],
+"Әр екі беттің бірінде визуал · Теңгерімді дизайн":["Одно изображение на каждые два слайда · Сбалансированный дизайн","One visual per two slides · Balanced design"],
+"Әр бетте визуал · Кәсіби беттеу":["Изображение на каждом слайде · Профессиональная вёрстка","A visual on every slide · Professional layout"],
+"Жобаңызды кемінде 10 таңбамен сипаттаңыз.":["Опишите проект не менее чем в 10 символах.","Describe your project in at least 10 characters."],
+"VibePrompt AI жүктелуде":["Загрузка VibePrompt AI","Loading VibePrompt AI"],
+"Қосымша навигация":["Боковое меню","Sidebar navigation"],
+"Мәзірді жабу":["Закрыть меню","Close menu"],
+"Мәзірді ашу":["Открыть меню","Open menu"],
+"Баптауларды жабу":["Закрыть настройки","Close settings"],
+"Негізгі навигация":["Основная навигация","Main navigation"],
+"Жоба түрі":["Тип проекта","Project type"],
+"Дайын мысалдар":["Готовые примеры","Quick-start examples"],
+"AI нұсқасы":["Выбор ИИ","AI model"],
+"AI түрі":["Выбор ИИ","AI model"],
+"AI ашу ↗":["Открыть ИИ ↗","Open AI ↗"],
+"Промптты ашқанда көрсетілетін модельді таңдаңыз.":["Выберите модель, которая будет открываться по умолчанию.","Choose the default model for new prompts."],
+"Жұмыс кеңістігінің өзіңізге ыңғайлы түсін таңдаңыз.":["Выберите цвет рабочего пространства.","Choose a color for your workspace."],
+"Негізгі мәзір мен басқару элементтерінің тілі.":["Язык меню и элементов управления.","Language for menus and controls."],
+"Ашылу және өту анимацияларын қысқартады.":["Сокращает анимацию при открытии и переходах.","Reduces opening and transition animations."],
+"Баптаулар мен аудит тарихы осы браузерде сақталады. Браузер деректерін тазаласаңыз, олар өшеді.":["Настройки и история сохраняются в этом браузере. При очистке данных они будут удалены.","Settings and audit history are saved in this browser. Clearing browser data will remove them."],
+"Google арқылы кіру":["Войти через Google","Sign in with Google"],
+"Осы браузердегі тарихты аккаунтқа көшіру":["Перенести историю из браузера в аккаунт","Import this browser’s history to your account"],
+"Промптты бағалау":["Оценить промпт","Rate the prompt"],
+"Пайдалы болды":["Полезно","Helpful"],
+"Жақсарту қажет":["Нужно улучшить","Needs improvement"],
+"Есепті жүктеу":["Скачать отчёт","Download report"],
+"Дереккөз түрі":["Тип источника","Source type"],
+"youtube.com немесе example.com/page":["youtube.com или example.com/page","youtube.com or example.com/page"],
+"Chrome-да өзім ашқан бетті талдау":["Проверить открытую в Chrome страницу","Audit the page open in Chrome"],
+"1. Chrome-да қалаған профиліңізді таңдаңыз.":["1. Выберите нужный профиль Chrome.","1. Choose the Chrome profile you want to use."],
+"ашып, «Developer mode» қосыңыз.":["и включите режим разработчика.","and enable Developer mode."],
+"2. «Load unpacked» басып, мына қалтаны таңдаңыз:":["2. Нажмите «Загрузить распакованное расширение» и выберите папку:","2. Click Load unpacked and select this folder:"],
+"Қалта жолын көшіру":["Скопировать путь к папке","Copy folder path"],
+"3. Жұптау кодын көшіріп, Chrome кеңейтіміне қойыңыз. Сервер қайта іске қосылса, жаңа код керек.":["3. Скопируйте код привязки в расширение Chrome. После перезапуска сервера понадобится новый код.","3. Paste the pairing code into the Chrome extension. Get a new code after a server restart."],
+"Жұптау кодын көшіру":["Скопировать код привязки","Copy pairing code"],
+"4. Сол Chrome профилінде қалаған сайтты өзіңіз ашып, қажет болса өзіңіз кіріңіз. Кеңейтімде «Осы бетті талдау» басыңыз; нәтиже осы қосымшада көрінеді.":["4. Откройте сайт в том же профиле и при необходимости войдите. Нажмите «Проверить эту страницу» в расширении, чтобы увидеть результат здесь.","4. Open the site in the same profile and sign in if needed. Choose Audit this page in the extension to see the result here."],
+"Тек таңдалған қойындыдағы көрінетін дерек жергілікті қосымшаға жіберіледі. Құпиясөз өрістері, cookie және басқа қойындылар алынбайды. Кейбір ішкі браузер беттері мен iframe ішіндегі мазмұнды тексеру мүмкін емес.":["В локальное приложение отправляется только видимое содержимое выбранной вкладки. Пароли, файлы cookie и другие вкладки не передаются. Некоторые внутренние страницы браузера и содержимое iframe недоступны для проверки.","Only visible content from the selected tab is sent to the local app. Password fields, cookies, and other tabs are excluded. Some browser pages and iframe content cannot be audited."],
+"30 МБ-ҚА ДЕЙІН":["ДО 30 МБ","UP TO 30 MB"],
+"PDF · ең көбі 30 МБ":["PDF · до 30 МБ","PDF · up to 30 MB"],
+"Файлды алып тастау":["Убрать файл","Remove file"],
+"PDF файлын алып тастау":["Убрать PDF","Remove PDF"],
+"Мысалы: студенттерге арналған ыңғайлы платформа жасағым келеді...":["Например: нужна удобная платформа для студентов…","For example: I want a platform that’s easy for students to use…"],
+"Файл жүктелуде":["Загрузка файла","Uploading file"],
+"Мәтін мен құрылым оқылуда":["Чтение текста и структуры","Reading text and structure"],
+"Аудит нәтижесі дайындалуда":["Подготовка результатов аудита","Preparing audit results"],
+"PDF талдау барысы":["Ход анализа PDF","PDF audit progress"],
+"Тексеруді тоқтату":["Остановить проверку","Stop audit"],
+"✧ Браузерлік талдау · Нақты дәлелдер · Дайын промпт":["✧ Анализ в браузере · Конкретные наблюдения · Готовый промпт","✧ Browser-based analysis · Concrete evidence · Ready-to-use prompt"],
+"vibeprompt / талдау":["vibeprompt / анализ","vibeprompt / audit"],
+"Әр көрсеткіш интерфейстің әлсіз және мықты тұстарын көрсетеді.":["Показатели отражают сильные и слабые стороны интерфейса.","Each metric highlights strengths and weaknesses in the interface."],
+"◈ 6 КӨРСЕТКІШ БОЙЫНША":["◈ ПО 6 ПОКАЗАТЕЛЯМ","◈ ACROSS 6 METRICS"],
+"PDF ART DIRECTION · ҰСЫНЫС":["АРТ-ДИРЕКШЕН PDF · РЕКОМЕНДАЦИЯ","PDF ART DIRECTION · SUGGESTED"],
+"Ұсынылған палитра · төмендегі өлшенген түстерден бөлек. Жіктеу жуық.":["Предложенная палитра отличается от цветов, извлечённых ниже. Классификация приблизительная.","Suggested palette, separate from the sampled colors below. Classification is approximate."],
+"БІРІНШІ КЕЗЕКТЕ":["В ПЕРВУЮ ОЧЕРЕДЬ","TOP PRIORITIES"],
+"Назар аударатын тұстар":["На что обратить внимание","What to focus on"],
+"Ұпай талдаудан кейін көрсетіледі":["Оценка появится после анализа","The score appears after analysis"],
+"Дерек әлі жоқ":["Пока нет данных","No data yet"],
+"Алты көрсеткіш диаграммасы":["Диаграмма по шести показателям","Six-metric chart"],
+"Анықталған түстер осында көрінеді":["Здесь появятся найденные цвета","Detected colors will appear here"],
+"Барлығын көшіру ↗":["Скопировать всё ↗","Copy all ↗"],
+"ДАЙЫН МӘТІН":["ГОТОВЫЙ ТЕКСТ","READY-TO-COPY TEXT"],
+"Таңдалған AI нұсқасы көшіріледі. Сайт промптына CSS үлгісі де кіреді; PDF промпты құжатты түзетуге арналған. Промптқа оқылған мәтін үзінділері кіреді. Оны сыртқы AI сервисіне жіберер алдында құпия деректерді тексеріңіз.":["Копируется промпт для выбранного ИИ. Для сайта он содержит пример CSS, для PDF — рекомендации по переработке документа. Проверьте извлечённые фрагменты на конфиденциальные данные перед отправкой во внешний сервис.","Copy the prompt for the selected AI. Website prompts include a CSS example; PDF prompts explain how to revise the document. Check extracted passages for sensitive information before sending them to an external service."],
+"Аудитті бастаңыз — сізге бейімделген промпт осы жерде пайда болады.":["Начните аудит, и здесь появится ваш промпт.","Start an audit to see your tailored prompt here."],
+"Нәтиже шыққан соң ұсыныстар көрсетіледі.":["Рекомендации появятся после анализа.","Recommendations will appear after analysis."],
+"Көшіру ↗":["Скопировать ↗","Copy ↗"],
+"CSS үлгісі аудиттен кейін пайда болады.":["Пример CSS появится после аудита.","A CSS example will appear after the audit."],
+"▦ АКАДЕМИЯЛЫҚ ЗЕРТХАНА":["▦ УЧЕБНАЯ ЛАБОРАТОРИЯ","▦ TEACHING LAB"],
+"Оқытушы":["Режим","Teaching"],
+"режимі.":["преподавателя.","mode."],
+"Үлгілерді салыстырыңыз, модель нәтижелерін қарап, әдістеменің шектеулерін зерттеңіз.":["Сравните примеры, посмотрите результаты моделей и изучите ограничения метода.","Compare examples, review model results, and explore the method’s limitations."],
+"01 / ДАЙЫН СЦЕНАРИЙЛЕР":["01 / ГОТОВЫЕ СЦЕНАРИИ","01 / EXAMPLE SCENARIOS"],
+"Бір басумен тексеру":["Проверка в один клик","One-click audit"],
+"Симуляция нақты файлды немесе сайтты өңдемейді.":["Симуляция не обрабатывает реальный файл или сайт.","The simulation does not process a real file or website."],
+"ДЕРЕККӨЗ":["ИСТОЧНИК","SOURCE"],
+"01 / ЖАҚСЫ":["01 / ХОРОШИЙ ПРИМЕР","01 / STRONG EXAMPLE"],
+"Жоғары деңгейлі интерфейс ↗":["Качественный интерфейс ↗","High-quality interface ↗"],
+"Теңгерімді құрылым және айқын контраст":["Сбалансированная структура и чёткий контраст","Balanced structure and clear contrast"],
+"02 / КОНТРАСТ":["02 / КОНТРАСТ","02 / CONTRAST"],
+"Контраст қатесі ↗":["Проблема с контрастом ↗","Contrast issue ↗"],
+"Оқылуы қиын мәтін және типографика":["Текст и типографика, которые трудно читать","Hard-to-read text and typography"],
+"03 / ТЫҒЫЗДЫҚ":["03 / ПЛОТНОСТЬ","03 / DENSITY"],
+"Мәтін тым көп ↗":["Слишком много текста ↗","Too much text ↗"],
+"Шамадан тыс жүктелген бет":["Перегруженная страница","Overcrowded page"],
+"Нақты сайттармен оқыту мәртебесі":["Статус обучения на реальных сайтах","Training status on real websites"],
+"19 жария беттен бақылау жиналды. Сапа белгілерін сарапшы тексергеннен кейін ғана нақты сайт моделі оқытылады; қазіргі кесте — синтетикалық демонстрация. Нұсқаулық: TRAINING_KK.md.":["Собраны наблюдения с 19 общедоступных страниц. Обучение на реальных сайтах начнётся после экспертной проверки меток качества. В таблице пока показана синтетическая демонстрация. Инструкция: TRAINING_KK.md.","Observations were collected from 19 public pages. Training on real websites will start after expert review of the quality labels. The table shows a synthetic demo. Guide: TRAINING_KK.md."],
+"02 / МОДЕЛЬДЕРДІ САЛЫСТЫРУ":["02 / СРАВНЕНИЕ МОДЕЛЕЙ","02 / MODEL COMPARISON"],
+"Тест жиынындағы нәтиже":["Результаты на тестовой выборке","Test-set results"],
+"Тек синтетикалық оқу жиыны: бұл көрсеткіштер нақты сайттардағы дәлдікті білдірмейді · 80/20 · macro орташа":["Синтетическая выборка · 80/20 · макроусреднение. Метрики не отражают точность на реальных сайтах.","Synthetic dataset · 80/20 split · macro average. These metrics do not measure accuracy on real sites."],
+"МОДЕЛЬ":["МОДЕЛЬ","MODEL"],
+"ДӘЛДІК":["ТОЧНОСТЬ","ACCURACY"],
+"Жүктелуде...":["Загрузка…","Loading…"],
+"03 / ҚАТЕЛЕР МАТРИЦАСЫ":["03 / МАТРИЦА ОШИБОК","03 / CONFUSION MATRIX"],
+"Random Forest жіктеуі":["Классификация Random Forest","Random Forest classification"],
+"Жолдар — нақты класс, бағандар — болжам. 0–3 класс атаулары төменде көрсетілген.":["Строки — фактические классы, столбцы — предсказанные. Названия классов 0–3 приведены ниже.","Rows show actual classes; columns show predicted classes. Class labels 0–3 are listed below."],
+"0 — жоғары деңгей · 1 — контраст · 2 — жүктеме · 3 — шикі макет":["0 — качественный · 1 — низкий контраст · 2 — перегруженный · 3 — черновой","0 — high quality · 1 — low contrast · 2 — overcrowded · 3 — draft layout"],
+"ҚАТЕ ЖАҒДАЙЫ":["ПРИМЕР ОШИБКИ","FAILURE CASE"],
+"JavaScript арқылы салынатын сайт":["Сайт с отрисовкой на JavaScript","JavaScript-rendered website"],
+"Браузерде көрінетін интерфейс бастапқы HTML ішінде болмауы мүмкін. Соның салдарынан толық сайт «шикі макет» деп қате жіктелуі ықтимал. Бұл — ықтимал мысал, тест жиынында тіркелген қате емес.":["В исходном HTML может не быть интерфейса, который браузер отрисовывает позже. Из-за этого готовый сайт может получить метку «черновой». Это гипотетический пример.","The source HTML may omit UI that renders later in the browser. A complete site could therefore be classified as a draft. This is a hypothetical example."],
+"ЖҮЙЕ ШЕКТЕУІ":["ОГРАНИЧЕНИЕ СИСТЕМЫ","SYSTEM LIMITATION"],
+"Бұл — жуық бағалау":["Оценка приблизительная","The assessment is approximate"],
+"PDF-тің барлық беті оқылады, ал контраст үзінділер бойынша жуық тексеріледі. OCR мәтінді қате тануы мүмкін; нақты орналасу мен толық CSS cascade толық бағаланбайды. Белгісіз мәндер ұпайға кірмейді. Синтетикалық деректердегі жоғары нәтиже нақты сайттардағы сапаны дәлелдемейді.":["Читаются все страницы PDF, а контраст оценивается по образцам. OCR может ошибаться. Точная вёрстка и весь каскад CSS не оцениваются. Неизвестные значения не входят в оценку. Результаты на синтетических данных не подтверждают качество на реальных сайтах.","All PDF pages are read, and contrast is estimated from samples. OCR can misread text. Exact layout and the full CSS cascade are outside the assessment. Unknown values are excluded from the score. Synthetic results do not establish performance on real websites."],
+"/ Интерфейсті саналы түрде жақсарт.":["/ Улучшайте интерфейсы осознанно.","/ Improve interfaces with intent."],
+"ОҚУ ЖОБАСЫ · 2026":["УЧЕБНЫЙ ПРОЕКТ · 2026","EDUCATIONAL PROJECT · 2026"],
 'Масштаб':['Масштаб','Scale'],
 'Таңдалған масштаб осы браузерде сақталады.':['Масштаб сохраняется в этом браузере.','Scale is saved in this browser.'],
 'Промпт көлемі':['Объём промпта','Prompt length'],
@@ -431,7 +563,7 @@ const uiTranslations={
 'Таңдалған промптты көшіру ↗':['Скопировать выбранный промпт ↗','Copy selected prompt ↗'],
 'Таңдалған AI үшін толық промпт төменде көрсетілген.':['Ниже приведён полный промпт для выбранного ИИ.','The full prompt for the selected AI is shown below.'],
 'Таңдалған AI мен көлемге сәйкес мәтін төменде көрсетілген.':['Ниже приведён текст выбранного объёма для выбранного ИИ.','The text below matches the selected AI and length.'],
-'Промптты көшіріп, AI бетіне қойыңыз. PDF болса, бастапқы файлды да тіркеңіз.':['Скопируйте промпт в AI; для PDF приложите исходный файл.','Copy the prompt to the AI; attach the original PDF if applicable.'],
+'Промптты көшіріп, AI бетіне қойыңыз. PDF болса, бастапқы файлды да тіркеңіз.':['Вставьте промпт в выбранный ИИ. Для аудита PDF приложите исходный файл.','Paste the prompt into your chosen AI. For a PDF audit, attach the original file.'],
 '⌂ Басты бет':['⌂ Главная','⌂ Home'],
 'Бүгін не жасаймыз?':['Что создадим сегодня?','What shall we create today?'],
 'БІР ИДЕЯ. ҮШ AI. ЖАҢА МҮМКІНДІК.':['ОДНА ИДЕЯ. ТРИ AI. НОВЫЕ ВОЗМОЖНОСТИ.','ONE IDEA. THREE AIs. NEW POSSIBILITIES.'],
@@ -456,7 +588,42 @@ const uiTranslations={
 'Баптаулар осы браузерде сақталады. Тегін сервер қайта іске қосылса, аудит тарихы өшуі мүмкін.':['Настройки сохраняются в этом браузере. История может исчезнуть после перезапуска бесплатного сервера.','Settings are saved in this browser. History may be lost when the free server restarts.'],
 'Жаңа аудит':['Новый аудит','New audit'], 'Аудит':['Аудит','Audit'], 'Оқытушы режимі':['Режим преподавателя','Teaching mode'], 'СОҢҒЫ АУДИТТЕР':['ПОСЛЕДНИЕ АУДИТЫ','RECENT AUDITS'], 'Әзірге аудит жоқ.':['Аудитов пока нет.','No audits yet.'], 'Тарихта нәтиже мәтіні емес, аудит туралы қысқаша дерек сақталады.':['В истории сохраняются сведения об аудите, а не полный результат.','History stores audit details, not the full result.'],
 'ИНТЕРФЕЙСТІ АҚЫЛДЫ ТАЛДАУ':['ИНТЕЛЛЕКТУАЛЬНЫЙ АНАЛИЗ ИНТЕРФЕЙСА','INTELLIGENT INTERFACE ANALYSIS'], 'Жақсы дизайн кездейсоқ':['Хороший дизайн','Good design'], 'пайда болмайды.':['не возникает случайно.','is intentional.'], 'Сайтыңызды немесе PDF макетіңізді талдап, нақты ұсыныстар мен дайын AI промпт алыңыз.':['Проанализируйте сайт или PDF и получите рекомендации и AI-промпт.','Analyze a website or PDF and receive recommendations and an AI prompt.'], 'Талдау үшін дереккөзді таңдаңыз':['Выберите источник для анализа','Choose a source to analyze'], 'Сайт / PDF сілтемесі':['Ссылка на сайт / PDF','Website / PDF link'], 'PDF құжат':['Документ PDF','PDF document'], 'САЙТ МЕКЕНЖАЙЫ':['АДРЕС САЙТА','WEBSITE ADDRESS'], 'PDF ҚҰЖАТЫ':['ДОКУМЕНТ PDF','PDF DOCUMENT'], '30 МБ ДЕЙІН · БЕТ САНЫ ШЕКТЕЛМЕГЕН':['ДО 30 МБ · ЧИСЛО СТРАНИЦ НЕ ОГРАНИЧЕНО','UP TO 30 MB · NO PAGE LIMIT'], 'Файлды осында тастаңыз немесе таңдаңыз':['Перетащите или выберите файл','Drop or choose a file'], 'ЖОБА МАҚСАТЫ':['ЦЕЛЬ ПРОЕКТА','PROJECT GOAL'], 'МІНДЕТТІ ЕМЕС':['НЕОБЯЗАТЕЛЬНО','OPTIONAL'], 'Аудитті бастау':['Начать аудит','Start audit'], 'Талдау көрінісі':['Обзор анализа','Analysis preview'], 'ТІКЕЛЕЙ ТАЛДАУ':['АНАЛИЗ','LIVE ANALYSIS'], 'Талдауға дайын':['Готово к анализу','Ready to analyze'], 'Дереккөзді қосыңыз. Нәтижелеріңіз осы жерде пайда болады.':['Добавьте источник. Здесь появятся результаты.','Add a source. Results will appear here.'], 'ТЕКСЕРУ ҰПАЙЫ':['ОЦЕНКА','AUDIT SCORE'], 'ЖІКТЕУ':['КЛАССИФИКАЦИЯ','CLASSIFICATION'], 'КӨРСЕТКІШ':['ПОКАЗАТЕЛЕЙ','METRICS'], '02 / ТАЛДАУ НӘТИЖЕСІ':['02 / РЕЗУЛЬТАТЫ АНАЛИЗА','02 / ANALYSIS RESULTS'], 'Дизайнды тереңірек түсініңіз':['Узнайте больше о дизайне','Understand your design'], 'Тексеру ұпайы':['Оценка аудита','Audit score'], 'Көрсеткіштер профилі':['Профиль показателей','Metrics profile'], 'Түс палитрасы':['Цветовая палитра','Color palette'], 'ПРОМПТ ҚҰРАСТЫРУ':['СОЗДАНИЕ ПРОМПТА','PROMPT BUILDER'], 'Жақсартуға арналған промпт':['Промпт для улучшения','Improvement prompt'], 'Барлығын көшіру':['Копировать всё','Copy all'], 'Толық промпт':['Полный промпт','Full prompt'], 'Толық промптты көшіру':['Копировать полный промпт','Copy full prompt'], 'ҰСЫНЫСТАР':['РЕКОМЕНДАЦИИ','RECOMMENDATIONS'], 'Неге назар аудару керек?':['На что обратить внимание?','What needs attention?'], 'ДАЙЫН КОД':['ГОТОВЫЙ КОД','READY CODE'], 'CSS түзету үлгісі':['Пример исправления CSS','CSS repair example'], 'СОҢҒЫ ӘРЕКЕТТЕР':['ПОСЛЕДНИЕ ДЕЙСТВИЯ','RECENT ACTIVITY'], 'Аудит тарихы':['История аудитов','Audit history']};
-const originalText=new WeakMap();function applyLanguage(){let lang=preferences.lang||'kk',index=lang==='ru'?0:1;document.documentElement.lang=lang;let walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);while(walker.nextNode()){let node=walker.currentNode,p=node.parentElement;if(!p||p.closest('script,style,#prompt-output,#full-prompt-text,#issues,#method-note,#page-details,#sidebar-history,#history,#model-table,#matrix,code,pre,textarea'))continue;let raw=originalText.get(node);if(raw===undefined){raw=node.nodeValue;originalText.set(node,raw)}let key=raw.trim().replace(/\s+/g,' '),entry=uiTranslations[key];if(entry){node.nodeValue=lang==='kk'?raw:entry[index]}}}
+function uiLanguage(){
+ return ['kk','ru','en'].includes(preferences.lang)?preferences.lang:'kk';
+}
+function uiText(value,lang=uiLanguage()){
+ const entry=uiTranslations[value.trim().replace(/\s+/g,' ')];
+ return lang==='kk'||!entry?value:value.replace(/\S(?:[\s\S]*\S)?/,entry[lang==='ru'?0:1]);
+}
+const originalText=new WeakMap();
+const originalAttributes=new WeakMap();
+function applyLanguage(){
+ const lang=uiLanguage();
+ document.documentElement.lang=lang;
+ document.title={
+  kk:'VibePrompt AI — промпт жасау және аудит',
+  ru:'VibePrompt AI — создание промптов и аудит',
+  en:'VibePrompt AI — prompt builder and audit'
+ }[lang];
+ const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+ while(walker.nextNode()){
+  const node=walker.currentNode,parent=node.parentElement;
+  if(!parent||parent.closest('#prompt-output details,script,style,#issues,#method-note,#page-details,#sidebar-history,#history,#matrix,code,pre,textarea'))continue;
+  if(!originalText.has(node))originalText.set(node,node.nodeValue);
+  const raw=originalText.get(node);
+  if(Object.hasOwn(uiTranslations,raw.trim().replace(/\s+/g,' ')))node.nodeValue=uiText(raw,lang);
+ }
+ const attributes=['aria-label','placeholder','title'];
+ document.querySelectorAll('[aria-label],[placeholder],[title]').forEach(node=>{
+  if(node.closest('#sidebar-history,#history,#issues,#page-details'))return;
+  if(!originalAttributes.has(node)){
+   originalAttributes.set(node,attributes.map(name=>node.getAttribute(name)));
+  }
+  originalAttributes.get(node).forEach((raw,index)=>{
+   if(raw!==null&&Object.hasOwn(uiTranslations,raw.trim().replace(/\s+/g,' ')))node.setAttribute(attributes[index],uiText(raw,lang));
+  });
+ });
+}
 function applyTheme(){document.body.dataset.theme=preferences.theme||'dark'}applyTheme();applyLanguage();
 function syncLanguageControls(){let lang=['kk','ru','en'].includes(preferences.lang)?preferences.lang:'kk';$('#home-language').value=lang;$('#language-choice').value=lang;$('#home-language').setAttribute('aria-label',({kk:'Интерфейс тілі',ru:'Язык интерфейса',en:'Interface language'})[lang])}
 syncLanguageControls();
@@ -689,7 +856,7 @@ function usabilityAcceptance(isSite){
  return 'ACCESSIBILITY AND USABILITY ACCEPTANCE\n'+task+' Test with 10 first-time users and no coaching. Start timing when the task is presented and stop at successful completion. Target completion in under 60 seconds and at least 9 of 10 users completing without errors. Record time, success and errors for each attempt. '+
  (isSite?'Check every button with a screen reader for its accessible name, role and applicable state. Verify the primary flow with keyboard alone, visible focus, clear error feedback and an announced completion state.':'Check the exported PDF with a screen reader for reading order, meaningful headings, image descriptions and correctly announced links or controls if present.')+' Administer the 10-item System Usability Scale after the tasks and target a mean SUS score of at least 68 out of 100. Report measured results separately from targets and mark any unrun checks as not tested.';
 }
-function fullProductionContract(isSite){
+function fullProductionContract(isSite,source='web'){
  const deliverable=isSite?
  'CREATE / ЖАСА: You are a senior UI/UX designer, digital art director and frontend engineer. Build a complete working responsive website using HTML, CSS and JavaScript, or preserve the explicitly requested existing stack. Implement all supplied or requested pages and routes, meaningful copy, navigation, accessible interactions, responsive layouts and practical run instructions. Match the existing brand, user journey and functionality. Explain unconnected services; do not claim unvisited or inaccessible pages were inspected.':
  'CREATE / ЖАСА: You are a senior UI/UX designer, presentation art director and visual designer. Create a professional editable PowerPoint presentation (.pptx) as the primary deliverable and export PDF if supported or requested. Preserve the requested slide count unless source content needs continuation slides; explain additions. Create substantive topic-specific slide content with meaningful hierarchy, typography and composition. Keep text editable and embed fonts when supported. PDF visuals are static; any PowerPoint animation must support the message and remain unobtrusive.';
@@ -698,13 +865,13 @@ function fullProductionContract(isSite){
  '2. TOPIC-LED DESIGN SYSTEM: Select five harmonious colors suited to the actual content, audience, cultural context and requested mood. Assign precise HEX values to background, contrasting surface, primary text, accent and secondary accent. Honor explicit user colors and brand; do not apply a generic light palette automatically. Define a consistent grid, spacing, readable paragraph hierarchy and high-quality use of negative space. Verify actual normal-text/background contrast at 4.5:1 and large-text contrast at 3:1; if a pair fails, adjust it before use.\n'+
  '3. TYPOGRAPHY: Choose and explicitly load a subject-appropriate Google Fonts pairing with actual available font files: for history or literature consider Noto Serif 700–800 headings + Noto Sans 400–500 body; for technology consider Space Grotesk 700 headings + Noto Sans 400–500 body; for elegant or cultural topics consider Lora 700 headings + Noto Sans 400–500 body. Choose based on the source, not these examples blindly. Verify that the specific font files and weights include every needed Kazakh Cyrillic glyph (Ә Ғ Қ Ң Ө Ұ Ү Һ І and lowercase); use Noto Serif/Noto Sans as a verified fallback for unsupported runs. Use a real italic face sparingly for emphasis; do not fake bold or distort text. Use JetBrains Mono only when needed for data or code. '+(isSite?'Set a responsive H1/H2/body hierarchy, body 16–18px with line-height about 1.6 and comfortable line lengths; test focus states and contrast.':'For 16:9 slides start around 32–44pt titles and 18–24pt body, adjusting for actual content and viewing distance; preserve readability by adding continuation slides instead of shrinking text.')+' Identify font sources and license; load and embed the real files when possible and report any limitation.\n'+
  '4. PAGE-BY-PAGE VISUAL ART DIRECTION: For every '+(isSite?'web page and its major sections':'slide')+', give a specific purpose and actual title/copy, focal point, content order, grid, text placement, chosen color roles, font sizes, visual subject and approximate image position. Vary compositions according to the meaning: asymmetric cover, image-and-text columns, cards, source-supported timeline or comparison, and spacious typographic callouts where appropriate. '+(isSite?'Implement the page-level navigation, mobile/tablet/desktop adaptation, forms and error/success/focus states; use restrained performant 3D or animation only if appropriate and provide reduced-motion behavior.':'Keep topic content legible, use consistent margins and alignments, preserve the supplied page order and deliver an editable layout; use 3D only when relevant and readable.')+' Treat inaccessible or unvisited pages as unknown rather than completed analysis.\n'+
- '5. IMAGERY: For every '+(isSite?'web page':'slide')+', identify a topic-specific photo, suitable placement, crop, caption and search terms reflecting the actual subject, place and period. When browsing is available, search appropriate sources such as Wikimedia Commons, Unsplash or Pexels; inspect each chosen asset’s original resolution, relevance, license and attribution before use. '+(isSite?'Insert the actual licensed photo when the creation tool permits.':'Choose an existing, ready-made photograph for each slide: open and inspect its source page, select the relevant licensed image and download its actual image file. Insert and embed the image bytes directly in the PowerPoint slide, then verify that the photo remains visible in both the saved PPTX and the exported PDF; do not substitute a URL, search result, description, generated image, empty box or placeholder for the photograph. Put source and attribution in notes or a credits slide, not in place of the photo.')+' Prefer genuine 4K (at least 3840×2160) or the highest genuinely available resolution; never falsely claim an image was retrieved, licensed or 4K. '+(isSite?'Clearly label AI-generated historical reconstructions; do not present them as archival evidence. If an appropriate existing photo cannot be sourced,':'Use authentic source-verified historical photographs matching the event, place and period. If a suitable photo cannot be accessed or embedded,')+' try another suitable permitted photograph and another accessible source before declaring an image unavailable; never silently replace required photographs with graphics or leave an empty photo placeholder. Avoid placing body text over busy imagery.\n'+
+ (source==='ai'?'5. IMAGERY: Apply the selected AI generation workflow below. Check each required visual for placement, relevant subject, attribution as AI-generated, and file integrity.\n': '5. IMAGERY: For every '+(isSite?'web page':'slide')+', identify a topic-specific photo, suitable placement, crop, caption and search terms reflecting the actual subject, place and period. When browsing is available, search appropriate sources such as Wikimedia Commons, Unsplash or Pexels; inspect each chosen asset’s original resolution, relevance, license and attribution before use. '+(isSite?'Insert the actual licensed photo when the creation tool permits.':'Choose an existing, ready-made photograph for each slide: open and inspect its source page, select the relevant licensed image and download its actual image file. Insert and embed the image bytes directly in the PowerPoint slide, then verify that the photo remains visible in both the saved PPTX and the exported PDF; do not substitute a URL, search result, description, generated image, empty box or placeholder for the photograph. Put source and attribution in notes or a credits slide, not in place of the photo.')+' Prefer genuine 4K (at least 3840×2160) or the highest genuinely available resolution; never falsely claim an image was retrieved, licensed or 4K. '+(isSite?'Clearly label AI-generated historical reconstructions; do not present them as archival evidence. If an appropriate existing photo cannot be sourced,':'Use authentic source-verified historical photographs matching the event, place and period. If a suitable photo cannot be accessed or embedded,')+' try another suitable permitted photograph and another accessible source before declaring an image unavailable; never silently replace required photographs with graphics or leave an empty photo placeholder. Avoid placing body text over busy imagery.\n')+
  '6. DELIVERY AND CHECKS: Actually create and deliver the requested '+(isSite?'complete working website files and any necessary setup instructions':'editable PowerPoint and, if supported or requested, PDF')+' when tools permit, rather than only describing a plan. Check content fidelity, completeness, working interactions where relevant, image sources/licenses, font/glyph rendering, layout and contrast. Distinguish checks performed from proposed checks and disclose any unavailable tools or inaccessible content; do not claim a file or check exists if not. If the response limit is reached, continue in numbered parts without losing requested sections.';
 }
 function compactVisualPolicy(isSite,medium,idea=false){
  if(!medium)return 'IMAGE POLICY: No photos or images; do not insert image placeholders. This no-image mode overrides any photo requests in the brief. Build visual interest with typography, color, spacing and '+(isSite?'CSS geometry and layouts.':'PowerPoint shapes, grids and layouts.');
  const sources=' When browsing is available, search Wikimedia Commons, Unsplash or Pexels for subject-specific images; verify the actual image, license and attribution, and insert the image itself. Never invent an asset, license or successful search. If a photo or source fails, try another candidate and accessible source using topic-specific Kazakh, Russian or English search terms. Do not generate substitute photos or automatically replace photographs with graphics; keep successfully retrieved images and embed them in the result. Prefer 4K when available, but do not reject suitable usable photos solely for lower resolution.';
- return isSite?'IMAGE POLICY: Add one relevant, licensed photo for every two content sections on each page; choose a specific subject, crop and position, provide descriptive alt text and attribution.'+sources+(idea?' Prefer real 4K photos (3840×2160 or greater) when genuinely available, otherwise use the highest verified resolution; download and include actual image files.':'')+' If retrieval is unavailable use a finished CSS composition, disclose the limitation and never leave an empty image placeholder.':'IMAGE POLICY: For every second content slide (slides 2, 4, 6, etc.), choose an existing ready-made photo matching the subject, place and period. Search Wikimedia Commons, Unsplash or Pexels; verify its source and license, download the actual image file and embed it visibly in the PowerPoint slide and any exported PDF.'+(idea?' Prefer real 4K photographs (at least 3840×2160), or the highest verified resolution actually available.':'')+' A URL, photo description, generated image or empty placeholder is not the photograph. Put attribution in notes or credits. Keep agenda and reference slides photo-free. If retrieval or embedding is unavailable, disclose the limitation and use a finished typographic composition instead of a blank box.';
+ return isSite?'IMAGE POLICY: Add one relevant, licensed photo for every two content sections on each page; choose a specific subject, crop and position, provide descriptive alt text and attribution.'+sources+(idea?' Prefer real 4K photos (3840×2160 or greater) when genuinely available, otherwise use the highest verified resolution; download and include actual image files.':'')+' Use only verified real web photos in the image slots. If retrieval remains unavailable, report the missing asset and mark the visual delivery incomplete; do not insert an empty placeholder or substitute generated art.':'IMAGE POLICY: For every second content slide (slides 2, 4, 6, etc.), choose an existing ready-made photo matching the subject, place and period. Search Wikimedia Commons, Unsplash or Pexels; verify its source and license, download the actual image file and embed it visibly in the PowerPoint slide and any exported PDF.'+(idea?' Prefer real 4K photographs (at least 3840×2160), or the highest verified resolution actually available.':'')+' A URL, photo description, generated image or empty placeholder is not the photograph. Put attribution in notes or credits. Keep agenda and reference slides photo-free. If retrieval or embedding is unavailable, disclose the limitation and use a finished typographic composition instead of a blank box.';
 }
 function realPhotoContract(isSite){
  return '\n\nMANDATORY INTERNET PHOTOGRAPH WORKFLOW — Highest priority for photography; overrides all earlier permissions to generate substitute imagery.\n'+
@@ -719,10 +886,10 @@ function ideaVisualContract(isSite){
  let actual=isSite?'Download and include actual image files in the website; render them on the page with relevant alt text and an appropriate focal crop.':'Download the actual image file and embed it as a visible image in the PowerPoint slide and any PDF export; links, search-result lists, generated substitutes and empty boxes do not count as photos.';
  return '\n\nFINAL IDEA-SPECIFIC PHOTO AND TYPOGRAPHY CONTRACT — Follow these instructions if earlier layout or imagery directions conflict.\n'+structure+'\nSelect existing photographs that genuinely match the subject, location and period. Search Wikimedia Commons, Unsplash or Pexels if browsing is available; verify source, use license and attribution. '+actual+' Prefer real 4K photographs (at least 3840×2160) when available; otherwise use the highest genuinely available resolution and never claim a lower-resolution image is 4K. If a candidate fails to download or insert, try another existing photo or accessible source; do not automatically switch to a typographic or graphic replacement. Report a concrete tool limitation only if the available alternatives cannot supply the required photo.\nTYPOGRAPHY: Use a topic-appropriate professional Google Fonts heading family with verified Kazakh glyphs in weight 700; use Noto Sans 400–500 for body, or Noto Serif 700 for editorial headings where suitable. Verify Ә, Ғ, Қ, Ң, Ө, Ұ, Ү, Һ, І and lowercase in the actual font files; use a verified Noto fallback if needed. '+(isSite?'Load the actual font files and chosen weights; use responsive H1/H2 sizes, 16–18px body, line-height 1.6, readable line lengths and 4.5:1 body contrast.':'Install or load actual font files, embed them in PPTX/PDF when supported and keep text selectable. Start with 32–44pt titles and 18–24pt body on 16:9 slides; maintain readable contrast and do not shrink text to fit.')+' Report unavailable fonts or embedding instead of pretending they are present.';
 }
-function auditVisualContract(isSite){
+function auditVisualContract(isSite,source='web'){
  return '\n\nFINAL AUDITED-SOURCE PHOTO AND TYPOGRAPHY REQUIREMENTS — These requirements override earlier conflicting imagery instructions.\n'+
- (isSite?'For every observed website page, retain its content, navigation and functionality; choose and insert subject-specific photographs into its major explanatory sections. Vary full-width photo sections, image/text columns and editorial grids according to the actual content. Implement actual image files with responsive sizes, useful alt text and visible mobile crops.':'Read the attached original PDF in full when accessible. Preserve the meaning, facts, names, dates and reading order of every readable page. For each page, including the cover and references, choose and embed a real topic-matched photograph in the redesigned PowerPoint slide and PDF export. Use photo left/text right or the reverse, with a bounded photo and a separate explanation column. Keep substantial explanations readable; do not replace source content with photo-only slides or discard facts.')+
- '\nFind existing photographs on Wikimedia Commons, Unsplash, Pexels or authoritative subject-specific archives when browsing is available. For each visual, match the actual page topic, location and period; inspect the original source, usage license, attribution and pixel dimensions. Download the actual image and insert the image bytes into the deliverable. A search phrase, image URL, photo description, generated substitute, empty frame or “photo here” label is not a photograph. Prefer genuine 4K (at least 3840×2160) when available; otherwise use the highest verified resolution without claiming it is 4K. For history of Kazakhstan, prioritize authentic relevant archival photographs and distinguish documentary evidence from reconstruction. Put source credits in notes or a reference list. If a candidate cannot be retrieved or embedded, select another existing photo and try another accessible source. Do not replace required photos with graphics by default; report concrete unresolved tool failures honestly and keep all successfully inserted photos.\n'+
+ (source==='ai'?'Preserve all verified source content and its reading order. Vary visual composition to support the subject. Use the explicitly selected AI-generation workflow below.':isSite?'For every observed website page, retain its content, navigation and functionality; choose and insert subject-specific photographs into its major explanatory sections. Vary full-width photo sections, image/text columns and editorial grids according to the actual content. Implement actual image files with responsive sizes, useful alt text and visible mobile crops.':'Read the attached original PDF in full when accessible. Preserve the meaning, facts, names, dates and reading order of every readable page. For each page, including the cover and references, choose and embed a real topic-matched photograph in the redesigned PowerPoint slide and PDF export. Use photo left/text right or the reverse, with a bounded photo and a separate explanation column. Keep substantial explanations readable; do not replace source content with photo-only slides or discard facts.')+
+ (source==='ai'?'\nMark generated imagery as illustrative.\n':'\nFind existing photographs on Wikimedia Commons, Unsplash, Pexels or authoritative subject-specific archives when browsing is available. For each visual, match the actual page topic, location and period; inspect the original source, usage license, attribution and pixel dimensions. Download the actual image and insert the image bytes into the deliverable. A search phrase, image URL, photo description, generated substitute, empty frame or “photo here” label is not a photograph. Prefer genuine 4K (at least 3840×2160) when available; otherwise use the highest verified resolution without claiming it is 4K. For history of Kazakhstan, prioritize authentic relevant archival photographs and distinguish documentary evidence from reconstruction. Put source credits in notes or a reference list. If a candidate cannot be retrieved or embedded, select another existing photo and try another accessible source. Do not replace required photos with graphics by default; report concrete unresolved tool failures honestly and keep all successfully inserted photos.\n')+
  'Use a professional topic-specific Google Fonts pairing: Noto Serif 700–800 with Noto Sans 400–500 for history/editorial material; consider Lora or Space Grotesk only after checking the actual font files support all required Kazakh glyphs. Load actual font files and weights, use real italic only for short emphasis, and embed fonts where supported. '+
  (isSite?'Use responsive heading sizes, 16–18px body, line-height 1.6, 60–70-character text measures and 4.5:1 body contrast.':'Use 32–44pt slide headings and 18–24pt body as 16:9 starting sizes; preserve selectable text, readable contrast and comfortable spacing. Verify saved PPTX and PDF visually for visible photographs, correct fonts/glyphs, cropping and text overflow when tools permit.')+
  ' Preserve the supplied audit palette and its HEX roles unless a contrast correction is necessary. Report only checks actually performed.';
@@ -745,9 +912,17 @@ function briefBlueprint(a,isSite,detail){
 }
 function chosenBriefPrompt(){
  if(generatedBriefKind==='presentation'){
-  return presentationTierPrompt(generatedBriefText,selectedLength,briefModel);
+  return presentationTierPrompt(generatedBriefText,selectedLength,briefModel,photoSource());
  }
- if(selectedLength==='full'){let original=briefPrompts[briefModel]||'';return original?original+'\n\nPROJECT-SPECIFIC BLUEPRINT\n'+briefBlueprint(analyzeBrief(generatedBriefText,generatedBriefKind),generatedBriefKind==='site',true)+fullProductionContract(generatedBriefKind==='site')+ideaVisualContract(generatedBriefKind==='site')+realPhotoContract(generatedBriefKind==='site')+'\n\n'+usabilityAcceptance(generatedBriefKind==='site'):''}
+ const source=photoSource();
+ if(selectedLength==='full'){
+  const original=briefPrompts[briefModel]||'';
+  if(!original)return '';
+  const customImages=source==='ai'
+   ?'\n\nPHOTO SOURCE — AI-generated visuals. Apply this source mode over any earlier real-photo requirement. On each requested page, alternate explanatory and visual sections. '+generatedVisualInstructions(true)
+   :ideaVisualContract(true)+realPhotoContract(true);
+  return original+'\n\nPROJECT-SPECIFIC BLUEPRINT\n'+briefBlueprint(analyzeBrief(generatedBriefText,'site'),true,true)+fullProductionContract(true,source)+customImages+'\n\n'+usabilityAcceptance(true);
+ }
  let text=generatedBriefText,a=analyzeBrief(text,generatedBriefKind),long=selectedLength==='medium',isSite=generatedBriefKind==='site';
  let colors=[...new Set([...a.hex,...(a.theme.colors.match(/#[0-9a-f]{6}\b/gi)||[])])].slice(0,5).join(', ');
  let type=a.history||a.wedding?'Noto Serif 700 headings + Noto Sans 400/500 body':'Plus Jakarta Sans 700 headings + Noto Sans 400/500 body';
@@ -758,20 +933,21 @@ function chosenBriefPrompt(){
  briefBlueprint(a,isSite,long),
  'DESIGN: Use '+colors+' as a topic-aware starting palette; preserve explicit user colors. '+(long?mediumTypography(text):type+'; load actual professional Google Fonts files and weights when supported; verify Kazakh glyphs, use genuine italic sparingly, and ensure readable contrast (4.5:1 body).'),
  isSite?'Create a clear hero, structured sections and working navigation/controls with responsive mobile layout and visible keyboard focus.':'Create distinct, readable slide compositions with grids, timelines or bento blocks; embed fonts where possible.',
- compactVisualPolicy(isSite,long,true),
+ long&&source==='ai'?'IMAGE POLICY: Include one generated visual for every two content sections on each page. '+generatedVisualInstructions(true):compactVisualPolicy(isSite,long,true),
  usabilityAcceptance(isSite),
  topic.trim(),
  long?(isSite?'Design a clear user journey with meaningful page structure, responsive interactions, visible focus, spacing hierarchy and a compact CSS token example. Clearly mark unconnected services.':'Use a clear narrative, varied layouts, 32–44pt titles and 18–24pt body as 16:9 starting points; respect the requested slide count.'):'',
  'Give substantive, specific, well-organized explanations and supporting facts appropriate to the subject. Verify claims against reliable sources when available; if facts cannot be checked, identify uncertainty instead of inventing them. Avoid a long preamble; if output is too long, continue in numbered parts.'].filter(Boolean).join('\n\n')
 }
-function documentPhotoLayout(){
+function documentPhotoLayout(kind='photo'){
+ if(kind==='visual')return 'VISUAL AND EXPLANATION LAYOUT — Keep each visual and its explanation side by side in a consistent grid. Use 40–48% of usable width for the visual and keep it under half the usable slide area, including on the cover. Maintain aspect ratio, leave a gutter, and include a short heading and 2–3 explanatory lines in the adjacent column. Vary left/right placement by topic and include a caption that identifies the subject.';
  return [
   'PHOTO AND EXPLANATION LAYOUT — This rule overrides any earlier suggestion to use a full-bleed, background, oversized or photo-only composition.',
   'For every page with a photo, use two columns within the page margins. Allocate 40–50% of the usable width to the photo and the remaining space to the explanation. The whole photo box must stay inside its column and occupy at most half of the usable page area, including on the cover. Alternate left and right placement when it improves reading order. Keep the original aspect ratio, leave a gutter, and crop only when the subject stays fully identifiable. Use readable text beside the photo, never over it.',
   'Choose the specific photograph because it explains a fact, example or place on this page. Select the relevant person, object, event, process or location, and match date and context when they matter. Skip generic stock filler and repeated photos. In the adjacent column add a short heading and 2–3 explanatory sentences or bullets: identify what the image shows and explain how it supports the page’s main point. Verify names, dates and claims. Keep the source credit separate from the explanation.'
  ].join('\n');
 }
-function presentationEditorialDesign(model,photoWorkflow){
+function presentationEditorialDesign(model,photoWorkflow,source='web'){
  if(model!=='chatgpt'&&model!=='claude')return '';
  return [
   'EDITORIAL SLIDE SYSTEM — Apply this in the exported presentation.',
@@ -779,39 +955,41 @@ function presentationEditorialDesign(model,photoWorkflow){
   'Choose the real type files and weights before composing. Use Noto Serif 700–800 + Noto Sans 400/500 for history, literature or culture; Manrope 700–800 + Inter 400/500 for technology, business or education. Validate the actual font files against Ә Ғ Қ Ң Ө Ұ Ү Һ І and their lowercase equivalents; use Noto Serif / Noto Sans when coverage or availability fails. Use a true serif italic for an occasional quotation, and JetBrains Mono sparingly for metrics or code.',
   'Set cover titles at 44–52 pt, slide titles at 34–42 pt, section labels at 22–26 pt, body at 18–22 pt and captions at 11–13 pt on 16:9 slides. Keep text editable, body contrast at least 4.5:1 and large text at least 3:1. Verify chosen font faces and glyphs in the saved deck and exported PDF when available. Preserve all essential facts by reorganizing dense material into tables or short blocks and checking text wrap and overflow.',
   photoWorkflow
-   ?'On photo slides use a picture box 40–48% of the usable width with the adjacent text column taking the remaining width after the gutter. Photos must stay at or below half the usable slide area, including on the cover. Vary the composition using a right-hand photo on the cover, an alternating left-hand photo or inset aligned to the grid on content slides, and timeline, comparison or quote modules in the text column as warranted. Give each photo a specific caption and 2–3 adjacent lines explaining the photographed subject and the slide claim it supports. Keep a separate, readable source credit in the notes or accompanying credits.'
+   ?source==='ai'?'On illustrated slides alternate a right-hand cover visual, a left-hand visual for explanation, and an inset or a timeline in the adjacent column. Identify the subject and the claim it illustrates. Keep generated art under half the slide and label it as AI-generated.':'On photo slides use a picture box 40–48% of the usable width with the adjacent text column taking the remaining width after the gutter. Photos must stay at or below half the usable slide area, including on the cover. Vary the composition using a right-hand photo on the cover, an alternating left-hand photo or inset aligned to the grid on content slides, and timeline, comparison or quote modules in the text column as warranted. Give each photo a specific caption and 2–3 adjacent lines explaining the photographed subject and the slide claim it supports. Keep a separate, readable source credit in the notes or accompanying credits.'
    :'Give each slide one dominant focal point. Vary text-only compositions across a numbered outline, two-column comparison, key fact and supporting evidence, and a compact table. Keep the selected tier’s image count at zero.'
  ].join('\n');
 }
-function presentationPhotoWorkflow(model,scope){
- if(model!=='chatgpt'&&model!=='claude'){
-  return [
-   'REQUIRED PHOTO WORKFLOW AND RELEASE CHECK — This overrides any earlier fallback that permits missing photos, text-only slides, charts, diagrams, icons, artwork or placeholders instead of required photographs.',
-   scope,
-   'GEMINI: Use the available presentation editor, including Canvas or Google Slides when supported, to insert actual photos and export the deck. Supply attached photo files as inputs whenever possible. Verify the images in the editor and again in the exported file. If the editor cannot import the chosen photos, use a file creation tool that can embed them or request the specific JPG or PNG files.',
-   '1. Acquire photos before building the final deck. For every required slide record the slide number, exact subject, source or attached filename, and the claim it illustrates. Prefer a relevant user attachment or an authentic photo already present in the supplied document. Otherwise find existing photographs from appropriate archives or photo libraries. Check reuse terms and retrieve the actual image bytes. Try alternate sources if needed. Use a suitable lower-resolution photo if 4K is unavailable. Do not generate replacements.',
-   '2. Build the PPTX using an actual embedded picture object for every required photo. A link, notes citation, drawn shape, or photo preview outside the deck does not satisfy the requirement. Keep the photo in at most half of the usable page area, with a short heading and 2–3 explanatory sentences or bullets alongside it. If the user wants a PDF, export it only after the photos have been embedded.',
-   '3. Verify each required slide. In the PPTX, check each required slide for a picture object linked to embedded image bytes, not only that the ZIP contains a media folder. Where file preview is available, inspect the saved slides or PDF to confirm the photos and text are visible. Repair missed slides and recheck. Give a concise result such as "10/10 slides with embedded photos" only after verifying it.',
-   'If an essential photo or file tool remains unavailable, keep verified assets and identify the missing slide numbers and exact photos needed. Ask for those specific image attachments or access to a file-capable mode. A text-only or partially illustrated draft is incomplete and must not be delivered as the finished photo version.'
-  ].join('\n');
- }
- const toolWorkflow=model==='chatgpt'
-  ?'ChatGPT — Use web/image search to locate the original photo and the file creation environment to retrieve and insert it. Before building the deck, run a one-slide test: download a candidate, decode it as JPEG/PNG, embed it, save a PPTX and reopen the saved slide. If search previews are visible but the script cannot fetch the file, try a direct original-file URL or another provider that can deliver the bytes to the file environment.'
-  :'Claude — Use web search to locate candidate photos and the available file/slide creation tool to download and embed them. Run a one-slide test first: the actual JPEG/PNG must be readable from the same workspace in which the slide tool builds the PPTX. A photo visible in chat, a web preview or a remote image link in an Artifact does not embed the file. If the file workspace cannot fetch a candidate, try another direct download or supported transfer into that workspace.';
+function generatedVisualInstructions(isSite){
+ return 'Generate an original, topic-specific 4K visual for each required slot with the available image-generation tool (target 3840 × 2160 or the highest supported native resolution, cropped to the image box). Use a coherent art direction across the set: consistent style, palette, lighting and level of realism. Give each visual a distinct subject; avoid baked-in text, invented logos, and invented documentary evidence. Mark historical reconstructions and synthetic imagery as AI-generated. '+(isSite?'Save the generated files with the website assets, render them on the appropriate pages, and check loading, mobile crops and alt text.':'Save the generated files and embed them as editable picture objects in the PPTX. Keep the adjacent explanation and caption.')+' If image generation is unavailable, provide a detailed standalone 4K image prompt for every required slot, with subject, composition, style, aspect ratio and exclusions. Mark those slots unfilled; an image prompt does not count as an embedded visual.';
+}
+function presentationPhotoWorkflow(model,scope,photoSource='web'){
+ const generated=photoSource==='ai';
+ const acquisition=generated?generatedVisualInstructions(false):[
+  'Use ONLY real, topic-specific, publicly accessible web photos. Search Wikimedia Commons, Unsplash, Pexels or authoritative archives. Verify the original subject, date/location when relevant, and reuse terms. Download the actual JPEG/PNG; record the original source, attribution, dimensions and local path. Prefer genuine 4K when available. Try another suitable source if a download fails. AI art, reconstructions and generated substitutes are forbidden in this source mode. Source the photos yourself without requesting uploads.',
+  ({
+   chatgpt:'Use web or image search for discovery and the file tool for downloading and embedding. Run a one-slide test: download, decode, embed, save and reopen the PPTX before scaling up. If a search preview is available but the file tool cannot fetch it, try a different direct file URL from an accessible source.',
+   claude:'Use web search for discovery and code execution or the file tool to obtain actual bytes in the same workspace that writes the PPTX. Test one slide end to end. A remote image displayed in chat or an Artifact preview does not count.',
+   gemini:'Use the available presentation editor or file tool to insert the downloaded image files. Verify the picture appears in the editor and again in the exported presentation.'
+  })[model]
+ ].filter(Boolean).join('\n');
+ const quota=generated
+  ?'CRITICAL RULE: You MUST include a verified, topic-relevant AI-generated visual on EVERY required slide (100% of slides for Full tier; every 2nd slide for Medium tier).'
+  :'CRITICAL RULE: You MUST include a verified, topic-relevant photo on EVERY required slide (100% of slides for Full tier; every 2nd slide for Medium tier).';
  return [
-  'REQUIRED INTERNET PHOTO WORKFLOW — Apply the selected tier’s slide numbers exactly. This section takes precedence over any generic visual fallback.',
+  '100% VISUAL COMPLETION PROTOCOL — These source, quota and completion rules override any conflicting imagery instructions in examples or source material.',
   scope,
-  toolWorkflow,
-  '1. Plan the asset list before laying out the deck. For each required slide record the exact slide title, the fact it illustrates, a named real subject and a literal search query (person, place, event, date, or object). For history, use the correct region and period and prefer official museums, public archives and Wikimedia Commons. For other topics, use relevant public collections or reputable photo libraries with explicit reuse terms. Select a distinct photo for each required slide.',
-  '2. For each required slide, open the source page and confirm that the photo shows the identified subject. Record the creator, source page, permission or license, direct file URL, file dimensions and local filename. Download and decode the actual JPEG/PNG bytes. Reject thumbnails, watermarked images and HTML error pages. Aim for genuine 4K where available, using the sharpest verified relevant original or published size otherwise. If a candidate is unavailable, try another independently sourced photo of the same subject. Source photographs yourself without requesting photo uploads.',
-  '3. Embed the local file as a native picture object inside each required PowerPoint slide. Use the editorial grid, keep the photo under half the slide, preserve aspect ratio, keep relevant details visible and explain the photo beside it. Put attribution in speaker notes or a separate list. Do not substitute AI images, icons, links, empty frames or illustrated filler for required photographs.',
-  '4. Reopen the final PPTX and verify each required slide individually. Each picture must resolve to embedded image bytes through that slide’s image relationship. Compare required and actual image counts, including zero-photo slides when specified. Render and inspect the deck if possible, checking visible photos, captions, glyphs, contrast and overflow. Fix failed slides before exporting the PDF or describing the deck as complete.',
-  'If web access, image retrieval or file creation remains blocked after trying alternatives, identify the exact blocked operation and slide numbers. Preserve verified image sources and completed slides. Label any partial deck as incomplete and give a numbered photo sourcing list for the affected slides. Report the verified embedded-photo count only once the final file has been checked.'
+  quota+' Stopping halfway, leaving empty image boxes, using placeholder text like [Insert photo here], or skipping later slides is strictly forbidden.',
+  '1. Before writing final slide code or assembling the deck, plan the exact visual list from slide 1 through the final slide. For each slide record the title, layout, required image count, and, where required, the subject, related fact, caption and asset file. Mark deliberately image-free slides as zero. Prepare and verify every required asset before final assembly. Use the following source policy:',
+  acquisition,
+  '2. Build every slide with its full text, layout and required embedded pictures. Do not abbreviate, summarize, or skip slides 5–N. For a long deck, work in numbered batches and assemble them into one editable PPTX. Use available tool calls for sourcing and embedding; reserve chat output for delivery and the verification summary.',
+  '3. Reopen the saved PPTX and verify every slide from 1 to N. Check that each required slide has a native picture object whose relationship resolves to actual local image bytes in the package. Count embedded pictures per slide, check zero-image slides, then render and inspect each slide for the visible image, adjacent explanation, contrast, glyphs, and overflow when possible.',
+  '4. Fix missing visuals and recheck the final file before export. Report the verified count as completed required slides / total required slides, with each unresolved slide and the specific failed operation. If sourcing, generation or file creation remains unavailable, deliver the complete numbered production specification and label any partial file incomplete. Describe no slide as complete based only on a link, a preview or an image prompt.'
  ].join('\n');
 }
-function presentationTierPrompt(text,tier,model){
+function presentationTierPrompt(text,tier,model,source='web'){
  const brief=analyzeBrief(text,'presentation');
  const pageCount=brief.count>0?brief.count:8;
+ const imagery=source==='ai'?'AI-generated visual':'real photograph';
  const photoPages=Array.from({length:Math.ceil(pageCount/2)},(_,index)=>2*index+1).join(', ');
  const textPages=Array.from({length:Math.floor(pageCount/2)},(_,index)=>2*index+2).join(', ');
  const policies={
@@ -820,30 +998,30 @@ function presentationTierPrompt(text,tier,model){
    'Use a strict reading order: clear page titles, numbered sections, nested bullet points, editable comparison tables when relevant, and text-only highlight callout boxes. Keep information density high without reducing legibility. Preserve all key facts and place definitions before evidence and conclusions.'
   ],
   medium:[
-   'IMAGE POLICY — MEDIUM: Exactly one real topic-relevant photo on each odd-numbered slide and zero images on each even-numbered slide. Count from slide 1, including the cover, agenda, and references. There are no exceptions.',
-   'PHOTO REQUIRED on slides '+photoPages+'. ZERO IMAGES on slides '+(textPages||'(none in a one-slide deck)')+'. Do not add logos, illustrations, decorative images, or backgrounds that change these counts.',
-   'For each odd-numbered slide name the exact photo subject, tie it to the actual slide topic, and embed the photo beside the explanation. For each even-numbered slide use structured text, data, and editable tables. State the slide number and whether its photo count is 1 or 0 in the production checklist.'
+   'IMAGE POLICY — MEDIUM: Exactly one topic-relevant '+imagery+' on each odd-numbered slide and zero images on each even-numbered slide. Count from slide 1, including the cover, agenda, and references. There are no exceptions.',
+   'IMAGE REQUIRED on slides '+photoPages+'. ZERO IMAGES on slides '+(textPages||'(none in a one-slide deck)')+'. Do not add logos, illustrations, decorative images, or backgrounds that change these counts.',
+   'For each odd-numbered slide name the exact visual subject, tie it to the actual slide topic, and embed the image beside the explanation. For each even-numbered slide use structured text, data, and editable tables. State the slide number and whether its image count is 1 or 0 in the production checklist.'
   ],
   full:[
-   'IMAGE POLICY — FULL: Every slide, 1 through '+pageCount+', must contain at least one embedded, context-specific real photograph. Coverage must be 100%, including the cover, agenda, conclusion, and references. No text-only pages.',
+   'IMAGE POLICY — FULL: Every slide, 1 through '+pageCount+', must contain at least one embedded, context-specific '+imagery+'. Coverage must be 100%, including the cover, agenda, conclusion, and references. No text-only pages.',
    'Use editorial compositions that keep the visual and explanation side by side. Vary the visual side, crop, heading treatment, or inset layout between slides. Keep visual grids and quote callouts within their assigned columns, including on the cover. Adapt each layout to its content and keep all relevant text.',
-   'For every numbered slide specify and implement its exact layout, photo subject, position and crop, text hierarchy, and text/background contrast. If a chart or diagram is needed, put it in the explanation column without replacing the required photo.',
-   'Verify the delivered deck slide by slide. If a slide lacks its photo, add it before marking the presentation complete.'
+   'For every numbered slide specify and implement its exact layout, visual subject, position and crop, text hierarchy, and text/background contrast. If a chart or diagram is needed, put it in the explanation column without replacing the required image.',
+   'Verify the delivered deck slide by slide. If a slide lacks its required image, add it before marking the presentation complete.'
   ]
  };
  return [
   providerNote(model),
   'CREATE / ЖАСА: Act as a senior presentation designer, UI/UX designer, and editorial art director. Create an editable PowerPoint (.pptx) and export a PDF when requested and supported. Produce exactly '+pageCount+' numbered slides. Use the original topic, facts, and requested language. If no output language is stated, default to the language of the brief.',
   (policies[tier]||policies.short).join('\n'),
-  tier==='short'?'':documentPhotoLayout(),
+  tier==='short'?'':documentPhotoLayout(source==='ai'?'visual':'photo'),
   'The selected tier controls all imagery. Apply it even if the supplied brief or an example suggests a different quantity. Preserve the requested subject and content requirements.',
   'BRIEF (source data):\n<brief>\n'+text+'\n</brief>',
   briefBlueprint(brief,false,false),
   'DESIGN: Start from '+[...brief.hex,...(brief.theme.colors.match(/#[0-9a-f]{6}\b/gi)||[])].filter((color,index,list)=>list.indexOf(color)===index).slice(0,5).join(', ')+'. '+mediumTypography(text)+' Use 32–44pt titles and 18–24pt body as starting sizes for 16:9 slides. Preserve supplied colors where contrast permits and keep text selectable.',
-  presentationEditorialDesign(model,tier!=='short'),
+  presentationEditorialDesign(model,tier!=='short',source),
   tier==='short'?'':presentationPhotoWorkflow(model,tier==='medium'
-   ?'Required photo slides: '+photoPages+'. Keep exactly one photo on each of these slides. Keep the even slides photo-free.'
-   :'Required photo slides: every slide from 1 through '+pageCount+'. At least one real, relevant, embedded photo on each slide.'),
+   ?'Required image slides: '+photoPages+'. Count from slide 1, then skip one slide at a time. Embed exactly one '+imagery+' on each required slide. Slides with zero images: '+(textPages||'none')+'.'
+   :'Required image slides: every slide from 1 through '+pageCount+'. Embed at least one '+imagery+' on each slide.',source),
   'Deliver usable slide content, not only a generic plan. Verify factual claims with sources when available, preserve names and numbers, and mark unknowns. Check every slide for reading order, overflow, contrast, and the exact image policy. If file tools are unavailable, provide the complete numbered production specification and identify what could not be delivered.',
   usabilityAcceptance(false)
  ].filter(Boolean).join('\n\n');
@@ -891,6 +1069,26 @@ async function copyWithFeedback(button,getText){
 }
 $('#language-choice').addEventListener('change',()=>{document.querySelectorAll('#brief-copy,[data-copy]').forEach(resetCopyFeedback)});
 document.querySelectorAll('#brief-copy,[data-copy]').forEach(resetCopyFeedback);
+function photoSource(){
+ return preferences.photoSource==='ai'?'ai':'web';
+}
+function syncPhotoSource(id,visible){
+ const group=$('#'+id+'-photo-source');
+ group.hidden=!visible;
+ group.querySelectorAll('input').forEach(input=>{input.checked=input.value===photoSource()});
+}
+for(const id of ['brief','audit']){
+ $$('[name="'+id+'-photo-source"]').forEach(input=>input.addEventListener('change',()=>{
+  if(!input.checked)return;
+  preferences.photoSource=input.value;
+  savePreferences();
+  syncPhotoSource('brief',selectedLength!=='short');
+  syncPhotoSource('audit',Boolean(current));
+  resetPromptCopyFeedback();
+  if(!$('#brief-result').classList.contains('hidden'))refreshBriefPrompt();
+  if(current)refreshAuditPrompt();
+ }));
+}
 function changeBriefTier(tier){
  selectedLength=tier;
  if(!$('#brief-result').classList.contains('hidden'))showBrief();
@@ -905,6 +1103,7 @@ function syncBriefTierControls(){
  $('#presentation-tiers').hidden=!presentation;
  $('#site-tier-control').hidden=presentation;
  $('#brief-size').value=selectedLength;
+ syncPhotoSource('brief',selectedLength!=='short');
  $$('[name="presentation-tier"]').forEach(input=>{input.checked=input.value===selectedLength});
 }
 
@@ -953,6 +1152,7 @@ async function optimizeDisplayedPrompt(kind, prompt, topic, model, display){
 }
 
 $('#language-choice').addEventListener('change',()=>{
+ if($('#brief-error').textContent)$('#brief-error').textContent=uiText('Жобаңызды кемінде 10 таңбамен сипаттаңыз.');
  if(!$('#brief-result').classList.contains('hidden'))refreshBriefPrompt();
  if(current)refreshAuditPrompt();
 });
@@ -965,6 +1165,7 @@ function refreshBriefPrompt(){
 }
 
 function refreshAuditPrompt(){
+ syncPhotoSource('audit',Boolean(current));
  const topic=[current?.user_goal,current?.evidence?.editorial?.title,
   ...(current?.source_headings||[]).slice(0,12).map(heading=>heading.text),
   current?.detail,current?.source_url,current?.content_text?.slice(0,2500)]
@@ -980,15 +1181,28 @@ const starters={
  startup:['presentation','Шағын бизнеске арналған қойма есебін автоматтандыратын IT стартап туралы қазақша 8 слайдтық таныстырылым жаса. Мәселені, шешімді, өнімнің жұмысын, мақсатты нарықты, бизнес моделін, бәсекелік артықшылықты және даму жоспарын көрсет. Соңғы слайдта серіктеске ұсынысты жаз. Нақты дерек жоқ тұста ойдан сан қоспа.'],
  shop:['site','Қазақстандағы шағын онлайн дүкенге қазақша лендинг жаса. Басты экранда құндылық ұсынысы мен каталог батырмасы болсын. Тауар санаттарын, танымал тауарларды, жеткізу мен қайтару шарттарын және жиі қойылатын сұрақтарды орналастыр. Телефоннан тауарды таңдау мен тапсырысқа өту оңай болсын. Баға мен пікір деректері берілмесе, үлгі екенін белгіле.']
 };
+const translatedStarters={
+ ru:{
+  portfolio:'Создай сайт-портфолио UX-дизайнера на русском языке. Добавь краткое представление, три кейса с задачей, решением и результатом, раздел «Обо мне» и контакты. Адаптируй сайт для телефона и клавиатурной навигации. Явно обозначь отсутствующие данные.',
+  startup:'Создай презентацию на русском из 8 слайдов для стартапа по автоматизации учёта товаров у малого бизнеса. Опиши проблему, решение, работу продукта, целевой рынок, бизнес-модель, преимущества и план развития. Заверши предложением для партнёров. Не выдумывай цифры.',
+  shop:'Создай лендинг на русском для небольшого интернет-магазина. Добавь понятное предложение с переходом в каталог, категории товаров, популярные позиции, условия доставки и возврата и ответы на частые вопросы. Сделай оформление заказа удобным на телефоне. Отметь демонстрационные цены и отзывы.'
+ },
+ en:{
+  portfolio:'Build an English portfolio site for a UX designer. Include a concise introduction, three case studies with the problem, solution, and outcome, an About section, and contact details. Make it mobile-friendly and keyboard-accessible. Mark missing case-study data clearly.',
+  startup:'Create an eight-slide pitch deck in English for a startup automating inventory for small businesses. Explain the problem, solution, product workflow, target market, business model, competitive advantage, and roadmap. Close with a concrete ask for partners. Do not invent figures.',
+  shop:'Build an English landing page for a small online store. Include a clear value proposition, a catalog button, product categories, featured products, delivery and return terms, and FAQs. Make mobile ordering straightforward. Mark example prices and reviews as examples.'
+ }
+};
 $$('[data-starter]').forEach(button=>button.addEventListener('click',()=>{
- const [kind,text]=starters[button.dataset.starter];
+ const [kind,fallback]=starters[button.dataset.starter];
+ const text=translatedStarters[uiLanguage()]?.[button.dataset.starter]||fallback;
  $('[data-brief-kind="'+kind+'"]').click();
  $('#brief-text').value=text;
  $('#brief-error').textContent='';
  $('#brief-text').focus();
 }));
 $$('[data-brief-model]').forEach(b=>b.addEventListener('click',()=>{briefModel=b.dataset.briefModel;showBrief()}));
-$('#brief-generate').addEventListener('click',()=>{let text=$('#brief-text').value.trim();if(text.length<10){$('#brief-error').textContent='Жобаңызды кемінде 10 таңбамен сипаттаңыз.';return}$('#brief-error').textContent='';briefPrompts=makeBrief(text,briefKind);generatedBriefText=text;generatedBriefKind=briefKind;briefModel=Object.hasOwn(AI_LINKS,preferences.ai)?preferences.ai:'chatgpt';saveAudit({kind:'BRIEF',briefKind,brief:text,prompts:briefPrompts,features:{},score:null},text);showSavedAudits();showBrief();$('#brief-result').scrollIntoView({behavior:'smooth',block:'start'})});
+$('#brief-generate').addEventListener('click',()=>{let text=$('#brief-text').value.trim();if(text.length<10){$('#brief-error').textContent=uiText('Жобаңызды кемінде 10 таңбамен сипаттаңыз.');return}$('#brief-error').textContent='';briefPrompts=makeBrief(text,briefKind);generatedBriefText=text;generatedBriefKind=briefKind;briefModel=Object.hasOwn(AI_LINKS,preferences.ai)?preferences.ai:'chatgpt';saveAudit({kind:'BRIEF',briefKind,brief:text,prompts:briefPrompts,features:{},score:null},text);showSavedAudits();showBrief();$('#brief-result').scrollIntoView({behavior:'smooth',block:'start'})});
 $('#brief-copy').addEventListener('click',()=>copyWithFeedback($('#brief-copy'),()=>$('#brief-output').textContent));
 function openAudit(kind){document.body.classList.remove('brief-mode');view('audit');document.querySelector('[data-mode="'+kind+'"]').click();$('#audit-form').scrollIntoView({behavior:'smooth',block:'center'})}
 $('#open-url-audit').addEventListener('click',()=>openAudit('URL'));$('#open-pdf-audit').addEventListener('click',()=>openAudit('PDF'));
@@ -997,7 +1211,22 @@ async function refreshHistory(){showSavedAudits();try{const rows=await fetch('/a
 
 async function loadModels(){try{let d=await fetch('/api/models').then(r=>r.json());$('#model-table').innerHTML=Object.entries(d.models).map(([name,m])=>`<tr><td>${esc(name)}</td><td>${pct(m.accuracy)}</td><td>${pct(m.precision)}</td><td>${pct(m.recall)}</td><td>${pct(m.f1)}</td></tr>`).join('');let m=d.models['Random Forest'].matrix,max=Math.max(1,...m.flat());$('#matrix').innerHTML='<div></div>'+[0,1,2,3].map(i=>`<div class="axis">${i}</div>`).join('')+m.map((row,i)=>`<div class="axis">${i}</div>`+row.map(v=>`<div style="background:rgba(111,105,244,${.12+.75*v/max})">${v}</div>`).join('')).join('')}catch{$('#model-table').innerHTML='<tr><td colspan="5">Модель деректерін жүктеу мүмкін болмады.</td></tr>'}}
 function typeText(el,text){clearInterval(typingTimer);el.textContent='';if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){el.textContent=text;return}let i=0;typingTimer=setInterval(()=>{i=Math.min(text.length,i+Math.max(5,Math.ceil(text.length/120)));el.textContent=text.slice(0,i);if(i===text.length)clearInterval(typingTimer)},12)}
-function selectedPrompt(){let original=current?.prompts?.[promptModel]||current?.prompt||'';updateAiLink('audit-ai-link',promptModel);if(!original)return '';let pdf=current?.kind==='PDF',sp=current?.site_pages,scope=pdf?'Attach the original PDF. Review all available pages and extracted content, including headings, facts, visuals and observed issues; preserve facts and page order. Identify unreadable, OCR-uncertain or truncated material and ask for the original when needed.':'Address each observed page and identified issue individually using the supplied evidence. '+(sp?'The audit collected '+(sp.pages||[]).length+' page summaries'+(sp.limited?' and found additional unvisited links':'')+(sp.errors?'; '+sp.errors+' page fetches failed':'')+'. ':'')+'Do not claim inaccessible, unvisited or dynamically hidden pages were analyzed; request missing material.';return original+'\n\nFULL COVERAGE AND DELIVERY\n'+scope+fullProductionContract(!pdf)+auditVisualContract(!pdf)+(pdf&&promptModel==='chatgpt'?'':realPhotoContract(!pdf))+(pdf?'\n\n'+documentPhotoLayout()+(['chatgpt','claude'].includes(promptModel)?'\n\n'+presentationEditorialDesign(promptModel,true):'')+'\n\n'+presentationPhotoWorkflow(promptModel,'Embed a relevant real photograph on every redesigned page, including covers and references. Preserve all source facts and page order.'):'')+'\n\n'+usabilityAcceptance(!pdf)}
+function selectedPrompt(){
+ const original=current?.prompts?.[promptModel]||current?.prompt||'';
+ updateAiLink('audit-ai-link',promptModel);
+ if(!original)return '';
+ const pdf=current.kind==='PDF', pages=current.site_pages;
+ const scope=pdf
+  ?'Attach the original PDF. Review all available pages and extracted content, including headings, facts, visuals and observed issues; preserve facts and page order. Identify unreadable, OCR-uncertain or truncated material and request the original when needed.'
+  :'Address each observed page and identified issue individually using the supplied evidence. '+(pages?'The audit collected '+(pages.pages||[]).length+' page summaries'+(pages.limited?' and found additional unvisited links':'')+(pages.errors?'; '+pages.errors+' page fetches failed':'')+'. ':'')+'Do not claim inaccessible, unvisited or dynamically hidden pages were analyzed; request missing material.';
+ const source=photoSource();
+ const visuals=pdf?[
+  documentPhotoLayout(source==='ai'?'visual':'photo'),
+  presentationEditorialDesign(promptModel,true,source),
+  presentationPhotoWorkflow(promptModel,'Full PDF redesign: determine the final slide count, preserve source facts and page order, and embed a dedicated visual on every slide, including covers and references.',source)
+ ].filter(Boolean).join('\n\n'):(source==='ai'?'PHOTO SOURCE — AI-generated visuals. Apply this rule over any earlier real-photo requirement. Cover the major explanatory sections of every audited page. '+generatedVisualInstructions(true):realPhotoContract(true));
+ return original+'\n\nFULL COVERAGE AND DELIVERY\n'+scope+fullProductionContract(!pdf,source)+auditVisualContract(!pdf,source)+'\n\n'+visuals+'\n\n'+usabilityAcceptance(!pdf);
+}
 $$('[data-prompt-model]').forEach(b=>b.addEventListener('click',()=>{promptModel=b.dataset.promptModel;$$('[data-prompt-model]').forEach(x=>{x.classList.toggle('active',x===b);x.setAttribute('aria-pressed',String(x===b))});if(current)refreshAuditPrompt()}));
 function renderPrompt(text){resetPromptCopyFeedback();clearInterval(typingTimer);let parts=(/^# 1\./m.test(text)?text.split(/(?=^# [1-5]\.)/m):text.split(/\n\n+/)).filter(part=>part.trim());$('#prompt-output').innerHTML=parts.map((part,i)=>{let lines=part.split('\n'),head=lines.shift();return `<details class="prompt-section" ${i===0?'open':''}><summary>${esc(head)}</summary><p>${esc(lines.join('\n'))}</p></details>`}).join('');$('#full-prompt-text').textContent=text;$('#full-prompt-section').classList.toggle('hidden',!text)}
 function renderPriorities(d){let list=(d.checks||[]).filter(c=>c.status==='fail');if(!list.length)list=(d.checks||[]).filter(c=>c.status==='unknown');if(!list.length && !d.checks)list=(d.issues||[]).map(x=>({status:'fail',title:'Ұсыныс',evidence:x,recommendation:''}));list=list.slice(0,3);$('#priority-card').classList.toggle('hidden',!list.length);$('#priority-items').innerHTML=list.map(c=>`<div class="priority-item"><strong>${c.status==='fail'?'Мәселе':'Тексеру керек'} · ${esc(c.title)}</strong>${esc(c.evidence)}<br>${esc(c.recommendation)}</div>`).join('')}
