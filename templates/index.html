@@ -1136,26 +1136,47 @@ function documentPhotoLayout(kind='photo'){
  ].join('\n');
 }
 function presentationEditorialDesign(model,photoWorkflow,source='web'){
+ const pdf=model==='chatgpt';
  if(model!=='chatgpt'&&model!=='claude')return '';
  return [
   'EDITORIAL SLIDE SYSTEM — Apply this in the exported presentation.',
   'Set a 16:9 slide canvas (13.33 × 7.5 in) unless the brief or source requires another aspect ratio. Align to a consistent 12-column grid with about 0.6 in side margins and 0.35 in gutters on 16:9. Keep titles on a common baseline, captions close to their subject, and all content inside the safe area.',
   'Choose the real type files and weights before composing. Use Noto Serif 700–800 + Noto Sans 400/500 for history, literature or culture; Manrope 700–800 + Inter 400/500 for technology, business or education. Validate the actual font files against Ә Ғ Қ Ң Ө Ұ Ү Һ І and their lowercase equivalents; use Noto Serif / Noto Sans when coverage or availability fails. Use a true serif italic for an occasional quotation, and JetBrains Mono sparingly for metrics or code.',
-  'Set cover titles at 44–52 pt, slide titles at 34–42 pt, section labels at 22–26 pt, body at 18–22 pt and captions at 11–13 pt on 16:9 slides. Keep text editable, body contrast at least 4.5:1 and large text at least 3:1. Verify chosen font faces and glyphs in the saved deck and exported PDF when available. Preserve all essential facts by reorganizing dense material into tables or short blocks and checking text wrap and overflow.',
+  'Set cover titles at 44–52 pt, slide titles at 34–42 pt, section labels at 22–26 pt, body at 18–22 pt and captions at 11–13 pt on 16:9 slides. Keep text '+(pdf?'selectable':'editable')+', body contrast at least 4.5:1 and large text at least 3:1. Verify chosen font faces and glyphs in the '+(pdf?'saved PDF':'saved deck and exported PDF when available')+'. Preserve all essential facts by reorganizing dense material into tables or short blocks and checking text wrap and overflow.',
   photoWorkflow
    ?source==='ai'?'On illustrated slides alternate a right-hand cover visual, a left-hand visual for explanation, and an inset or a timeline in the adjacent column. Identify the subject and the claim it illustrates. Keep generated art under half the slide and label it as AI-generated.':'On photo slides use a picture box 40–48% of the usable width with the adjacent text column taking the remaining width after the gutter. Photos must stay at or below half the usable slide area, including on the cover. Vary the composition using a right-hand photo on the cover, an alternating left-hand photo or inset aligned to the grid on content slides, and timeline, comparison or quote modules in the text column as warranted. Give each photo a specific caption and 2–3 adjacent lines explaining the photographed subject and the slide claim it supports. Keep a separate, readable source credit in the notes or accompanying credits.'
    :'Give each slide one dominant focal point. Vary text-only compositions across a numbered outline, two-column comparison, key fact and supporting evidence, and a compact table. Keep the selected tier’s image count at zero.'
  ].join('\n');
 }
-function generatedVisualInstructions(isSite){
- return 'Generate an original, topic-specific 4K visual for each required slot with the available image-generation tool (target 3840 × 2160 or the highest supported native resolution, cropped to the image box). Use a coherent art direction across the set: consistent style, palette, lighting and level of realism. Give each visual a distinct subject; avoid baked-in text, invented logos, and invented documentary evidence. Mark historical reconstructions and synthetic imagery as AI-generated. '+(isSite?'Save the generated files with the website assets, render them on the appropriate pages, and check loading, mobile crops and alt text.':'Save the generated files and embed them as editable picture objects in the PPTX. Keep the adjacent explanation and caption.')+' If image generation is unavailable, provide a detailed standalone 4K image prompt for every required slot, with subject, composition, style, aspect ratio and exclusions. Mark those slots unfilled; an image prompt does not count as an embedded visual.';
+function generatedVisualInstructions(isSite,directPdf=false){
+ return 'Generate an original, topic-specific 4K visual for each required slot with the available image-generation tool (target 3840 × 2160 or the highest supported native resolution, cropped to the image box). Use a coherent art direction across the set: consistent style, palette, lighting and level of realism. Give each visual a distinct subject; avoid baked-in text, invented logos, and invented documentary evidence. Mark historical reconstructions and synthetic imagery as AI-generated. '+(isSite?'Save the generated files with the website assets, render them on the appropriate pages, and check loading, mobile crops and alt text.':directPdf?'Save the generated files and embed them directly in the PDF. Keep the adjacent explanation and caption.':'Save the generated files and embed them as editable picture objects in the PPTX. Keep the adjacent explanation and caption.')+' If image generation is unavailable, provide a detailed standalone 4K image prompt for every required slot, with subject, composition, style, aspect ratio and exclusions. Mark those slots unfilled; an image prompt does not count as an embedded visual.';
+}
+function chatGptPdfDelivery(scope,source,withVisuals=true){
+ const generated=source==='ai';
+ const assetStep=withVisuals?[
+  scope,
+  '1. SELECT AND PREPARE THE VISUALS FIRST. Derive the complete numbered page list from the brief or source. Decide the main fact on each page and the exact subject it needs. Record each required page, photo subject, adjacent explanation, and asset path in a working checklist. Mark intentional text-only pages as zero. Secure the assets for all required pages before final layout. Do this in the same response, without sending a plan for approval or asking for photo uploads.',
+  generated
+   ?generatedVisualInstructions(false,true)
+   :'Use web or image search to select distinct, real photographs that match each page’s subject, location and period. Start with Wikimedia Commons or an authoritative archive, and use reputable public libraries such as Unsplash or Pexels when appropriate. Open the original source page, check the subject and reuse terms, download and decode a usable JPEG/PNG in the workspace where you will make the PDF. Prefer high-resolution originals, including genuine 4K when available. If an image is inaccessible, try a direct file link, a published resolution, or a relevant photo from a different source. Search previews and links alone do not count. Use only real photographs in this mode.',
+  '2. Generate the PDF directly from the page content and local image files. Embed the actual image on each required page. Keep it within half the usable page beside a short caption and 2–3 lines explaining what it shows and how it supports the page’s main point. Include a compact source credit on the relevant page or in the existing references area. Keep text selectable and embed suitable fonts when the tool supports it.'
+ ]:[
+  scope,
+  '1. Plan the numbered pages and typeset the complete content directly as a text-first PDF. Use numbered sections, comparison tables and concise callouts where useful. Include zero photos or illustrations, including on the cover. Keep text selectable and use fonts with the required glyph coverage.'
+ ];
+ return [
+  'CHATGPT PDF DELIVERY — Execute this workflow now using the available web and file tools. Return a single downloadable .pdf as the primary deliverable in the same response. Do not make a PowerPoint first or substitute a presentation outline, instructions, code, image links or a preview for the PDF.',
+  ...assetStep,
+  'FINAL CHECK: Reopen the saved PDF. Confirm that the requested pages are all present in order and that the first, last and every required page follow the visual quota. Check the actual embedded image data and visible placement, including absence of photos on pages reserved for text. Inspect font glyphs, margins, captions, and clipped or overflowing text. Repair omissions and reopen the file again. Attach or link to the actual generated PDF, then give a short verification count. For a long document work page by page or in batches in the file tool, and assemble one PDF without skipping the later pages.',
+  'If a required tool is genuinely unavailable after trying workable alternatives, identify the specific failed step and affected page numbers. Label any partial file incomplete. If PDF creation is unavailable, give the complete numbered content and layout specification and state that the PDF was not created. Never invent a download link or claim an image was embedded if the final file was not verified.'
+ ].join('\n');
 }
 function presentationPhotoWorkflow(model,scope,photoSource='web'){
+ if(model==='chatgpt')return chatGptPdfDelivery(scope,photoSource);
  const generated=photoSource==='ai';
  const acquisition=generated?generatedVisualInstructions(false):[
   'Use ONLY real, topic-specific, publicly accessible web photos. Search Wikimedia Commons, Unsplash, Pexels or authoritative archives. Verify the original subject, date/location when relevant, and reuse terms. Download the actual JPEG/PNG; record the original source, attribution, dimensions and local path. Prefer genuine 4K when available. Try another suitable source if a download fails. AI art, reconstructions and generated substitutes are forbidden in this source mode. Source the photos yourself without requesting uploads.',
   ({
-   chatgpt:'Use web or image search for discovery and the file tool for downloading and embedding. Run a one-slide test: download, decode, embed, save and reopen the PPTX before scaling up. If a search preview is available but the file tool cannot fetch it, try a different direct file URL from an accessible source.',
    claude:'Use web search for discovery and code execution or the file tool to obtain actual bytes in the same workspace that writes the PPTX. Test one slide end to end. A remote image displayed in chat or an Artifact preview does not count.',
    gemini:'Use the available presentation editor or file tool to insert the downloaded image files. Verify the picture appears in the editor and again in the exported presentation.'
   })[model]
@@ -1199,7 +1220,7 @@ function presentationTierPrompt(text,tier,model,source='web'){
  };
  return [
   providerNote(model),
-  'CREATE / ЖАСА: Act as a senior presentation designer, UI/UX designer, and editorial art director. Create an editable PowerPoint (.pptx) and export a PDF when requested and supported. Produce exactly '+pageCount+' numbered slides. Use the original topic, facts, and requested language. If no output language is stated, default to the language of the brief.',
+ 'CREATE / ЖАСА: Act as a senior presentation designer, UI/UX designer, and editorial art director. '+(model==='chatgpt'?'Create and attach a finished, downloadable PDF directly in this response. When the tier requires photos, select and secure them before assembling the PDF.':'Create an editable PowerPoint (.pptx) and export a PDF when requested and supported.')+' Produce exactly '+pageCount+' numbered slides. Use the original topic, facts, and requested language. If no output language is stated, default to the language of the brief.',
   (policies[tier]||policies.short).join('\n'),
   tier==='short'?'':documentPhotoLayout(source==='ai'?'visual':'photo'),
   'The selected tier controls all imagery. Apply it even if the supplied brief or an example suggests a different quantity. Preserve the requested subject and content requirements.',
@@ -1207,7 +1228,7 @@ function presentationTierPrompt(text,tier,model,source='web'){
   briefBlueprint(brief,false,false),
   'DESIGN: Start from '+[...brief.hex,...(brief.theme.colors.match(/#[0-9a-f]{6}\b/gi)||[])].filter((color,index,list)=>list.indexOf(color)===index).slice(0,5).join(', ')+'. '+mediumTypography(text)+' Use 32–44pt titles and 18–24pt body as starting sizes for 16:9 slides. Preserve supplied colors where contrast permits and keep text selectable.',
   presentationEditorialDesign(model,tier!=='short',source),
-  tier==='short'?'':presentationPhotoWorkflow(model,tier==='medium'
+  tier==='short'?(model==='chatgpt'?chatGptPdfDelivery('Deliver exactly '+pageCount+' pages with zero images.',source,false):''):presentationPhotoWorkflow(model,tier==='medium'
    ?'Required image slides: '+photoPages+'. Count from slide 1, then skip one slide at a time. Embed exactly one '+imagery+' on each required slide. Slides with zero images: '+(textPages||'none')+'.'
    :'Required image slides: every slide from 1 through '+pageCount+'. Embed at least one '+imagery+' on each slide.',source),
   'Deliver usable slide content, not only a generic plan. Verify factual claims with sources when available, preserve names and numbers, and mark unknowns. Check every slide for reading order, overflow, contrast, and the exact image policy. If file tools are unavailable, provide the complete numbered production specification and identify what could not be delivered.',
@@ -1408,6 +1429,18 @@ function selectedPrompt(){
   ?'Attach the original PDF. Review all available pages and extracted content, including headings, facts, visuals and observed issues; preserve facts and page order. Identify unreadable, OCR-uncertain or truncated material and request the original when needed.'
   :'Address each observed page and identified issue individually using the supplied evidence. '+(pages?'The audit collected '+(pages.pages||[]).length+' page summaries'+(pages.limited?' and found additional unvisited links':'')+(pages.errors?'; '+pages.errors+' page fetches failed':'')+'. ':'')+'Do not claim inaccessible, unvisited or dynamically hidden pages were analyzed; request missing material.';
  const source=photoSource();
+ if(pdf&&promptModel==='chatgpt'){
+  return [
+   'CREATE / ЖАСА: Produce a ready-to-download redesigned PDF directly in this response. First choose all required visuals, then create and attach the actual PDF. Preserve source facts, names, page order and requested language. Keep the existing audit palette unless a contrast adjustment is necessary.',
+   scope,
+   'Use the audit evidence below for observed issues, redesign ideas and source details. Its legacy file-format or photo instructions are subordinate to the direct PDF workflow and selected image source.',
+   original,
+   documentPhotoLayout(source==='ai'?'visual':'photo'),
+   presentationEditorialDesign(promptModel,true,source),
+   chatGptPdfDelivery('Full PDF redesign: determine the final page count from the supplied source. Include a dedicated visual on every page, including cover and references. Preserve the original page count when no different count is requested.',source),
+   usabilityAcceptance(false)
+  ].join('\n\n');
+ }
  const visuals=pdf?[
   documentPhotoLayout(source==='ai'?'visual':'photo'),
   presentationEditorialDesign(promptModel,true,source),
