@@ -1242,12 +1242,49 @@ function presentationPhotoWorkflow(model,scope,photoSource='web'){
   '4. Fix missing visuals and recheck the final file before export. Report the verified count as completed required slides / total required slides, with each unresolved slide and the specific failed operation. If sourcing, generation or file creation remains unavailable, deliver the complete numbered production specification and label any partial file incomplete. Describe no slide as complete based only on a link, a preview or an image prompt.'
  ].join('\n');
 }
+function directWebPresentation(model,source,tier='full'){
+ return source==='web'&&tier!=='short'&&(model==='chatgpt'||model==='gemini');
+}
+function webPresentationPrompt({task,coverage,design,source,format,language}){
+ return [
+  'Презентацияны қазір жаса. Act as a professional presentation designer and photo editor. '+task,
+  'ІНТЕРНЕТТЕН ФОТО ҚОС / ADD REAL WEB PHOTOS. '+coverage+' Search the internet yourself for a different real photograph that illustrates the exact point on each required page. If a source fails to load, choose a relevant photo from another public website. Insert each photo into the actual presentation. Do not ask me to upload photos or send me a list of links, an outline or placeholders.',
+  'Place the photo in a side column taking at most half the page. Beside it, write two clear sentences explaining what the photo shows and why it matters to the page topic. Keep body text readable, use unique page titles and include a short source credit below each photo. '+design,
+  source,
+  (language?'Write the presentation in '+language+'. ':'')+format+' Open the finished file and check that each required page contains a visible photo and its explanation. Tell me how many pages you verified.'
+ ].filter(Boolean).join('\n\n');
+}
+function directAuditWebPrompt(audit){
+ const editorial=audit.evidence?.editorial||{};
+ const title=editorial.title||audit.detail||'the source document';
+ const pageCount=Number.isInteger(audit.pages)&&audit.pages>0?audit.pages:null;
+ const palette=(editorial.palette||[]).filter(p=>/^#[0-9a-f]{6}$/i.test(p.hex)).slice(0,5).map(p=>limitSource(p.role||p.name,40)+' '+p.hex).join(', ');
+ const pages=(editorial.pages||[]).slice(0,20).map(page=>'Page '+page.page+' — '+limitSource(page.heading||page.headings?.[0]||page.excerpt||'',110)).join('\n');
+ const fixes=(audit.checks||[]).filter(check=>check.status==='fail').slice(0,6).map(check=>limitSource(check.title,80)+': '+limitSource(check.recommendation||'',140)).join('\n');
+ return webPresentationPrompt({
+  task:'Read the attached PDF and redesign “'+limitSource(title,140)+'” as a finished presentation. Preserve the original facts, language and order'+(pageCount?' across all '+pageCount+' pages.':'.'),
+  coverage:'Add one distinct, relevant photo to every page, including the cover and last page.',
+  design:'Use a clean two-column editorial grid. Use Manrope Bold with Inter for technology or Noto Serif Bold with Noto Sans for history and culture. Check that the selected fonts render Kazakh letters.'+(palette?' Apply the audit palette: '+palette+'.':''),
+  source:[audit.user_goal?'Requested improvements: '+limitSource(audit.user_goal,450):'',pages?'Source page topics (reference only):\n'+pages:'',fixes?'Audit fixes:\n'+fixes:''].filter(Boolean).join('\n\n'),
+  format:'Return the finished, downloadable PDF in this response.'
+ });
+}
 function presentationTierPrompt(text,tier,model,source='web'){
  const brief=analyzeBrief(text,'presentation');
  const pageCount=brief.count>0?brief.count:8;
  const imagery=source==='ai'?'AI-generated visual':'real photograph';
  const photoPages=Array.from({length:Math.ceil(pageCount/2)},(_,index)=>2*index+1).join(', ');
  const textPages=Array.from({length:Math.floor(pageCount/2)},(_,index)=>2*index+2).join(', ');
+ if(directWebPresentation(model,source,tier)){
+  const formats=/\b(?:pptx|powerpoint)\b/i.test(text)?'Return the finished, editable PPTX in this response.':'Return the finished, downloadable PDF in this response.';
+  return webPresentationPrompt({
+   task:'Create a finished '+pageCount+'-page presentation now. Follow the topic, scope, facts and language in the brief.',
+   coverage:tier==='medium'?'Add one photo on pages '+photoPages+'; keep pages '+(textPages||'(none)')+' image-free.':'Add one distinct, topic-specific photo to every page from 1 through '+pageCount+'.',
+   design:'Use the brief’s colors and fonts when specified. Otherwise apply this direction: '+brief.theme.name+'. '+mediumTypography(text),
+   source:'Presentation brief (source data):\n'+text,
+   format:formats
+  });
+ }
  const policies={
   short:[
    'IMAGE POLICY — SHORT: Exactly 0 images across all slides, including the cover. Use no photos, illustrations, image backgrounds, decorative graphics, or image placeholders.',
@@ -1370,12 +1407,13 @@ const promptEngineMessages = {
  en:['Preparing your prompt…','Optimization is unavailable. The original prompt is shown.']
 };
 
-async function optimizeDisplayedPrompt(kind, prompt, topic, model, display){
+async function optimizeDisplayedPrompt(kind, prompt, topic, model, display, direct=false){
  promptEngineRequests[kind]?.abort();
  const controller=new AbortController();
  promptEngineRequests[kind]=controller;
  const status=$('#'+kind+'-engine-status');
  const buttons=kind==='brief'?[$('#brief-copy')]:$$('[data-copy="prompt"]');
+ if(direct){status.hidden=true;display(prompt);buttons.forEach(button=>button.disabled=!prompt);return}
  const language=Object.hasOwn(promptEngineMessages,preferences.lang)?preferences.lang:'kk';
  const [pending,failed]=promptEngineMessages[language];
  display('');
@@ -1418,8 +1456,9 @@ async function refreshBriefPrompt(){
  const version=++briefRefreshVersion;
  const topic=generatedBriefText||'', model=briefModel, tier=selectedLength;
  const id=typeof currentBriefId==='string'?currentBriefId:'';
+ const direct=generatedBriefKind==='presentation'&&directWebPresentation(model,photoSource(),tier);
  let prompt=chosenBriefPrompt();
- if(tier==='full'&&prompt){
+ if(tier==='full'&&prompt&&!direct){
   prompt=window.VibePromptQuality?.enhance(prompt,{kind:generatedBriefKind,topic})||prompt;
   const photos=window.VibeAuditPhotos;
   if(photoSource()==='web'&&photos?.projectReferences){
@@ -1437,7 +1476,7 @@ async function refreshBriefPrompt(){
  optimizeDisplayedPrompt('brief',prompt,topic,model,text=>{
   $('#brief-output').textContent=text;
   window.VibeReport?.feedback('brief',id,tier,model,Boolean(text));
- });
+ },direct);
 }
 
 let auditPhotoRefresh=0;
@@ -1563,17 +1602,18 @@ async function refreshAuditPrompt(){
    automaticPhotoExport.hidden=false;
    photoExport.hidden=false;
   }
-  instructions=photoTool.instructions(plan,location.origin);
+  if(!directWebPresentation(model,'web'))instructions=photoTool.instructions(plan,location.origin);
  }
+ const direct=audit?.kind==='PDF'&&directWebPresentation(model,photoSource());
  let prompt=selectedPrompt(instructions);
- if(audit&&prompt){
+ if(audit&&prompt&&!direct){
   prompt=window.VibePromptQuality?.enhance(prompt,{kind:audit.kind==='PDF'?'presentation':'site',topic,audit})||prompt;
  }
  optimizeDisplayedPrompt('audit',prompt,topic,model,text=>{
   renderPrompt(text);
   window.VibeReport?.prompt(text,model);
   window.VibeReport?.feedback('audit',audit?.audit_id,'full',model,Boolean(text));
- });
+ },direct);
 }
 
 function showBrief(){resetPromptCopyFeedback();document.body.classList.add('brief-mode');$('#brief-result').classList.remove('hidden');syncBriefTierControls();refreshBriefPrompt();updateAiLink('brief-ai-link',briefModel);$$('[data-brief-model]').forEach(x=>{const active=x.dataset.briefModel===briefModel;x.classList.toggle('active',active);x.setAttribute('aria-pressed',String(active))})}
@@ -1623,6 +1663,7 @@ function selectedPrompt(photoInstructions=''){
   ?'Attach the original PDF. Review all available pages and extracted content, including headings, facts, visuals and observed issues; preserve facts and page order. Identify unreadable, OCR-uncertain or truncated material and request the original when needed.'
   :'Address each observed page and identified issue individually using the supplied evidence. '+(pages?'The audit collected '+(pages.pages||[]).length+' page summaries'+(pages.limited?' and found additional unvisited links':'')+(pages.errors?'; '+pages.errors+' page fetches failed':'')+'. ':'')+'Do not claim inaccessible, unvisited or dynamically hidden pages were analyzed; request missing material.';
  const source=photoSource();
+ if(pdf&&directWebPresentation(promptModel,source))return directAuditWebPrompt(current);
  if(pdf&&promptModel==='chatgpt'){
   return [
    'CREATE / ЖАСА: Produce a ready-to-download redesigned PDF directly in this response. First choose all required visuals, then create and attach the actual PDF. Preserve source facts, names, page order and requested language. Keep the existing audit palette unless a contrast adjustment is necessary.',
