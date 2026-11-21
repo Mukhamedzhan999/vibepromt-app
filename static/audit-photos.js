@@ -80,5 +80,18 @@
    ...matched.map(asset=>asset.subject+' | direct file: '+asset.imageUrl+' | alternate JPG download: '+alternateFile(asset,origin)+' | credit: '+asset.credit+' · '+asset.license+' | original source: '+asset.sourceUrl)
   ].join('\n');
  }
- window.VibeAuditPhotos={load,build,packPath,instructions,projectReferences};
+ function exportPrompt(audit,plan,catalog,language){
+  const source=audit.evidence?.editorial;
+  return [
+   'Презентацияны қазір жаса. CREATE THE COMPLETE PRESENTATION NOW. Act as a professional presentation designer and web photo editor. Read the attached PDF, write the finished content of every slide, and choose a real web photo for each slide. Use the page index and candidate catalog below as reference data.',
+   'Deliver the complete, ready-to-render presentation in this response, with the final slide text, photo selection and caption for every page. VibePrompt AI will download the chosen photos and export the presentation to PDF from the JSON payload. Return the complete JSON now.',
+   'Use web or image search to select a separate genuine web photograph for each page, including the cover and the last page. For a new photograph use its verified public direct JPEG, PNG or WebP link on https://upload.wikimedia.org/wikipedia/commons/ and name the author or source. Use a relevant catalog ID as a fallback if possible. For catalog-only selections, leave image_url and image_credit empty. Keep each caption applicable to both choices if you provide a fallback.',
+   'Return only one JSON object. Preserve page count and page order (numbered from 1). Write the document title and each page title, a concise body of 2–4 sentences grounded in the original, and a two-sentence caption explaining the photo and its connection to the page. Write all document text in '+language+'. Limit the title to 140, body to 960 and caption to 400 characters. Avoid duplicate images. Photo and ZIP uploads are unnecessary.',
+   'Required schema: {"title":"…","page_count":'+plan.length+',"pages":[{"page":1,"title":"…","body":"…","caption":"…","photo_id":"","image_url":"","image_credit":""}]}',
+   'Source title: '+JSON.stringify(clean(source?.title,140)),
+   'Page index: '+JSON.stringify(plan.map(({page,topic,asset})=>({page,topic,photo_id:asset?.id||''}))),
+   'Catalog: '+JSON.stringify(catalog.map(({id,subject,sourceUrl})=>({id,subject,sourceUrl})))
+  ].join('\n\n');
+ }
+ window.VibeAuditPhotos={load,build,packPath,instructions,projectReferences,exportPrompt};
 })();

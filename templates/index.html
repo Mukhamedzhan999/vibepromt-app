@@ -569,7 +569,15 @@ body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) .visua
 <label><input type="radio" name="audit-photo-source" value="web" checked><span>Интернеттен дайын фото</span></label>
 <label><input type="radio" name="audit-photo-source" value="ai"><span>AI арқылы жасау</span></label>
 </div>
-</fieldset><details id="audit-photo-plan" class="note" hidden><summary>Бет бойынша фото көздері</summary><div class="prompt-controls"><button type="button" id="audit-photo-download" class="copy" hidden>Фото жинағын жүктеу (.zip)</button></div><p id="audit-photo-download-status" role="status" hidden></p><ol id="audit-photo-list"></ol></details><p class="prompt-size-note">Промптты көшіріп, AI бетіне қойыңыз. PDF болса, бастапқы файлды да тіркеңіз.</p><p id="audit-engine-status" class="note" role="status" hidden></p><div class="prompt-output" id="prompt-output">Аудитті бастаңыз — сізге бейімделген промпт осы жерде пайда болады.</div><div class="note" id="prompt-grade"></div><section id="full-prompt-section" class="full-prompt hidden" aria-label="Толық промпт"><div class="prompt-head"><div><div class="mini">ДАЙЫН МӘТІН</div><h3>Таңдалған промпт</h3></div><button type="button" class="copy" data-copy="prompt">Таңдалған промптты көшіру ↗</button></div><p class="note">Таңдалған AI үшін толық промпт төменде көрсетілген.</p><pre id="full-prompt-text" class="full-prompt-text"></pre></section></section><section class="card result-side"><div class="mini">ҰСЫНЫСТАР</div><h3 style="font-size:15px;margin:5px 0 12px">Неге назар аудару керек?</h3><div id="issues" class="note">Нәтиже шыққан соң ұсыныстар көрсетіледі.</div><div class="note" id="method-note"></div><div id="page-details"></div></section>
+</fieldset><details id="audit-photo-export" class="note" hidden>
+<summary>Интернет фотоларымен PDF жасау</summary>
+<p>Фото жоспарының промптын таңдалған AI-ға бастапқы PDF-пен жіберіңіз. AI қайтарған JSON-ды осында қойыңыз. VibePrompt фотоларды жүктеп, PDF-ке кірістіреді.</p>
+<button type="button" id="photo-export-copy" class="copy">Фото жоспарының промптын көшіру</button>
+<label for="photo-export-json">AI қайтарған JSON</label>
+<textarea id="photo-export-json" rows="4" spellcheck="false" autocomplete="off"></textarea>
+<button type="button" class="copy" id="photo-export-run">Фотолары бар PDF жүктеу</button>
+<p id="photo-export-status" role="status"></p>
+</details><details id="audit-photo-plan" class="note" hidden><summary>Бет бойынша фото көздері</summary><div class="prompt-controls"><button type="button" id="audit-photo-download" class="copy" hidden>Фото жинағын жүктеу (.zip)</button></div><p id="audit-photo-download-status" role="status" hidden></p><ol id="audit-photo-list"></ol></details><p class="prompt-size-note">Промптты көшіріп, AI бетіне қойыңыз. PDF болса, бастапқы файлды да тіркеңіз.</p><p id="audit-engine-status" class="note" role="status" hidden></p><div class="prompt-output" id="prompt-output">Аудитті бастаңыз — сізге бейімделген промпт осы жерде пайда болады.</div><div class="note" id="prompt-grade"></div><section id="full-prompt-section" class="full-prompt hidden" aria-label="Толық промпт"><div class="prompt-head"><div><div class="mini">ДАЙЫН МӘТІН</div><h3>Таңдалған промпт</h3></div><button type="button" class="copy" data-copy="prompt">Таңдалған промптты көшіру ↗</button></div><p class="note">Таңдалған AI үшін толық промпт төменде көрсетілген.</p><pre id="full-prompt-text" class="full-prompt-text"></pre></section></section><section class="card result-side"><div class="mini">ҰСЫНЫСТАР</div><h3 style="font-size:15px;margin:5px 0 12px">Неге назар аудару керек?</h3><div id="issues" class="note">Нәтиже шыққан соң ұсыныстар көрсетіледі.</div><div class="note" id="method-note"></div><div id="page-details"></div></section>
 <section class="card result-wide"><div class="prompt-head"><div><div class="mini">ДАЙЫН КОД</div><h3 style="margin:5px 0 0;font-size:15px">CSS түзету үлгісі</h3></div><button type="button" class="copy" data-copy="css">Көшіру ↗</button></div><pre class="prompt-output" id="css-output">CSS үлгісі аудиттен кейін пайда болады.</pre></section><section class="card result-side"><div class="mini">СОҢҒЫ ӘРЕКЕТТЕР</div><h3 style="font-size:15px;margin:5px 0 12px">Аудит тарихы</h3><div id="history" class="history-list">Әзірге аудит жоқ.</div></section></div>
 </section>
 <section id="academic" class="academic"><div class="hero lab-hero"><div class="eyebrow">▦ &nbsp; АКАДЕМИЯЛЫҚ ЗЕРТХАНА</div><h1>Оқытушы <span>режимі.</span></h1><p>Үлгілерді салыстырыңыз, модель нәтижелерін қарап, әдістеменің шектеулерін зерттеңіз.</p></div><div class="below-head" style="margin-top:0"><div><div class="mini">01 / ДАЙЫН СЦЕНАРИЙЛЕР</div><h2>Бір басумен тексеру</h2><p>Симуляция нақты файлды немесе сайтты өңдемейді.</p></div><label class="tag">ДЕРЕККӨЗ &nbsp; <select id="demo-kind" class="select"><option value="URL">URL</option><option value="PDF">PDF</option></select></label></div><div class="lab-grid"><button class="card demo-card" data-demo="1"><span class="demo-num">01 / ЖАҚСЫ</span><h3>Жоғары деңгейлі интерфейс ↗</h3><p>Теңгерімді құрылым және айқын контраст</p></button><button class="card demo-card" data-demo="2"><span class="demo-num">02 / КОНТРАСТ</span><h3>Контраст қатесі ↗</h3><p>Оқылуы қиын мәтін және типографика</p></button><button class="card demo-card" data-demo="3"><span class="demo-num">03 / ТЫҒЫЗДЫҚ</span><h3>Мәтін тым көп ↗</h3><p>Шамадан тыс жүктелген бет</p></button></div>
@@ -578,6 +586,7 @@ body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) .visua
 <div class="lab-section lab-info"><div class="card"><div class="mini">ҚАТЕ ЖАҒДАЙЫ</div><h3>JavaScript арқылы салынатын сайт</h3><p>Браузерде көрінетін интерфейс бастапқы HTML ішінде болмауы мүмкін. Соның салдарынан толық сайт «шикі макет» деп қате жіктелуі ықтимал. Бұл — ықтимал мысал, тест жиынында тіркелген қате емес.</p></div><div class="card"><div class="mini">ЖҮЙЕ ШЕКТЕУІ</div><h3>Бұл — жуық бағалау</h3><p>PDF-тің барлық беті оқылады, ал контраст үзінділер бойынша жуық тексеріледі. OCR мәтінді қате тануы мүмкін; нақты орналасу мен толық CSS cascade толық бағаланбайды. Белгісіз мәндер ұпайға кірмейді. Синтетикалық деректердегі жоғары нәтиже нақты сайттардағы сапаны дәлелдемейді.</p></div></div></section>
 </main><footer class="shell"><div class="footer"><span><b>VibePrompt AI</b> &nbsp; / &nbsp; Интерфейсті саналы түрде жақсарт.</span><span>ОҚУ ЖОБАСЫ · 2026</span></div></footer></div>
 {% if vercel_pdf_upload %}<script src="{{ url_for('static', filename='vercel-pdf.js') }}"></script>{% endif %}
+<style>#audit-photo-export{margin-block:12px}#audit-photo-export label{display:block;margin-block:10px 4px}#photo-export-json{display:block;width:100%;margin-bottom:8px}</style>
 <script src="/static/audit-photos.js"></script>
 <script src="/static/prompt-quality.js"></script>
 <script>
@@ -630,6 +639,17 @@ applyTextScale();
 $('#open-settings').addEventListener('click',()=>{closeMenu();$('#theme-choice').value=document.body.dataset.theme||'navy';$('#language-choice').value=preferences.lang||'kk';$('#default-ai').value=promptModel;$('#settings-dialog').showModal()});
 $('#close-settings').addEventListener('click',()=>$('#settings-dialog').close());$('#close-settings-top').addEventListener('click',()=>$('#settings-dialog').close());$('#default-ai').addEventListener('change',e=>{preferences.ai=e.target.value;savePreferences();$(`[data-prompt-model="${preferences.ai}"]`).click()});
 const uiTranslations={
+'Интернет фотоларымен PDF жасау':['Создать PDF с фото из интернета','Create a PDF with web photos'],
+'Фото жоспарының промптын таңдалған AI-ға бастапқы PDF-пен жіберіңіз. AI қайтарған JSON-ды осында қойыңыз. VibePrompt фотоларды жүктеп, PDF-ке кірістіреді.':['Отправьте выбранному ИИ промпт и исходный PDF. Вставьте полученный JSON сюда. VibePrompt скачает фото и встроит их в PDF.','Send the prompt and original PDF to your selected AI. Paste its JSON response here. VibePrompt downloads and embeds the photos.'],
+'Фото жоспарының промптын көшіру':['Скопировать промпт для плана фото','Copy photo-plan prompt'],
+'AI қайтарған JSON':['JSON из ответа ИИ','JSON response from AI'],
+'Фотолары бар PDF жүктеу':['Скачать PDF с фотографиями','Download PDF with photos'],
+'Промпт көшірілді.':['Промпт скопирован.','Prompt copied.'],
+'AI қайтарған JSON мәтінін толық қойыңыз.':['Вставьте полный JSON из ответа ИИ.','Paste the full JSON response from AI.'],
+'Фотолар жүктеліп, PDF жасалып жатыр…':['Скачиваем фото и создаём PDF…','Downloading photos and building the PDF…'],
+'PDF дайын. Кірістірілген фото саны':['PDF готов. Встроено фотографий','PDF ready. Embedded photos'],
+'PDF жасау мүмкін болмады.':['Не удалось создать PDF.','Could not create the PDF.'],
+'Промптты көшіру мүмкін болмады.':['Не удалось скопировать промпт.','Could not copy the prompt.'],
 'Бет бойынша фото көздері':['Источники фото по страницам','Photo sources by page'],
 'Фото жинағын жүктеу (.zip)':['Скачать подборку фото (.zip)','Download photo pack (.zip)'],
 'Суретті ашу':['Открыть фото','Open photo'],
@@ -1412,6 +1432,36 @@ async function refreshBriefPrompt(){
 }
 
 let auditPhotoRefresh=0;
+let photoExportAudit, photoExportPrompt='', photoExportPages=0;
+const photoExport=$('#audit-photo-export'), photoPlanInput=$('#photo-export-json');
+const photoExportStatus=$('#photo-export-status');
+$('#photo-export-copy').addEventListener('click',async()=>{
+ if(!photoExportPrompt)return;
+ try{await navigator.clipboard.writeText(photoExportPrompt);photoExportStatus.textContent=uiText('Промпт көшірілді.')}
+ catch{photoExportStatus.textContent=uiText('Промптты көшіру мүмкін болмады.')}
+});
+$('#photo-export-run').addEventListener('click',async event=>{
+ const button=event.currentTarget,audit=photoExportAudit;
+ let plan;
+ try{
+  const raw=photoPlanInput.value.trim().replace(/^`{3}(?:json)?\s*/i,'').replace(/\s*`{3}$/,'');
+  plan=JSON.parse(raw);
+  if(!Array.isArray(plan?.pages)||plan.pages.length!==photoExportPages)throw Error();
+  plan.page_count=photoExportPages;
+ }catch{photoExportStatus.textContent=uiText('AI қайтарған JSON мәтінін толық қойыңыз.');photoPlanInput.focus();return}
+ button.disabled=true;
+ photoExportStatus.textContent=uiText('Фотолар жүктеліп, PDF жасалып жатыр…');
+ try{
+  const result=await fetch('/api/audit-photo-pdf',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(plan)});
+  if(!result.ok){const detail=await result.json().catch(()=>null);throw Error(detail?.error||'')}
+  if(audit!==photoExportAudit)return;
+  const url=URL.createObjectURL(await result.blob()),link=document.createElement('a');
+  link.href=url;link.download='VibePrompt-Photo-Deck.pdf';link.click();
+  setTimeout(()=>URL.revokeObjectURL(url),30000);
+  photoExportStatus.textContent=uiText('PDF дайын. Кірістірілген фото саны')+' '+result.headers.get('X-Vibe-Photo-Count')+'/'+photoExportPages+'.';
+ }catch(error){if(audit===photoExportAudit)photoExportStatus.textContent=error.message||uiText('PDF жасау мүмкін болмады.')}
+ finally{button.disabled=false}
+});
 function renderAuditPhotoPlan(plan,path){
  const details=$('#audit-photo-plan');
  const list=$('#audit-photo-list');
@@ -1460,6 +1510,8 @@ $('#audit-photo-download').addEventListener('click',async event=>{
 async function refreshAuditPrompt(){
  const version=++auditPhotoRefresh;
  const audit=current,model=promptModel;
+ if(photoExportAudit!==audit){photoPlanInput.value='';photoExportStatus.textContent='';photoExport.open=false}
+ photoExportAudit=audit;photoExportPrompt='';photoExport.hidden=true;
  syncPhotoSource('audit',Boolean(audit));
  const topic=[audit?.user_goal,audit?.evidence?.editorial?.title,
   ...(audit?.source_headings||[]).slice(0,12).map(heading=>heading.text),
@@ -1479,6 +1531,11 @@ async function refreshAuditPrompt(){
   const plan=photoTool.build(audit,catalog);
   const path=photoTool.packPath(plan);
   renderAuditPhotoPlan(plan,path);
+  photoExportPages=plan.length;
+  if(plan.length>0&&plan.length<=12){
+   photoExportPrompt=photoTool.exportPrompt(audit,plan,catalog,{kk:'Kazakh',ru:'Russian',en:'English'}[uiLanguage()]);
+   photoExport.hidden=false;
+  }
   instructions=photoTool.instructions(plan,location.origin);
  }
  let prompt=selectedPrompt(instructions);

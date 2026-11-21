@@ -25,6 +25,7 @@ import browser_audit
 import prompt_builder
 import prompt_engine
 import photo_catalog
+import photo_pdf
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(BASE, 'ui_audit_dataset.csv')
@@ -493,6 +494,22 @@ def audit_photo_pack():
         "X-Vibe-Photo-Count": str(loaded),
         "X-Vibe-Photo-Total": str(total),
         "Cache-Control": "private, max-age=86400" if loaded == total else "no-store",
+    })
+
+
+@app.post('/api/audit-photo-pdf')
+def audit_photo_pdf():
+    if request.content_length is None or request.content_length > 64 * 1024:
+        return jsonify(error="Фото жоспары 64 КБ-тан аспауы керек."), 413
+    plan = request.get_json(silent=True)
+    try:
+        pdf, count = photo_pdf.render_plan(plan)
+    except photo_pdf.PlanError as exc:
+        return jsonify(error=str(exc)), 422
+    return Response(pdf, mimetype="application/pdf", headers={
+        "Content-Disposition": 'attachment; filename="VibePrompt-Photo-Deck.pdf"',
+        "Cache-Control": "no-store",
+        "X-Vibe-Photo-Count": str(count),
     })
 
 
