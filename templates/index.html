@@ -144,10 +144,12 @@ body[data-theme='navy']{
  background:radial-gradient(ellipse at 65% 90%,#203e65 0,transparent 42%),var(--theme-bg);
 }
 body[data-theme='warm']{
- --theme-bg:#1a1311;--theme-glow:#503527;--theme-sidebar:#1a1210;--theme-top:#241916;
- --theme-panel:#32221d;--theme-panel-deep:#211915;--theme-border:#62483e;
- --theme-selected:#4b342b;--theme-muted:#d0bdb1;--theme-footer:#1a1311;
- background:radial-gradient(ellipse at 65% 90%,#493025 0,transparent 42%),var(--theme-bg);
+ --theme-bg:#0e0b09;--theme-glow:#3b2419;--theme-sidebar:#14100d;--theme-top:#17110e;
+ --theme-panel:#201711;--theme-panel-deep:#17110d;--theme-border:#61402e;
+ --theme-selected:#42281b;--theme-muted:#d5b9a6;--theme-footer:var(--theme-bg);
+ --theme-ink:#fff5ed;--theme-accent:#edac81;--theme-accent-soft:#ffd5b7;
+ --theme-action-start:#894629;--theme-action-end:#602e1b;--theme-logo-hue:126deg;
+ background:radial-gradient(ellipse at 65% 87%,var(--theme-glow),transparent 52%),var(--theme-bg);
 }
 body:before{background:radial-gradient(ellipse at 70% 35%,var(--theme-glow),transparent 55%);opacity:.42}
 body .sidebar,body[data-theme] .sidebar{background:var(--theme-sidebar);border-color:var(--theme-border)}
@@ -369,10 +371,12 @@ body .settings-modal[open]{
 }
 @media(max-width:360px){.top .brand{font-size:.75rem;gap:5px}.top .shell{padding-inline:10px;gap:6px}.top-language select{width:75px}}
 body[data-theme='burgundy']{
- --theme-bg:#1b0d15;--theme-glow:#542137;--theme-sidebar:#25101c;--theme-top:#281321;
- --theme-panel:#382030;--theme-panel-deep:#281623;--theme-border:#754254;
- --theme-selected:#553049;--theme-muted:#e0becf;--theme-footer:#1b0d15;
- background:radial-gradient(ellipse at 65% 90%,var(--theme-glow),transparent 54%),var(--theme-bg);
+ --theme-bg:#0e090b;--theme-glow:#421824;--theme-sidebar:#160d11;--theme-top:#1a0e13;
+ --theme-panel:#241218;--theme-panel-deep:#190e12;--theme-border:#6d3142;
+ --theme-selected:#47212d;--theme-muted:#e5b6bf;--theme-footer:var(--theme-bg);
+ --theme-ink:#fff3f5;--theme-accent:#ff9aa9;--theme-accent-soft:#ffd0d8;
+ --theme-action-start:#9b3048;--theme-action-end:#671d30;--theme-logo-hue:96deg;
+ background:radial-gradient(ellipse at 65% 87%,var(--theme-glow),transparent 52%),var(--theme-bg);
 }
 body[data-theme='light']{
  color-scheme:light;--theme-bg:#fff;--theme-glow:#ece8ff;--theme-sidebar:#f7f6fb;--theme-top:#fff;
@@ -395,6 +399,81 @@ body[data-theme='light'] .hero-gradient{
  background-image:linear-gradient(110deg,#5432a7,#673c99 55%,#176278);
 }
 body[data-theme='light'] .brief-card,body[data-theme='light'] .settings-card{box-shadow:0 10px 32px #35245514}
+
+/* Brown and burgundy share black surfaces and separate accent palettes. */
+body:is([data-theme='warm'],[data-theme='burgundy']){
+ --white:var(--theme-ink);--line:var(--theme-border);--muted:var(--theme-muted);--purple:var(--theme-accent);
+ color:var(--theme-ink);
+}
+body:is([data-theme='warm'],[data-theme='burgundy']) :is(.brand-icon,.splash-logo){
+ filter:hue-rotate(var(--theme-logo-hue)) saturate(.82);
+}
+body:is([data-theme='warm'],[data-theme='burgundy']) :is(.brand em,.splash-brand i,.mini,.tag,.eyebrow,.demo-num,.drop-icon,.metric-title span){
+ color:var(--theme-accent);
+}
+body:is([data-theme='warm'],[data-theme='burgundy']) .splash{background:var(--theme-bg)}
+body:is([data-theme='warm'],[data-theme='burgundy']) .side-overlay{background:color-mix(in srgb,var(--theme-bg) 80%,transparent)}
+body:is([data-theme='warm'],[data-theme='burgundy']) .splash-logo{box-shadow:0 12px 35px var(--theme-glow)}
+body:is([data-theme='warm'],[data-theme='burgundy']) :is(.brief-card,.brief-result){
+ box-shadow:0 20px 60px #0005,0 -10px 48px color-mix(in srgb,var(--theme-accent) 10%,transparent);
+}
+body:is([data-theme='warm'],[data-theme='burgundy']) .hero-gradient{
+ background-image:linear-gradient(110deg,var(--theme-accent-soft),var(--theme-accent));color:var(--theme-accent);
+}
+body:is([data-theme='warm'],[data-theme='burgundy']) .hero h1 span:not(.hero-gradient){
+ background-image:linear-gradient(110deg,var(--theme-accent-soft),var(--theme-accent));
+}
+body:is([data-theme='warm'],[data-theme='burgundy']) :is(.brief-intro .hero-headline,.settings-card label,.settings-card select,.prompt-section summary,.sidebar .side-button,.score-text strong){
+ color:var(--theme-ink);
+}
+body:is([data-theme='warm'],[data-theme='burgundy']) :is(.hero p,.brief-label,.label,.label span,.note,.prompt-size-note,.settings-card small,.side-bottom .note,.side-label,.brief-tools span,.demo-card p,.lab-info p,.empty,.score-text p,.mock-body p,.mock-stats span,.footer,.footer b){
+ color:var(--theme-muted);
+}
+body:is([data-theme='warm'],[data-theme='burgundy']) :is(input,textarea)::placeholder{color:var(--theme-muted)}
+body:is([data-theme='warm'],[data-theme='burgundy']) :is(.sidebar-top,.side-bottom,.side-history,.settings-header,.issue,.table th,.table td,.mock-bar,.mock-stats,.footer){
+ border-color:var(--theme-border);
+}
+body:is([data-theme='warm'],[data-theme='burgundy']) :is(.menu-toggle,.side-close,.copy,.prompt-controls select,.prompt-controls a,.tabs,.mock,.mock-address,.swatch,.scan-icon,.eyebrow,.full-prompt,.full-prompt-text,.prompt-output,.prompt-section,.progress-box,.priority-item,.remove-pdf,.audit-feedback button){
+ background:var(--theme-panel-deep);border-color:var(--theme-border);color:var(--theme-ink);
+}
+body:is([data-theme='warm'],[data-theme='burgundy']) :is(.brief-card textarea,.urlbox,.drop,.top-language option,.select){
+ background:var(--theme-panel-deep);border-color:var(--theme-border);color:var(--theme-ink);
+}
+body:is([data-theme='warm'],[data-theme='burgundy']) :is(.brief-card textarea,.scan-icon){box-shadow:none}
+body:is([data-theme='warm'],[data-theme='burgundy']) :is(.prompt-section p,.tabs button,.brief-types button,.brief-models button,.brief-tools button,.mock-stats b,.preview-top,.chart-box .empty-icon,.table th,.heat .axis){
+ color:var(--theme-muted);
+}
+body:is([data-theme='warm'],[data-theme='burgundy']) :is(.tabs button.active,.brief-types button.active,.brief-models button.active,.tier-card:has(input:checked),.photo-source-options input:checked+span){
+ background:var(--theme-selected);border-color:var(--theme-accent);color:var(--theme-ink);
+}
+body:is([data-theme='warm'],[data-theme='burgundy']) .top-language{
+ box-shadow:0 5px 18px #0005;
+}
+body:is([data-theme='warm'],[data-theme='burgundy']) :is(.top-language select,.brief-submit,.primary,.settings-footer .settings-close){
+ background:linear-gradient(135deg,var(--theme-action-start),var(--theme-action-end));
+ border-color:var(--theme-accent);color:var(--theme-ink);
+ box-shadow:0 7px 22px color-mix(in srgb,var(--theme-accent) 15%,transparent);
+}
+body:is([data-theme='warm'],[data-theme='burgundy']) .top-language svg{stroke:var(--theme-ink)}
+body:is([data-theme='warm'],[data-theme='burgundy']) .top-language::after{border-color:var(--theme-ink)}
+body:is([data-theme='warm'],[data-theme='burgundy']).brief-mode .sidebar .side-new{border-left-color:var(--theme-accent)}
+body:is([data-theme='warm'],[data-theme='burgundy']) :is(.history-search input,.top-language,.brief-card textarea,.urlbox,.drop,.settings-card,.tier-card,.photo-source-options label,.demo-card,.prompt-controls a):is(:hover,:focus-within){
+ border-color:var(--theme-accent);
+}
+body:is([data-theme='warm'],[data-theme='burgundy']) :is(button,a,input,textarea,select):focus-visible,
+body:is([data-theme='warm'],[data-theme='burgundy']) :is(.top-language:focus-within,.tier-card:focus-within,.photo-source-options input:focus-visible+span,#drop:focus-within){
+ outline:2px solid var(--theme-accent);outline-offset:2px;
+}
+body:is([data-theme='warm'],[data-theme='burgundy']) :is(.tier-card input,.progress-bar){accent-color:var(--theme-accent)}
+body:is([data-theme='warm'],[data-theme='burgundy']) .gauge{
+ background:conic-gradient(var(--theme-accent) calc(var(--score)*1%),var(--theme-border) 0);
+}
+body:is([data-theme='warm'],[data-theme='burgundy']) .gauge:before{background:var(--theme-panel-deep)}
+body:is([data-theme='warm'],[data-theme='burgundy']) .mock-bar i{background:var(--theme-border)}
+body:is([data-theme='warm'],[data-theme='burgundy']) .laser{
+ background:var(--theme-accent);box-shadow:0 0 22px var(--theme-accent);
+}
+body:is([data-theme='warm'],[data-theme='burgundy']) .visual-audit-banner{border-color:var(--theme-accent)}
 </style>
 <link rel="manifest" href="/static/manifest.webmanifest"><meta name="theme-color" content="#10131d"><link rel="apple-touch-icon" href="/static/vibepromt-icon-192.png"><noscript><style>.splash{display:none}</style></noscript><link rel="icon" type="image/svg+xml" href="/static/vibepromt-logo.svg"><meta name="apple-mobile-web-app-title" content="VibePrompt AI"></head>
 <body class="brief-mode">
@@ -1282,7 +1361,7 @@ $('#open-url-audit').addEventListener('click',()=>openAudit('URL'));$('#open-pdf
 
 async function refreshHistory(){showSavedAudits();try{const rows=await fetch('/api/history').then(r=>r.json());$('#history').innerHTML=rows.length?rows.slice(0,5).map(r=>`<div class="history-row"><span>${esc(r.kind)}${r.kind==='PDF'?` · ${r.size_mb} МБ · ${r.pages} бет`:''}<br><small>${esc(r.source)}</small></span><b>${r.score < 0 || r.class_id === -2 ? '—' : r.score}${r.class_id === -2 ? '<br><small>Ескі баға көрсетілмейді</small>' : r.class_id >= 0 ? '<br><small>Ескі әдіс</small>' : ''}</b></div>`).join(''):'Әзірге аудит жоқ.'}catch{}}
 
-async function loadModels(){try{let d=await fetch('/api/models').then(r=>r.json());$('#model-table').innerHTML=Object.entries(d.models).map(([name,m])=>`<tr><td>${esc(name)}</td><td>${pct(m.accuracy)}</td><td>${pct(m.precision)}</td><td>${pct(m.recall)}</td><td>${pct(m.f1)}</td></tr>`).join('');let m=d.models['Random Forest'].matrix,max=Math.max(1,...m.flat());$('#matrix').innerHTML='<div></div>'+[0,1,2,3].map(i=>`<div class="axis">${i}</div>`).join('')+m.map((row,i)=>`<div class="axis">${i}</div>`+row.map(v=>`<div style="background:rgba(111,105,244,${.12+.75*v/max})">${v}</div>`).join('')).join('')}catch{$('#model-table').innerHTML='<tr><td colspan="5">Модель деректерін жүктеу мүмкін болмады.</td></tr>'}}
+async function loadModels(){try{let d=await fetch('/api/models').then(r=>r.json());$('#model-table').innerHTML=Object.entries(d.models).map(([name,m])=>`<tr><td>${esc(name)}</td><td>${pct(m.accuracy)}</td><td>${pct(m.precision)}</td><td>${pct(m.recall)}</td><td>${pct(m.f1)}</td></tr>`).join('');let m=d.models['Random Forest'].matrix,max=Math.max(1,...m.flat());$('#matrix').innerHTML='<div></div>'+[0,1,2,3].map(i=>`<div class="axis">${i}</div>`).join('')+m.map((row,i)=>`<div class="axis">${i}</div>`+row.map(v=>`<div style="background:color-mix(in srgb,var(--theme-accent,#6f69f4) ${(12+75*v/max).toFixed(2)}%,transparent)">${v}</div>`).join('')).join('')}catch{$('#model-table').innerHTML='<tr><td colspan="5">Модель деректерін жүктеу мүмкін болмады.</td></tr>'}}
 function typeText(el,text){clearInterval(typingTimer);el.textContent='';if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){el.textContent=text;return}let i=0;typingTimer=setInterval(()=>{i=Math.min(text.length,i+Math.max(5,Math.ceil(text.length/120)));el.textContent=text.slice(0,i);if(i===text.length)clearInterval(typingTimer)},12)}
 function selectedPrompt(){
  const original=current?.prompts?.[promptModel]||current?.prompt||'';
@@ -1324,13 +1403,13 @@ function render(d){
  }else{$('#score-content').innerHTML=`<div class="empty"><div class="empty-icon">◌</div><strong>Көрсеткіш өлшенбеді</strong><p>${esc(d.assessment_note||'Дерек жеткіліксіз.')}</p><span>Тексеру қамтуы: ${d.coverage||0}%</span></div>`}
  let f=d.features; const metrics=[['Контраст',f.contrast_ratio,':1'],['Бос кеңістік',f.whitespace_ratio,'%'],['Мәтін',f.text_density,d.kind==='PDF'?' сөз/бет':(d.rendered?' сөз · рендер':' сөз · HTML')],['Қаріп',f.font_variety,' түр'],['CTA',f.cta_presence,''],['Иерархия',f.visual_hierarchy_score,'/100']];
  $('#radar-empty').classList.add('hidden'); $('#radar-box').classList.remove('hidden'); if(radarChart){radarChart.destroy();radarChart=null}
- $('#radar-box').innerHTML='<div style="display:grid;gap:6px;margin-top:14px">'+metrics.map(([label,value,unit])=>`<div style="display:flex;justify-content:space-between;gap:8px;border-bottom:1px solid #252a3a;padding:4px 0;font-size:11px"><span style="color:#a4adbf">${esc(label)}</span><b style="color:${value==null?'#9299ab':'#e5e7ff'}">${value==null?'Өлшенбеді':esc(value)+esc(unit)}</b></div>`).join('')+'</div>';
+ $('#radar-box').innerHTML='<div style="display:grid;gap:6px;margin-top:14px">'+metrics.map(([label,value,unit])=>`<div style="display:flex;justify-content:space-between;gap:8px;border-bottom:1px solid var(--theme-border,#252a3a);padding:4px 0;font-size:11px"><span style="color:var(--theme-muted,#a4adbf)">${esc(label)}</span><b style="color:${value==null?'var(--theme-muted,#9299ab)':'var(--white,#e5e7ff)'}">${value==null?'Өлшенбеді':esc(value)+esc(unit)}</b></div>`).join('')+'</div>';
  $('#palette').className='';let palette=(d.palette||[]);$('#palette').innerHTML=(palette.length?'<div class="palette-list">'+palette.map(c=>`<div class="swatch"><i style="background:${esc(c)}"></i><b>${esc(c.toUpperCase())}</b></div>`).join('')+'</div>':'<div class="note">Түстер табылмады.</div>')+'<div class="contrast-tag">'+(f.contrast_ratio==null?'КОНТРАСТ ӨЛШЕНБЕДІ':'ЕҢ ТӨМЕН ӨЛШЕНГЕН ҮЛГІ · '+f.contrast_ratio+':1 · ШЕК МӘТІН ӨЛШЕМІНЕ ТӘУЕЛДІ')+'</div>';
  refreshAuditPrompt();$('#prompt-grade').textContent=d.prompt_grade?'Бастапқы промпт бағасы: '+d.prompt_grade+' (оқу үлгісі)':'Бастапқы промпт берілмеді.';$('#css-output').textContent=d.css;
  if(d.checks){let order={fail:0,unknown:1,pass:2};let checks=[...d.checks].sort((a,b)=>order[a.status]-order[b.status]);$('#issues').innerHTML='<details class="issue-details"><summary>Барлық тексеруді көрсету ('+checks.length+')</summary>'+checks.map(c=>`<div class="issue"><strong style="color:${c.status==='fail'?'#ffaaa5':c.status==='unknown'?'#f5ca7d':'#7de2bd'}">${c.status==='fail'?'МӘСЕЛЕ':c.status==='unknown'?'ТЕКСЕРІЛМЕДІ':'ТАБЫЛДЫ'} · ${esc(c.title)}</strong><br><span>${esc(c.evidence)}</span><br><span style="color:#d0d6e2">${esc(c.recommendation)}</span></div>`).join('')+'</details>';$('#method-note').textContent=(d.model_prediction?'Нақты сайт моделі болжамы: '+d.model_prediction.class_name+' ('+d.model_prediction.confidence+'%). '+d.model_prediction.note+' ':'')+d.assessment_note+' '+d.note}
  else{$('#issues').innerHTML=d.issues.map(x=>`<div class="issue">↗ &nbsp; ${esc(x)}</div>`).join('');$('#method-note').textContent=d.note}
  let pageRows=d.kind==='PDF' && d.evidence && Array.isArray(d.evidence.page_results)?d.evidence.page_results:[];
- $('#page-details').innerHTML=pageRows.length?`<details style="margin-top:16px"><summary style="cursor:pointer;color:#c4c7ff;font-weight:700">Әр беттің нәтижесі (${pageRows.length})</summary><div style="max-height:380px;overflow:auto;margin-top:10px">${pageRows.map(p=>`<div class="issue"><strong>${p.page}-бет · ${p.words==null?'сөз саны белгісіз':p.words+' сөз'}</strong><br>${esc(p.text_status)}<br>${p.text_excerpt?'<span style="color:#d0d6e2">Үзінді: '+esc(p.text_excerpt)+'</span><br>':''}Сурет: ${p.image_count||0}; контраст үлгісі: ${p.contrast_samples}; төмен контраст: ${p.low_contrast}</div>`).join('')}</div></details>`:'';
+ $('#page-details').innerHTML=pageRows.length?`<details style="margin-top:16px"><summary style="cursor:pointer;color:var(--theme-accent,#c4c7ff);font-weight:700">Әр беттің нәтижесі (${pageRows.length})</summary><div style="max-height:380px;overflow:auto;margin-top:10px">${pageRows.map(p=>`<div class="issue"><strong>${p.page}-бет · ${p.words==null?'сөз саны белгісіз':p.words+' сөз'}</strong><br>${esc(p.text_status)}<br>${p.text_excerpt?'<span style="color:#d0d6e2">Үзінді: '+esc(p.text_excerpt)+'</span><br>':''}Сурет: ${p.image_count||0}; контраст үлгісі: ${p.contrast_samples}; төмен контраст: ${p.low_contrast}</div>`).join('')}</div></details>`:'';
  refreshHistory();
 }
 const PDF_ANALYSIS_TIMEOUT=8*60*1000;
