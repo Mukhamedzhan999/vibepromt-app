@@ -44,6 +44,7 @@
   return rows.sort((a,b)=>a.number-b.number).map(row=>({
    page:row.number,
    topic:row.titleLine||clean(row.excerpt,120)||title,
+   excerpt:row.excerpt,
    asset:assigned.get(row.number)||null
   }));
  }
@@ -93,5 +94,34 @@
    'Catalog: '+JSON.stringify(catalog.map(({id,subject,sourceUrl})=>({id,subject,sourceUrl})))
   ].join('\n\n');
  }
- window.VibeAuditPhotos={load,build,packPath,instructions,projectReferences,exportPrompt};
+ const subjects={
+  'it-lab':['компьютерлік оқу сыныбы','учебный компьютерный класс','a computer classroom'],
+  'daily-devices':['ноутбук пен смартфон','ноутбук и смартфон','a laptop and a smartphone'],
+  processor:['компьютер процессоры','компьютерный процессор','a computer processor'],
+  'software-linux':['Linux орнатылған ноутбук','ноутбук с Linux','a laptop running Linux'],
+  'web-servers':['серверлік сөредегі жабдық','оборудование в серверной стойке','equipment in a server rack'],
+  programming:['экранда бағдарлама коды көрсетілген ноутбук','ноутбук с кодом на экране','a laptop displaying source code'],
+  'it-careers':['серверлік жабдықпен жұмыс істеп тұрған маман','специалист за работой с серверным оборудованием','a technician working with server equipment'],
+  'security-key':['екі факторлы растауға арналған қауіпсіздік кілті','аппаратный ключ двухфакторной аутентификации','a hardware security key for two-factor authentication'],
+  yasawi:['Қожа Ахмет Ясауи кесенесі','мавзолей Ходжи Ахмеда Ясави','the Mausoleum of Khoja Ahmed Yasawi'],
+  charyn:['Шарын шатқалы','Чарынский каньон','Charyn Canyon'],
+  bookshelf:['кітап сөресі','книжный стеллаж','a bookshelf']
+ };
+ function draft(audit,plan,language){
+  const labels={
+   kk:{n:0, deck:'Құжат',page:i=>i+'-бет',caption:(subject,topic)=>'Фотода '+subject+' көрсетілген. Бұл — «'+topic+'» бөліміндегі тақырыптың өмірдегі көрінісі.'},
+   ru:{n:1, deck:'Документ',page:i=>'Страница '+i,caption:(subject,topic)=>'На фото — '+subject+'. Это наглядный пример к разделу «'+topic+'».'},
+   en:{n:2, deck:'Document',page:i=>'Page '+i,caption:(subject,topic)=>'The photo shows '+subject+'. It illustrates the topic covered in “'+topic+'”.'}
+  }[language];
+  const title=clean(audit.evidence?.editorial?.title,140)||plan[0]?.topic||labels.deck;
+  return {title,page_count:plan.length,pages:plan.map(row=>{
+   const topic=clean(row.topic,125)||labels.page(row.page);
+   const subject=subjects[row.asset?.id]?.[labels.n]||row.asset?.subject;
+   const text=row.excerpt;
+   const stop=text.slice(0,960).lastIndexOf('. ');
+   const body=text.length<=960?text:stop>=520?text.slice(0,stop+1):clean(text,950).replace(/\s+\S*$/,'')+'…';
+   return {page:row.page,title:topic,body,caption:subject?labels.caption(subject,topic):'',photo_id:row.asset?.id||''};
+  })};
+ }
+ window.VibeAuditPhotos={load,build,packPath,instructions,projectReferences,exportPrompt,draft};
 })();

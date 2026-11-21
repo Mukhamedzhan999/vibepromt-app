@@ -501,16 +501,35 @@ def audit_photo_pack():
 def audit_photo_pdf():
     if request.content_length is None or request.content_length > 64 * 1024:
         return jsonify(error="Фото жоспары 64 КБ-тан аспауы керек."), 413
-    plan = request.get_json(silent=True)
+    payload = request.get_json(silent=True)
+    automatic = isinstance(payload, dict) and "draft" in payload
+    plan = payload["draft"] if automatic else payload
     try:
-        pdf, count = photo_pdf.render_plan(plan)
+        if automatic:
+            photo_pdf.validate_plan(plan)
+        provider = payload.get("provider") if automatic else None
+        provider = provider if isinstance(provider, str) else None
+        ready, method = photo_pdf.prepare_plan(plan, provider, payload.get("language")) if automatic else (plan, "manual")
+        try:
+            pdf, count = photo_pdf.render_plan(ready)
+        except photo_pdf.PlanError:
+            if ready is plan:
+                raise
+            pdf, count = photo_pdf.render_plan(plan)
+            method = "catalog"
     except photo_pdf.PlanError as exc:
         return jsonify(error=str(exc)), 422
     return Response(pdf, mimetype="application/pdf", headers={
         "Content-Disposition": 'attachment; filename="VibePrompt-Photo-Deck.pdf"',
         "Cache-Control": "no-store",
         "X-Vibe-Photo-Count": str(count),
+        "X-Vibe-Photo-Method": method,
     })
+
+
+@app.get('/api/audit-photo-providers')
+def audit_photo_providers():
+    return jsonify(providers=photo_pdf.configured_providers())
 
 
 @app.get('/api/models')

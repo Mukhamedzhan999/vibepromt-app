@@ -569,7 +569,11 @@ body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) .visua
 <label><input type="radio" name="audit-photo-source" value="web" checked><span>Интернеттен дайын фото</span></label>
 <label><input type="radio" name="audit-photo-source" value="ai"><span>AI арқылы жасау</span></label>
 </div>
-</fieldset><details id="audit-photo-export" class="note" hidden>
+</fieldset><div id="photo-export-one-click" class="prompt-controls" hidden>
+<button type="button" class="copy" id="photo-export-auto">Фотолары бар PDF жасау</button>
+<span id="photo-export-mode" class="note"></span>
+</div><p id="photo-export-auto-status" class="note" role="status" hidden></p>
+<details id="audit-photo-export" class="note" hidden>
 <summary>Интернет фотоларымен PDF жасау</summary>
 <p>Фото жоспарының промптын таңдалған AI-ға бастапқы PDF-пен жіберіңіз. AI қайтарған JSON-ды осында қойыңыз. VibePrompt фотоларды жүктеп, PDF-ке кірістіреді.</p>
 <button type="button" id="photo-export-copy" class="copy">Фото жоспарының промптын көшіру</button>
@@ -587,7 +591,7 @@ body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) .visua
 </main><footer class="shell"><div class="footer"><span><b>VibePrompt AI</b> &nbsp; / &nbsp; Интерфейсті саналы түрде жақсарт.</span><span>ОҚУ ЖОБАСЫ · 2026</span></div></footer></div>
 {% if vercel_pdf_upload %}<script src="{{ url_for('static', filename='vercel-pdf.js') }}"></script>{% endif %}
 <style>#audit-photo-export{margin-block:12px}#audit-photo-export label{display:block;margin-block:10px 4px}#photo-export-json{display:block;width:100%;margin-bottom:8px}</style>
-<script src="/static/audit-photos.js"></script>
+<script src="/static/audit-photos.js?v=2"></script>
 <script src="/static/prompt-quality.js"></script>
 <script>
 let mode='URL', radarChart=null, current=null, typingTimer=null, promptModel='chatgpt';
@@ -639,6 +643,11 @@ applyTextScale();
 $('#open-settings').addEventListener('click',()=>{closeMenu();$('#theme-choice').value=document.body.dataset.theme||'navy';$('#language-choice').value=preferences.lang||'kk';$('#default-ai').value=promptModel;$('#settings-dialog').showModal()});
 $('#close-settings').addEventListener('click',()=>$('#settings-dialog').close());$('#close-settings-top').addEventListener('click',()=>$('#settings-dialog').close());$('#default-ai').addEventListener('change',e=>{preferences.ai=e.target.value;savePreferences();$(`[data-prompt-model="${preferences.ai}"]`).click()});
 const uiTranslations={
+ 'Фотолары бар PDF жасау':['Создать PDF с фотографиями','Create PDF with photos'],
+'PDF мәтіні мен интернет каталогындағы фотолар қолданылады.':['Будут использованы текст PDF и фотографии из интернет-каталога.','Uses the PDF text and photos from the web catalog.'],
+'Бапталған AI-ға PDF-тен оқылған мәтін жіберіледі.':['Текст из PDF будет передан выбранному ИИ.','Text extracted from the PDF is sent to the selected AI.'],
+'Кей бетке мәтін немесе сәйкес каталог фотосы табылмады:':['Не найден текст или подходящее фото для страниц:','Missing text or a matching catalog photo on pages:'],
+'Каталог пен PDF мәтіні':['Каталог и текст PDF','Catalog and PDF text'],
 'Интернет фотоларымен PDF жасау':['Создать PDF с фото из интернета','Create a PDF with web photos'],
 'Фото жоспарының промптын таңдалған AI-ға бастапқы PDF-пен жіберіңіз. AI қайтарған JSON-ды осында қойыңыз. VibePrompt фотоларды жүктеп, PDF-ке кірістіреді.':['Отправьте выбранному ИИ промпт и исходный PDF. Вставьте полученный JSON сюда. VibePrompt скачает фото и встроит их в PDF.','Send the prompt and original PDF to your selected AI. Paste its JSON response here. VibePrompt downloads and embeds the photos.'],
 'Фото жоспарының промптын көшіру':['Скопировать промпт для плана фото','Copy photo-plan prompt'],
@@ -1432,7 +1441,9 @@ async function refreshBriefPrompt(){
 }
 
 let auditPhotoRefresh=0;
-let photoExportAudit, photoExportPrompt='', photoExportPages=0;
+let photoExportAudit, photoExportPrompt='', photoExportPages=0, photoExportDraft;
+const photoProviders=fetch('/api/audit-photo-providers').then(r=>r.ok?r.json():null).then(data=>data?.providers||[]).catch(()=>[]);
+const automaticPhotoExport=$('#photo-export-one-click'), automaticPhotoStatus=$('#photo-export-auto-status');
 const photoExport=$('#audit-photo-export'), photoPlanInput=$('#photo-export-json');
 const photoExportStatus=$('#photo-export-status');
 $('#photo-export-copy').addEventListener('click',async()=>{
@@ -1440,8 +1451,31 @@ $('#photo-export-copy').addEventListener('click',async()=>{
  try{await navigator.clipboard.writeText(photoExportPrompt);photoExportStatus.textContent=uiText('Промпт көшірілді.')}
  catch{photoExportStatus.textContent=uiText('Промптты көшіру мүмкін болмады.')}
 });
-$('#photo-export-run').addEventListener('click',async event=>{
- const button=event.currentTarget,audit=photoExportAudit;
+async function downloadPhotoPdf(button,status,body,automatic){
+ const audit=photoExportAudit;
+ button.disabled=true;status.hidden=false;
+ status.textContent=uiText('Фотолар жүктеліп, PDF жасалып жатыр…');
+ try{
+  const result=await fetch('/api/audit-photo-pdf',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  if(!result.ok){const detail=await result.json().catch(()=>null);throw Error(detail?.error||'')}
+  const file=await result.blob();
+  if(audit!==photoExportAudit)return;
+  const url=URL.createObjectURL(file),link=document.createElement('a');
+  link.href=url;link.download='VibePrompt-Photo-Deck.pdf';link.click();
+  setTimeout(()=>URL.revokeObjectURL(url),30000);
+  const method=result.headers.get('X-Vibe-Photo-Method');
+  const label={chatgpt:'ChatGPT',gemini:'Gemini',catalog:uiText('Каталог пен PDF мәтіні')}[method];
+  status.textContent=uiText('PDF дайын. Кірістірілген фото саны')+' '+result.headers.get('X-Vibe-Photo-Count')+'/'+photoExportPages+'.'+(automatic&&label?' '+label+'.':'');
+ }catch(error){if(audit===photoExportAudit)status.textContent=error.message||uiText('PDF жасау мүмкін болмады.')}
+ finally{button.disabled=false}
+}
+$('#photo-export-auto').addEventListener('click',event=>{
+ if(!photoExportDraft)return;
+ const missing=photoExportDraft.pages.filter(page=>!page.photo_id||!page.body).map(page=>page.page);
+ if(missing.length){automaticPhotoStatus.hidden=false;automaticPhotoStatus.textContent=uiText('Кей бетке мәтін немесе сәйкес каталог фотосы табылмады:')+' '+missing.join(', ')+'.';return}
+ downloadPhotoPdf(event.currentTarget,automaticPhotoStatus,{draft:photoExportDraft,provider:promptModel,language:uiLanguage()},true);
+});
+$('#photo-export-run').addEventListener('click',event=>{
  let plan;
  try{
   const raw=photoPlanInput.value.trim().replace(/^`{3}(?:json)?\s*/i,'').replace(/\s*`{3}$/,'');
@@ -1449,18 +1483,7 @@ $('#photo-export-run').addEventListener('click',async event=>{
   if(!Array.isArray(plan?.pages)||plan.pages.length!==photoExportPages)throw Error();
   plan.page_count=photoExportPages;
  }catch{photoExportStatus.textContent=uiText('AI қайтарған JSON мәтінін толық қойыңыз.');photoPlanInput.focus();return}
- button.disabled=true;
- photoExportStatus.textContent=uiText('Фотолар жүктеліп, PDF жасалып жатыр…');
- try{
-  const result=await fetch('/api/audit-photo-pdf',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(plan)});
-  if(!result.ok){const detail=await result.json().catch(()=>null);throw Error(detail?.error||'')}
-  if(audit!==photoExportAudit)return;
-  const url=URL.createObjectURL(await result.blob()),link=document.createElement('a');
-  link.href=url;link.download='VibePrompt-Photo-Deck.pdf';link.click();
-  setTimeout(()=>URL.revokeObjectURL(url),30000);
-  photoExportStatus.textContent=uiText('PDF дайын. Кірістірілген фото саны')+' '+result.headers.get('X-Vibe-Photo-Count')+'/'+photoExportPages+'.';
- }catch(error){if(audit===photoExportAudit)photoExportStatus.textContent=error.message||uiText('PDF жасау мүмкін болмады.')}
- finally{button.disabled=false}
+ downloadPhotoPdf(event.currentTarget,photoExportStatus,plan,false);
 });
 function renderAuditPhotoPlan(plan,path){
  const details=$('#audit-photo-plan');
@@ -1510,8 +1533,8 @@ $('#audit-photo-download').addEventListener('click',async event=>{
 async function refreshAuditPrompt(){
  const version=++auditPhotoRefresh;
  const audit=current,model=promptModel;
- if(photoExportAudit!==audit){photoPlanInput.value='';photoExportStatus.textContent='';photoExport.open=false}
- photoExportAudit=audit;photoExportPrompt='';photoExport.hidden=true;
+ if(photoExportAudit!==audit){photoPlanInput.value='';photoExportStatus.textContent='';photoExport.open=false;automaticPhotoStatus.hidden=true}
+ photoExportAudit=audit;photoExportPrompt='';photoExport.hidden=true;photoExportDraft=null;automaticPhotoExport.hidden=true;
  syncPhotoSource('audit',Boolean(audit));
  const topic=[audit?.user_goal,audit?.evidence?.editorial?.title,
   ...(audit?.source_headings||[]).slice(0,12).map(heading=>heading.text),
@@ -1527,6 +1550,7 @@ async function refreshAuditPrompt(){
   $$('[data-copy="prompt"]').forEach(button=>button.disabled=true);
   let catalog=[];
   try{catalog=await photoTool.load()}catch{}
+  const enabledModels=await photoProviders;
   if(version!==auditPhotoRefresh)return;
   const plan=photoTool.build(audit,catalog);
   const path=photoTool.packPath(plan);
@@ -1534,6 +1558,9 @@ async function refreshAuditPrompt(){
   photoExportPages=plan.length;
   if(plan.length>0&&plan.length<=12){
    photoExportPrompt=photoTool.exportPrompt(audit,plan,catalog,{kk:'Kazakh',ru:'Russian',en:'English'}[uiLanguage()]);
+   photoExportDraft=photoTool.draft(audit,plan,uiLanguage());
+   $('#photo-export-mode').textContent=uiText(enabledModels.includes(model)?'Бапталған AI-ға PDF-тен оқылған мәтін жіберіледі.':'PDF мәтіні мен интернет каталогындағы фотолар қолданылады.');
+   automaticPhotoExport.hidden=false;
    photoExport.hidden=false;
   }
   instructions=photoTool.instructions(plan,location.origin);
