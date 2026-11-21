@@ -64,7 +64,7 @@ def protect_web():
             g.new_audit_owner = True
         g.audit_owner = owner
         return None
-    if request.path == '/login' or (request.method == 'GET' and request.path in ('/static/vibepromt-logo.svg', '/static/vibepromt-icon-192.png', '/static/vibepromt-icon-512.png', '/static/manifest.webmanifest', '/static/vibeprompt-brand.webp', '/static/vibeprompt-mark-192.png', '/static/vibeprompt-mark-512.png')):
+    if request.path == '/login' or (request.method == 'GET' and request.path in ('/static/vibepromt-logo.svg', '/static/vibepromt-icon-192.png', '/static/vibepromt-icon-512.png', '/static/manifest.webmanifest', '/static/vibeprompt-v.svg', '/static/vibeprompt-v-192.png', '/static/vibeprompt-v-512.png', '/static/vibeprompt-brand.webp', '/static/vibeprompt-mark-192.png', '/static/vibeprompt-mark-512.png')):
         return None
     supplied = request.authorization
     if supplied and supplied.username == 'vibeaudit' and hmac.compare_digest((supplied.password or '').encode('utf-8'), WEB_PASSWORD.encode('utf-8')):
