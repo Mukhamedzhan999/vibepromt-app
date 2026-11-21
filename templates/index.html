@@ -1080,7 +1080,7 @@ function realPhotoContract(isSite){
  'Before composing each required photo area: (1) derive precise search terms from its actual topic, place and period; (2) search Wikimedia Commons, Unsplash, Pexels or a trustworthy topical archive; (3) select a suitable photo from a source that explicitly permits the intended use, noting required credit; no separate legal certification or independent provenance report is needed; (4) download the actual JPEG/PNG/WebP image bytes from its verified asset URL, not the source webpage HTML; (5) insert that downloaded asset into the deliverable. Prefer native 4K (3840×2160 or greater) when available, otherwise use the highest verified resolution; never upscale and label a small image native 4K. Do not invent URLs or cite a search result as proof of a retrieved photograph.\n'+
  (isSite?'Save downloaded photographs with the website assets and use those real files in rendered image elements. Verify that each image loads on the relevant desktop and mobile page; add meaningful alt text and responsive cropping.':'Embed the downloaded photo bytes as actual picture objects in the PPTX; verify they appear in the saved presentation and exported PDF. A hyperlink, photo description, URL, empty frame or proposed search phrase is not an inserted photo.')+
  '\nKeep a short source credit in notes or the handoff for photographs actually used. A separate exhaustive asset manifest is optional and must not become a prerequisite that prevents inserting an otherwise suitable permitted photograph. Verify that every required photo area has its real asset and no broken/empty image remains. Preserve the photo frequency specified for this prompt.\n'+
- 'EXECUTE, DO NOT STOP AT A PLAN: Start searching and downloading with the available tools. If one photo fails, choose another photo; if a source is inaccessible, try a different accessible source. Try relevant Kazakh, Russian and English search terms and multiple candidate images. Prefer a usable permitted photograph over rejecting all candidates for not being 4K; 4K is a preference, not a blocking condition. Keep successfully downloaded photos and continue sourcing only the missing ones. Do not automatically replace photographs with graphic compositions or issue a blanket licensing/download disclaimer without attempting the available tools. For a website, an explicitly permitted working remote image URL is acceptable when local saving is unavailable: render it in an actual image element and verify it loads, disclosing the external dependency. A presentation must contain embedded images. If tools truly cannot browse, retrieve or insert images after available alternatives, state the concrete failed operation and request only the missing photo files. Never invent successful downloads or generate substitute photographs.';
+ 'EXECUTE, DO NOT STOP AT A PLAN: Start searching and downloading with the available tools. If one photo fails, choose another photo; if a source is inaccessible, try a different accessible source. Try relevant Kazakh, Russian and English search terms and multiple candidate images. Prefer a usable permitted photograph over rejecting all candidates for not being 4K; 4K is a preference, not a blocking condition. Keep successfully downloaded photos and continue sourcing only the missing ones. Do not automatically replace photographs with graphic compositions or issue a blanket licensing/download disclaimer without attempting the available tools. For a website, an explicitly permitted working remote image URL is acceptable when local saving is unavailable: render it in an actual image element and verify it loads, disclosing the external dependency. A presentation must contain embedded images. If tools truly cannot browse, retrieve or insert images after available alternatives, state the concrete failed operation and affected pages. Never ask the user to upload the missing photos. Never invent successful downloads or generate substitute photographs.';
 }
 function ideaVisualContract(isSite){
  let structure=isSite?'On each requested page, alternate information sections with photo-led sections: an information section provides substantive, readable topic-specific explanations, while the next visual section presents a large, relevant real photograph with only a short accessible caption. Use a responsive grid and preserve requested navigation and functionality.':'Within the requested presentation, alternate information-only slides and full-photo slides: use odd-numbered slides for substantial, readable topic-specific information without a photograph, and every second slide (2, 4, 6...) for a dominant, real full-photo slide with only a short title or caption. Cover, agenda and references may remain typographic; if a candidate photo cannot be used, find another appropriate existing photo and preserve the photo-led layout. Preserve the exact requested slide count, including odd counts; use concise, readable content and do not discard facts. If fitting the provided source truly requires continuation slides, request permission before changing the count.';
@@ -1164,10 +1164,14 @@ function presentationEditorialDesign(model,photoWorkflow,source='web'){
 function generatedVisualInstructions(isSite,directPdf=false){
  return 'Generate an original, topic-specific 4K visual for each required slot with the available image-generation tool (target 3840 × 2160 or the highest supported native resolution, cropped to the image box). Use a coherent art direction across the set: consistent style, palette, lighting and level of realism. Give each visual a distinct subject; avoid baked-in text, invented logos, and invented documentary evidence. Mark historical reconstructions and synthetic imagery as AI-generated. '+(isSite?'Save the generated files with the website assets, render them on the appropriate pages, and check loading, mobile crops and alt text.':directPdf?'Save the generated files and embed them directly in the PDF. Keep the adjacent explanation and caption.':'Save the generated files and embed them as editable picture objects in the PPTX. Keep the adjacent explanation and caption.')+' If image generation is unavailable, provide a detailed standalone 4K image prompt for every required slot, with subject, composition, style, aspect ratio and exclusions. Mark those slots unfilled; an image prompt does not count as an embedded visual.';
 }
+function autonomousWebPhotos(){
+ return 'AUTOMATIC WEB PHOTO SOURCING — Select and obtain real photos yourself. Do not ask the user to upload photographs or a ZIP. Use your browser/image-search tool for discovery, then use a tool that can download image bytes into the document workspace. If your first downloader cannot reach the source, try the listed alternate direct file or a different accessible photo that matches the same subject. Test one candidate through download, decoding and embedding before laying out all pages. Text-only web fetches, previews and citations cannot stand in for image bytes. If none of your tools can retrieve the bytes, name the affected pages and report the missing requirement without requesting uploads or presenting a partial file as complete.';
+}
 function chatGptPdfDelivery(scope,source,withVisuals=true){
  const generated=source==='ai';
  const assetStep=withVisuals?[
   scope,
+  generated?'':autonomousWebPhotos(),
   '1. SELECT AND PREPARE THE VISUALS FIRST. Derive the complete numbered page list from the brief or source. Decide the main fact on each page and the exact subject it needs. Record each required page, photo subject, adjacent explanation, and asset path in a working checklist. Mark intentional text-only pages as zero. Secure the assets for all required pages before final layout. Do this in the same response, without sending a plan for approval or asking for photo uploads.',
   generated
    ?generatedVisualInstructions(false,true)
@@ -1190,8 +1194,8 @@ function presentationPhotoWorkflow(model,scope,photoSource='web'){
  const acquisition=generated?generatedVisualInstructions(false):[
   'Use ONLY real, topic-specific, publicly accessible web photos. Search Wikimedia Commons, Unsplash, Pexels or authoritative archives. Verify the original subject, date/location when relevant, and reuse terms. Download the actual JPEG/PNG; record the original source, attribution, dimensions and local path. Prefer genuine 4K when available. Try another suitable source if a download fails. AI art, reconstructions and generated substitutes are forbidden in this source mode. Source the photos yourself without requesting uploads.',
   ({
-   claude:'Use web search for discovery and code execution or the file tool to obtain actual bytes in the same workspace that writes the PPTX. Test one slide end to end. A remote image displayed in chat or an Artifact preview does not count.',
-   gemini:'Use the available presentation editor or file tool to insert the downloaded image files. Verify the picture appears in the editor and again in the exported presentation.'
+   claude:'Use web search for discovery and a browser download or file tool to obtain actual bytes in the same workspace that writes the document. If a network call in the code workspace fails, try another available download tool that can hand off actual binary files. A remote image displayed in chat or in an Artifact preview does not count.',
+   gemini:'Use image search to locate the real file and use the available presentation editor or file tool to import its actual bytes. Check that exported pages contain the photo rather than a remote browser-only preview. If an editable presentation cannot be produced but PDF export is available, deliver the verified PDF directly.'
   })[model]
  ].filter(Boolean).join('\n');
  const quota=generated
@@ -1200,6 +1204,7 @@ function presentationPhotoWorkflow(model,scope,photoSource='web'){
  return [
   '100% VISUAL COMPLETION PROTOCOL — These source, quota and completion rules override any conflicting imagery instructions in examples or source material.',
   scope,
+  generated?'':autonomousWebPhotos(),
   quota+' Stopping halfway, leaving empty image boxes, using placeholder text like [Insert photo here], or skipping later slides is strictly forbidden.',
   '1. Before writing final slide code or assembling the deck, plan the exact visual list from slide 1 through the final slide. For each slide record the title, layout, required image count, and, where required, the subject, related fact, caption and asset file. Mark deliberately image-free slides as zero. Prepare and verify every required asset before final assembly. Use the following source policy:',
   acquisition,
@@ -1396,7 +1401,7 @@ async function refreshBriefPrompt(){
    let catalog=[];
    try{catalog=await photos.load()}catch{}
    if(version!==briefRefreshVersion)return;
-   const references=photos.projectReferences(topic,catalog);
+   const references=photos.projectReferences(topic,catalog,location.origin);
    if(references)prompt+='\n\n'+references;
   }
  }
@@ -1474,7 +1479,7 @@ async function refreshAuditPrompt(){
   const plan=photoTool.build(audit,catalog);
   const path=photoTool.packPath(plan);
   renderAuditPhotoPlan(plan,path);
-  instructions=photoTool.instructions(plan,path?new URL(path,location.origin).href:'');
+  instructions=photoTool.instructions(plan,location.origin);
  }
  let prompt=selectedPrompt(instructions);
  if(audit&&prompt){

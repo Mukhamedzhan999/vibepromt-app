@@ -460,6 +460,19 @@ def optimize_project_prompt():
     return response
 
 
+@app.get('/api/audit-photo-file/<photo_id>.jpg')
+def audit_photo_file(photo_id):
+    if photo_id not in photo_catalog.CATALOG:
+        return jsonify(error="Фотосурет табылмады."), 404
+    photo = photo_catalog.available_photo(photo_id)
+    if photo is None:
+        return jsonify(error="Фотосуретті жүктеу мүмкін болмады."), 502
+    return Response(photo, mimetype="image/jpeg", headers={
+        "Cache-Control": "private, max-age=86400",
+        "Content-Disposition": f'inline; filename="{photo_id}.jpg"',
+    })
+
+
 @app.get('/api/audit-photo-pack')
 def audit_photo_pack():
     raw_ids = request.args.get("ids", "")
