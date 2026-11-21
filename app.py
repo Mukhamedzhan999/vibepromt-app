@@ -1,4 +1,5 @@
 import os, re, io, csv, math, socket, ipaddress, sqlite3, random, time, json, secrets, hmac, threading
+from zipfile import ZipFile
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
@@ -470,6 +471,10 @@ def audit_photo_pack():
     archive, loaded, total = photo_catalog.build_photo_pack(ids)
     if archive is None:
         return jsonify(error="Фотоларды әзірге жүктеу мүмкін болмады."), 502
+    if request.args.get("format") == "manifest":
+        with ZipFile(io.BytesIO(archive)) as package:
+            files = package.namelist()
+        return jsonify(loaded=loaded, total=total, bytes=len(archive), files=files)
     return Response(archive, mimetype="application/zip", headers={
         "Content-Disposition": 'attachment; filename="VibePrompt-photo-pack.zip"',
         "X-Vibe-Photo-Count": str(loaded),
