@@ -1,0 +1,217 @@
+[
+  {
+    "id": "it-lab",
+    "file": "Computer Lab.jpg",
+    "subject": "Computer lab for an introduction to IT",
+    "credit": "RiaSrl",
+    "license": "CC0 1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "terms": [
+      "it әлеміне кіріспе",
+      "ақпараттық технологияларға кіріспе",
+      "introduction to it",
+      "введение в ит",
+      "компьютерлік зертхана",
+      "computer lab",
+      "компьютерный класс"
+    ],
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Computer_Lab.jpg",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/d/de/Computer_Lab.jpg",
+    "previewUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Computer_Lab.jpg/960px-Computer_Lab.jpg"
+  },
+  {
+    "id": "daily-devices",
+    "file": "White work table with notes, smartphone and laptop (Unsplash).jpg",
+    "subject": "Laptop and smartphone used in everyday digital tasks",
+    "credit": "JESHOOTS.COM jeshoots",
+    "license": "CC0 1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "terms": [
+      "it дегеніміз не",
+      "күнделікті өмір",
+      "күнделікті қолдану",
+      "what is it",
+      "digital devices",
+      "everyday technology",
+      "в повседневной жизни"
+    ],
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:White_work_table_with_notes%2C_smartphone_and_laptop_(Unsplash).jpg",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/d/dc/White_work_table_with_notes%2C_smartphone_and_laptop_(Unsplash).jpg",
+    "previewUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/White_work_table_with_notes%2C_smartphone_and_laptop_(Unsplash).jpg/960px-White_work_table_with_notes%2C_smartphone_and_laptop_(Unsplash).jpg"
+  },
+  {
+    "id": "processor",
+    "file": "Cpu.jpg",
+    "subject": "An Intel processor, an example of the hardware that executes instructions",
+    "credit": "Poooow",
+    "license": "Public domain",
+    "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+    "terms": [
+      "компьютер қалай жұмыс",
+      "процессор",
+      "жедел жад",
+      "processor",
+      "computer hardware",
+      "процессор",
+      "устройство компьютера"
+    ],
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Cpu.jpg",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/1/1b/Cpu.jpg",
+    "previewUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Cpu.jpg/960px-Cpu.jpg"
+  },
+  {
+    "id": "software-linux",
+    "file": "Linux laptop.jpg",
+    "subject": "A laptop running Linux, an example of system software",
+    "credit": "Leon Brooks",
+    "license": "Public domain",
+    "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+    "terms": [
+      "бағдарламалар",
+      "операциялық жүйе",
+      "system software",
+      "operating system",
+      "операционная система",
+      "программы"
+    ],
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Linux_laptop.jpg",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/2/2a/Linux_laptop.jpg",
+    "previewUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Linux_laptop.jpg/960px-Linux_laptop.jpg"
+  },
+  {
+    "id": "web-servers",
+    "file": "Rack with varoius servers.jpg",
+    "subject": "A server rack that illustrates internet service infrastructure",
+    "credit": "Aaron Hall",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+    "terms": [
+      "интернет",
+      "компьютерлік желі",
+      "сервер",
+      "network infrastructure",
+      "internet",
+      "локальная сеть",
+      "сетевое оборудование"
+    ],
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Rack_with_varoius_servers.jpg",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fa/Rack_with_varoius_servers.jpg",
+    "previewUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Rack_with_varoius_servers.jpg/960px-Rack_with_varoius_servers.jpg"
+  },
+  {
+    "id": "programming",
+    "file": "Laptop Programmcode.jpg",
+    "subject": "A laptop screen displaying source code",
+    "credit": "Negative Space",
+    "license": "CC0 1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "terms": [
+      "бағдарламалау",
+      "алгоритм",
+      "код жазу",
+      "programming",
+      "source code",
+      "программирование",
+      "алгоритм"
+    ],
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Laptop_Programmcode.jpg",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/1/17/Laptop_Programmcode.jpg",
+    "previewUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Laptop_Programmcode.jpg/960px-Laptop_Programmcode.jpg"
+  },
+  {
+    "id": "it-careers",
+    "file": "Technician with laptop working on server rack at NERSC.jpg",
+    "subject": "A technician working on equipment in a computing facility",
+    "credit": "Derrick Coetzee",
+    "license": "CC0 1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "terms": [
+      "it мамандық",
+      "it саласындағы маман",
+      "жүйелік әкімші",
+      "it career",
+      "system administrator",
+      "ит профессии",
+      "системный администратор"
+    ],
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Technician_with_laptop_working_on_server_rack_at_NERSC.jpg",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/2/2a/Technician_with_laptop_working_on_server_rack_at_NERSC.jpg",
+    "previewUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Technician_with_laptop_working_on_server_rack_at_NERSC.jpg/960px-Technician_with_laptop_working_on_server_rack_at_NERSC.jpg"
+  },
+  {
+    "id": "security-key",
+    "file": "YubiKey 5 NFC.png",
+    "subject": "A hardware security key, an example of a second authentication factor",
+    "credit": "FelixLadd",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "terms": [
+      "ақпараттық қауіпсіздік",
+      "қауіпсіздік және алғашқы",
+      "екі фактор",
+      "құпиясөз",
+      "cybersecurity",
+      "two-factor",
+      "кибербезопасность",
+      "двухфакторная"
+    ],
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:YubiKey_5_NFC.png",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/c/ce/YubiKey_5_NFC.png",
+    "previewUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/YubiKey_5_NFC.png/960px-YubiKey_5_NFC.png"
+  },
+  {
+    "id": "yasawi",
+    "file": "Mausoleum of Khoja Ahmed Yasawi (7519819652).jpg",
+    "subject": "The Mausoleum of Khoja Ahmed Yasawi in Turkistan",
+    "credit": "Ken and Nyetta",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "terms": [
+      "яссауи кесенесі",
+      "йассауи кесенесі",
+      "ясауи кесенесі",
+      "яcауи",
+      "ahmed yasawi",
+      "мавзолей ходжи ахмеда"
+    ],
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mausoleum_of_Khoja_Ahmed_Yasawi_(7519819652).jpg",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/7/76/Mausoleum_of_Khoja_Ahmed_Yasawi_(7519819652).jpg",
+    "previewUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Mausoleum_of_Khoja_Ahmed_Yasawi_(7519819652).jpg/960px-Mausoleum_of_Khoja_Ahmed_Yasawi_(7519819652).jpg"
+  },
+  {
+    "id": "charyn",
+    "file": "Kazakhstan, Charyn Canyon.jpg",
+    "subject": "Charyn Canyon in Kazakhstan",
+    "credit": "kalpaktravel",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "terms": [
+      "шарын шатқал",
+      "шарын каньон",
+      "charyn canyon",
+      "чарынский каньон"
+    ],
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Kazakhstan%2C_Charyn_Canyon.jpg",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/5/5e/Kazakhstan%2C_Charyn_Canyon.jpg",
+    "previewUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Kazakhstan%2C_Charyn_Canyon.jpg/960px-Kazakhstan%2C_Charyn_Canyon.jpg"
+  },
+  {
+    "id": "bookshelf",
+    "file": "Bookshelf.jpg",
+    "subject": "Books on a wooden bookshelf",
+    "credit": "Stewart Butterfield",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "terms": [
+      "кітапхана",
+      "кітап сөресі",
+      "library bookshelf",
+      "bookshelf",
+      "книжная полка",
+      "библиотека"
+    ],
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bookshelf.jpg",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/2/2b/Bookshelf.jpg",
+    "previewUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Bookshelf.jpg/960px-Bookshelf.jpg"
+  }
+]

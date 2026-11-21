@@ -569,7 +569,7 @@ body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) .visua
 <label><input type="radio" name="audit-photo-source" value="web" checked><span>Интернеттен дайын фото</span></label>
 <label><input type="radio" name="audit-photo-source" value="ai"><span>AI арқылы жасау</span></label>
 </div>
-</fieldset><p class="prompt-size-note">Промптты көшіріп, AI бетіне қойыңыз. PDF болса, бастапқы файлды да тіркеңіз.</p><p id="audit-engine-status" class="note" role="status" hidden></p><div class="prompt-output" id="prompt-output">Аудитті бастаңыз — сізге бейімделген промпт осы жерде пайда болады.</div><div class="note" id="prompt-grade"></div><section id="full-prompt-section" class="full-prompt hidden" aria-label="Толық промпт"><div class="prompt-head"><div><div class="mini">ДАЙЫН МӘТІН</div><h3>Таңдалған промпт</h3></div><button type="button" class="copy" data-copy="prompt">Таңдалған промптты көшіру ↗</button></div><p class="note">Таңдалған AI үшін толық промпт төменде көрсетілген.</p><pre id="full-prompt-text" class="full-prompt-text"></pre></section></section><section class="card result-side"><div class="mini">ҰСЫНЫСТАР</div><h3 style="font-size:15px;margin:5px 0 12px">Неге назар аудару керек?</h3><div id="issues" class="note">Нәтиже шыққан соң ұсыныстар көрсетіледі.</div><div class="note" id="method-note"></div><div id="page-details"></div></section>
+</fieldset><details id="audit-photo-plan" class="note" hidden><summary>Бет бойынша фото көздері</summary><div class="prompt-controls"><button type="button" id="audit-photo-download" class="copy" hidden>Фото жинағын жүктеу (.zip)</button></div><p id="audit-photo-download-status" role="status" hidden></p><ol id="audit-photo-list"></ol></details><p class="prompt-size-note">Промптты көшіріп, AI бетіне қойыңыз. PDF болса, бастапқы файлды да тіркеңіз.</p><p id="audit-engine-status" class="note" role="status" hidden></p><div class="prompt-output" id="prompt-output">Аудитті бастаңыз — сізге бейімделген промпт осы жерде пайда болады.</div><div class="note" id="prompt-grade"></div><section id="full-prompt-section" class="full-prompt hidden" aria-label="Толық промпт"><div class="prompt-head"><div><div class="mini">ДАЙЫН МӘТІН</div><h3>Таңдалған промпт</h3></div><button type="button" class="copy" data-copy="prompt">Таңдалған промптты көшіру ↗</button></div><p class="note">Таңдалған AI үшін толық промпт төменде көрсетілген.</p><pre id="full-prompt-text" class="full-prompt-text"></pre></section></section><section class="card result-side"><div class="mini">ҰСЫНЫСТАР</div><h3 style="font-size:15px;margin:5px 0 12px">Неге назар аудару керек?</h3><div id="issues" class="note">Нәтиже шыққан соң ұсыныстар көрсетіледі.</div><div class="note" id="method-note"></div><div id="page-details"></div></section>
 <section class="card result-wide"><div class="prompt-head"><div><div class="mini">ДАЙЫН КОД</div><h3 style="margin:5px 0 0;font-size:15px">CSS түзету үлгісі</h3></div><button type="button" class="copy" data-copy="css">Көшіру ↗</button></div><pre class="prompt-output" id="css-output">CSS үлгісі аудиттен кейін пайда болады.</pre></section><section class="card result-side"><div class="mini">СОҢҒЫ ӘРЕКЕТТЕР</div><h3 style="font-size:15px;margin:5px 0 12px">Аудит тарихы</h3><div id="history" class="history-list">Әзірге аудит жоқ.</div></section></div>
 </section>
 <section id="academic" class="academic"><div class="hero lab-hero"><div class="eyebrow">▦ &nbsp; АКАДЕМИЯЛЫҚ ЗЕРТХАНА</div><h1>Оқытушы <span>режимі.</span></h1><p>Үлгілерді салыстырыңыз, модель нәтижелерін қарап, әдістеменің шектеулерін зерттеңіз.</p></div><div class="below-head" style="margin-top:0"><div><div class="mini">01 / ДАЙЫН СЦЕНАРИЙЛЕР</div><h2>Бір басумен тексеру</h2><p>Симуляция нақты файлды немесе сайтты өңдемейді.</p></div><label class="tag">ДЕРЕККӨЗ &nbsp; <select id="demo-kind" class="select"><option value="URL">URL</option><option value="PDF">PDF</option></select></label></div><div class="lab-grid"><button class="card demo-card" data-demo="1"><span class="demo-num">01 / ЖАҚСЫ</span><h3>Жоғары деңгейлі интерфейс ↗</h3><p>Теңгерімді құрылым және айқын контраст</p></button><button class="card demo-card" data-demo="2"><span class="demo-num">02 / КОНТРАСТ</span><h3>Контраст қатесі ↗</h3><p>Оқылуы қиын мәтін және типографика</p></button><button class="card demo-card" data-demo="3"><span class="demo-num">03 / ТЫҒЫЗДЫҚ</span><h3>Мәтін тым көп ↗</h3><p>Шамадан тыс жүктелген бет</p></button></div>
@@ -578,6 +578,7 @@ body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) .visua
 <div class="lab-section lab-info"><div class="card"><div class="mini">ҚАТЕ ЖАҒДАЙЫ</div><h3>JavaScript арқылы салынатын сайт</h3><p>Браузерде көрінетін интерфейс бастапқы HTML ішінде болмауы мүмкін. Соның салдарынан толық сайт «шикі макет» деп қате жіктелуі ықтимал. Бұл — ықтимал мысал, тест жиынында тіркелген қате емес.</p></div><div class="card"><div class="mini">ЖҮЙЕ ШЕКТЕУІ</div><h3>Бұл — жуық бағалау</h3><p>PDF-тің барлық беті оқылады, ал контраст үзінділер бойынша жуық тексеріледі. OCR мәтінді қате тануы мүмкін; нақты орналасу мен толық CSS cascade толық бағаланбайды. Белгісіз мәндер ұпайға кірмейді. Синтетикалық деректердегі жоғары нәтиже нақты сайттардағы сапаны дәлелдемейді.</p></div></div></section>
 </main><footer class="shell"><div class="footer"><span><b>VibePrompt AI</b> &nbsp; / &nbsp; Интерфейсті саналы түрде жақсарт.</span><span>ОҚУ ЖОБАСЫ · 2026</span></div></footer></div>
 {% if vercel_pdf_upload %}<script src="{{ url_for('static', filename='vercel-pdf.js') }}"></script>{% endif %}
+<script src="/static/audit-photos.js"></script>
 <script>
 let mode='URL', radarChart=null, current=null, typingTimer=null, promptModel='chatgpt';
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
@@ -628,6 +629,13 @@ applyTextScale();
 $('#open-settings').addEventListener('click',()=>{closeMenu();$('#theme-choice').value=document.body.dataset.theme||'navy';$('#language-choice').value=preferences.lang||'kk';$('#default-ai').value=promptModel;$('#settings-dialog').showModal()});
 $('#close-settings').addEventListener('click',()=>$('#settings-dialog').close());$('#close-settings-top').addEventListener('click',()=>$('#settings-dialog').close());$('#default-ai').addEventListener('change',e=>{preferences.ai=e.target.value;savePreferences();$(`[data-prompt-model="${preferences.ai}"]`).click()});
 const uiTranslations={
+'Бет бойынша фото көздері':['Источники фото по страницам','Photo sources by page'],
+'Фото жинағын жүктеу (.zip)':['Скачать подборку фото (.zip)','Download photo pack (.zip)'],
+'Суретті ашу':['Открыть фото','Open photo'],
+'Бастапқы дереккөз':['Первоисточник','Original source'],
+'Бұл бетке каталогтан сәйкес фото табылмады.':['Для этой страницы нет подходящего фото в каталоге.','No matching catalog photo for this page.'],
+'Фото жинағы дайындалып жатыр…':['Подготовка подборки фото…','Preparing the photo pack…'],
+'Фото жинағын жүктеу мүмкін болмады. Төмендегі тікелей сілтемелерді қолданыңыз.':['Не удалось скачать подборку. Используйте прямые ссылки ниже.','Could not download the pack. Use the direct links below.'],
 'Ақ':['Белый','White'],
 'Қою қызыл':['Тёмно-красный','Dark red'],
 "Сайтқа не презентацияға арналған промпт жасаңыз немесе дайын жұмысты талдаңыз.":["Создайте промт для сайта или презентации, либо проверьте готовую работу.","Generate prompts for websites and presentations, or audit your existing work."],
@@ -1377,13 +1385,81 @@ function refreshBriefPrompt(){
  });
 }
 
-function refreshAuditPrompt(){
- syncPhotoSource('audit',Boolean(current));
- const topic=[current?.user_goal,current?.evidence?.editorial?.title,
-  ...(current?.source_headings||[]).slice(0,12).map(heading=>heading.text),
-  current?.detail,current?.source_url,current?.content_text?.slice(0,2500)]
-  .filter(Boolean).join('\n');
- optimizeDisplayedPrompt('audit',selectedPrompt(),topic,promptModel,renderPrompt);
+let auditPhotoRefresh=0;
+function renderAuditPhotoPlan(plan,path){
+ const details=$('#audit-photo-plan');
+ const list=$('#audit-photo-list');
+ const download=$('#audit-photo-download');
+ details.hidden=!plan.length;
+ list.replaceChildren();
+ download.hidden=!path;
+ download.dataset.url=path;
+ $('#audit-photo-download-status').hidden=true;
+ for(const row of plan){
+  const item=document.createElement('li');
+  item.textContent=row.page+'. '+(row.topic?row.topic+' — ':'');
+  if(row.asset){
+   for(const [label,url] of [['Суретті ашу',row.asset.imageUrl],['Бастапқы дереккөз',row.asset.sourceUrl]]){
+    const link=document.createElement('a');
+    link.textContent=uiText(label);link.href=url;link.target='_blank';link.rel='noopener noreferrer';
+    item.append(link,document.createTextNode(' · '));
+   }
+   item.append(row.asset.credit+' · '+row.asset.license);
+  }else item.append(uiText('Бұл бетке каталогтан сәйкес фото табылмады.'));
+  list.append(item);
+ }
+}
+$('#audit-photo-download').addEventListener('click',async event=>{
+ const button=event.currentTarget,path=button.dataset.url;
+ if(!path)return;
+ const status=$('#audit-photo-download-status');
+ button.disabled=true;status.hidden=false;status.textContent=uiText('Фото жинағы дайындалып жатыр…');
+ try{
+  const response=await fetch(path);
+  if(!response.ok)throw Error('Photos unavailable');
+  const url=URL.createObjectURL(await response.blob()),link=document.createElement('a');
+  link.href=url;link.download='VibePrompt-photo-pack.zip';link.click();
+  setTimeout(()=>URL.revokeObjectURL(url),30000);
+  if(button.dataset.url===path){
+   const count=response.headers.get('X-Vibe-Photo-Count');
+   const total=response.headers.get('X-Vibe-Photo-Total');
+   const label={kk:'Жинақтағы фото',ru:'Фото в подборке',en:'Photos in pack'}[uiLanguage()];
+   status.textContent=label+' '+count+'/'+total;
+  }
+ }catch{
+  if(button.dataset.url===path)status.textContent=uiText('Фото жинағын жүктеу мүмкін болмады. Төмендегі тікелей сілтемелерді қолданыңыз.');
+ }finally{button.disabled=false}
+});
+
+async function refreshAuditPrompt(){
+ const version=++auditPhotoRefresh;
+ const audit=current,model=promptModel;
+ syncPhotoSource('audit',Boolean(audit));
+ const topic=[audit?.user_goal,audit?.evidence?.editorial?.title,
+  ...(audit?.source_headings||[]).slice(0,12).map(heading=>heading.text),
+  audit?.detail,audit?.source_url,audit?.content_text?.slice(0,2500)
+ ].filter(Boolean).join('\n');
+ renderAuditPhotoPlan([],'');
+ let instructions='';
+ const photoTool=window.VibeAuditPhotos;
+ if(audit?.kind==='PDF'&&photoSource()==='web'&&photoTool){
+  const previous=promptEngineRequests.audit;
+  delete promptEngineRequests.audit;
+  previous?.abort();
+  $$('[data-copy="prompt"]').forEach(button=>button.disabled=true);
+  let catalog=[];
+  try{catalog=await photoTool.load()}catch{}
+  if(version!==auditPhotoRefresh)return;
+  const plan=photoTool.build(audit,catalog);
+  const path=photoTool.packPath(plan);
+  renderAuditPhotoPlan(plan,path);
+  instructions=photoTool.instructions(plan,path?new URL(path,location.origin).href:'');
+ }
+ optimizeDisplayedPrompt('audit',selectedPrompt(instructions),topic,model,text=>{
+  renderPrompt(text);
+  window.VibeReport?.prompt(text,model);
+  window.VibeReport?.feedback('audit',audit?.audit_id,'full',model,Boolean(text));
+ });
 }
 
 function showBrief(){resetPromptCopyFeedback();document.body.classList.add('brief-mode');$('#brief-result').classList.remove('hidden');syncBriefTierControls();refreshBriefPrompt();updateAiLink('brief-ai-link',briefModel);$$('[data-brief-model]').forEach(x=>{const active=x.dataset.briefModel===briefModel;x.classList.toggle('active',active);x.setAttribute('aria-pressed',String(active))})}
@@ -1424,7 +1500,7 @@ async function refreshHistory(){showSavedAudits();try{const rows=await fetch('/a
 
 async function loadModels(){try{let d=await fetch('/api/models').then(r=>r.json());$('#model-table').innerHTML=Object.entries(d.models).map(([name,m])=>`<tr><td>${esc(name)}</td><td>${pct(m.accuracy)}</td><td>${pct(m.precision)}</td><td>${pct(m.recall)}</td><td>${pct(m.f1)}</td></tr>`).join('');let m=d.models['Random Forest'].matrix,max=Math.max(1,...m.flat());$('#matrix').innerHTML='<div></div>'+[0,1,2,3].map(i=>`<div class="axis">${i}</div>`).join('')+m.map((row,i)=>`<div class="axis">${i}</div>`+row.map(v=>`<div style="background:color-mix(in srgb,var(--theme-accent,#6f69f4) ${(12+75*v/max).toFixed(2)}%,transparent)">${v}</div>`).join('')).join('')}catch{$('#model-table').innerHTML='<tr><td colspan="5">Модель деректерін жүктеу мүмкін болмады.</td></tr>'}}
 function typeText(el,text){clearInterval(typingTimer);el.textContent='';if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){el.textContent=text;return}let i=0;typingTimer=setInterval(()=>{i=Math.min(text.length,i+Math.max(5,Math.ceil(text.length/120)));el.textContent=text.slice(0,i);if(i===text.length)clearInterval(typingTimer)},12)}
-function selectedPrompt(){
+function selectedPrompt(photoInstructions=''){
  const original=current?.prompts?.[promptModel]||current?.prompt||'';
  updateAiLink('audit-ai-link',promptModel);
  if(!original)return '';
@@ -1437,19 +1513,30 @@ function selectedPrompt(){
   return [
    'CREATE / ЖАСА: Produce a ready-to-download redesigned PDF directly in this response. First choose all required visuals, then create and attach the actual PDF. Preserve source facts, names, page order and requested language. Keep the existing audit palette unless a contrast adjustment is necessary.',
    scope,
+   photoInstructions,
    'Use the audit evidence below for observed issues, redesign ideas and source details. Its legacy file-format or photo instructions are subordinate to the direct PDF workflow and selected image source.',
    original,
    documentPhotoLayout(source==='ai'?'visual':'photo'),
    presentationEditorialDesign(promptModel,true,source),
    chatGptPdfDelivery('Full PDF redesign: determine the final page count from the supplied source. Include a dedicated visual on every page, including cover and references. Preserve the original page count when no different count is requested.',source),
    usabilityAcceptance(false)
-  ].join('\n\n');
+  ].filter(Boolean).join('\n\n');
  }
  const visuals=pdf?[
   documentPhotoLayout(source==='ai'?'visual':'photo'),
   presentationEditorialDesign(promptModel,true,source),
   presentationPhotoWorkflow(promptModel,'Full PDF redesign: determine the final slide count, preserve source facts and page order, and embed a dedicated visual on every slide, including covers and references.',source)
  ].filter(Boolean).join('\n\n'):(source==='ai'?'PHOTO SOURCE — AI-generated visuals. Apply this rule over any earlier real-photo requirement. Cover the major explanatory sections of every audited page. '+generatedVisualInstructions(true):realPhotoContract(true));
+ if(pdf&&source==='web'&&photoInstructions){
+  return [
+   'FULL PDF AUDIT REDESIGN — The selected photo source is authoritative. Follow the concrete photo inputs below before composing. Preserve the factual evidence and redesign findings. Replace any legacy suggestion that allows a drawing or a photo-free fallback.',
+   scope,
+   photoInstructions,
+   original+fullProductionContract(false,source)+auditVisualContract(false,source),
+   visuals,
+   usabilityAcceptance(false)
+  ].join('\n\n');
+ }
  return original+'\n\nFULL COVERAGE AND DELIVERY\n'+scope+fullProductionContract(!pdf,source)+auditVisualContract(!pdf,source)+'\n\n'+visuals+'\n\n'+usabilityAcceptance(!pdf);
 }
 $$('[data-prompt-model]').forEach(b=>b.addEventListener('click',()=>{promptModel=b.dataset.promptModel;$$('[data-prompt-model]').forEach(x=>{x.classList.toggle('active',x===b);x.setAttribute('aria-pressed',String(x===b))});if(current)refreshAuditPrompt()}));

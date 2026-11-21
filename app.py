@@ -23,6 +23,7 @@ import audit_engine
 import browser_audit
 import prompt_builder
 import prompt_engine
+import photo_catalog
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(BASE, 'ui_audit_dataset.csv')
@@ -456,6 +457,25 @@ def optimize_project_prompt():
     ))
     response.headers['Cache-Control'] = 'no-store'
     return response
+
+
+@app.get('/api/audit-photo-pack')
+def audit_photo_pack():
+    raw_ids = request.args.get("ids", "")
+    if len(raw_ids) > 400:
+        return jsonify(error="Фото тізімі тым ұзын."), 400
+    ids = raw_ids.split(",")
+    if not all(photo_id in photo_catalog.CATALOG for photo_id in ids):
+        return jsonify(error="Фото тізімі жарамсыз."), 400
+    archive, loaded, total = photo_catalog.build_photo_pack(ids)
+    if archive is None:
+        return jsonify(error="Фотоларды әзірге жүктеу мүмкін болмады."), 502
+    return Response(archive, mimetype="application/zip", headers={
+        "Content-Disposition": 'attachment; filename="VibePrompt-photo-pack.zip"',
+        "X-Vibe-Photo-Count": str(loaded),
+        "X-Vibe-Photo-Total": str(total),
+        "Cache-Control": "private, max-age=86400" if loaded == total else "no-store",
+    })
 
 
 @app.get('/api/models')
