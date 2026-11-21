@@ -333,7 +333,7 @@ main.shell{padding:65px var(--page-gutter) 34px}
 .remove-pdf[hidden],.audit-stop[hidden]{display:none}
 .audit-stop{margin-top:10px;width:100%;min-height:44px;font:inherit}
 
-/* Layout scale adjusts the workspace without resizing the viewport or dialog. */
+/* Layout scale reflows the workspace and settings without resizing the viewport. */
 body{
  --layout-scale:1;--type-scale:1;
  --side-width:clamp(224px,calc(264px * var(--layout-scale)),min(315px,30vw));
@@ -357,11 +357,51 @@ main.shell{max-width:calc(1200px * var(--layout-scale));min-width:0}
 .sidebar-top,.side-bottom{flex-shrink:0}
 body .settings-modal[open]{
  inset:0;width:100%;height:100%;max-width:none;max-height:none;
- box-sizing:border-box;overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable;
+ box-sizing:border-box;overflow:hidden;overscroll-behavior:contain;
 }
-.settings-inner{width:min(100%,840px);padding:clamp(14px,4vw,36px)}
-.settings-card select{min-width:0}
-.settings-footer{position:sticky;bottom:0;z-index:1}
+.settings-inner{
+ display:flex;flex-direction:column;box-sizing:border-box;
+ width:min(100%,calc(820px * var(--layout-scale)));height:100%;min-width:0;
+ padding:clamp(10px,calc(3vw * var(--layout-scale)),36px)
+  max(clamp(12px,calc(3vw * var(--layout-scale)),36px),env(safe-area-inset-right))
+  max(8px,env(safe-area-inset-bottom))
+  max(clamp(12px,calc(3vw * var(--layout-scale)),36px),env(safe-area-inset-left));
+}
+.settings-header{
+ flex:none;gap:10px;margin-bottom:clamp(6px,calc(12px * var(--layout-scale)),18px);
+ padding-bottom:clamp(6px,calc(12px * var(--layout-scale)),18px);
+}
+.settings-header h2{font-size:clamp(1.35rem,calc(4vw * var(--type-scale)),calc(2.1rem * var(--type-scale)));overflow-wrap:anywhere}
+.settings-body{
+ flex:0 1 auto;min-height:0;min-width:0;overflow:auto;overscroll-behavior:contain;
+ scrollbar-gutter:stable;padding:4px;scroll-padding-block:5px;
+}
+.settings-card{
+ grid-template-columns:minmax(0,1fr) minmax(0,38%);
+ column-gap:clamp(10px,calc(18px * var(--layout-scale)),24px);
+ padding:clamp(10px,calc(15px * var(--layout-scale)),22px);
+ margin-bottom:clamp(7px,calc(10px * var(--layout-scale)),15px);
+}
+.settings-card label,.settings-card small{overflow-wrap:anywhere}
+.settings-card label{font-size:calc(.94rem * var(--type-scale))}
+.settings-card small,.settings-body>.note{font-size:calc(.8rem * var(--type-scale))}
+.settings-card select,.settings-footer .settings-close{
+ min-width:0;min-height:clamp(44px,calc(46px * var(--layout-scale)),56px);
+ font-size:calc(.96rem * var(--type-scale));
+}
+.settings-footer{
+ position:static;flex:none;z-index:1;margin:0;padding:clamp(6px,calc(10px * var(--layout-scale)),14px) 4px;
+}
+@media(max-width:540px){
+ .settings-card{grid-template-columns:minmax(0,1fr);row-gap:6px}
+ .settings-card>select{grid-column:1;grid-row:3;margin-top:2px;font-size:max(16px,calc(.96rem * var(--type-scale)))}
+}
+@media(max-height:380px){
+ .settings-inner{padding-top:8px}
+ .settings-header{margin-bottom:4px;padding-bottom:4px}
+ .settings-header .mini{display:none}
+ .settings-footer{padding-block:4px}
+}
 @media(max-width:1100px){.layout{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:960px){.bento{grid-template-columns:minmax(0,1fr)}.result-wide,.result-side,.metric-card:last-of-type{grid-column:auto}.lab-grid{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:767px){
@@ -479,7 +519,7 @@ body:is([data-theme='warm'],[data-theme='burgundy']) .visual-audit-banner{border
 <body class="brief-mode">
 <div id="splash" class="splash" role="status" aria-label="VibePrompt AI жүктелуде"><div class="splash-brand"><img class="splash-logo" src="/static/vibepromt-logo.svg" alt="" aria-hidden="true">VibePrompt <i>AI</i></div></div>
 <div class="side-overlay" id="side-overlay"></div><aside class="sidebar" id="sidebar" aria-label="Қосымша навигация"><div class="sidebar-top"><a class="brand" href="#"><img class="brand-icon" src="/static/vibepromt-logo.svg" alt="" aria-hidden="true"><span>VibePrompt <em>AI</em></span></a><button type="button" class="side-close" id="close-menu" aria-label="Мәзірді жабу">×</button></div><button type="button" class="side-button side-new" id="new-audit">⌂ &nbsp; Басты бет</button><div><button type="button" class="side-button current" id="side-audit">◈ &nbsp; Аудит</button><button type="button" class="side-button" id="side-lab">▦ &nbsp; Оқытушы режимі</button></div><div class="side-history"><div class="side-label">СОҢҒЫ АУДИТТЕР</div><div class="history-search" role="search"><input id="history-search" type="search" aria-label="Аудит атауын іздеу" placeholder="Аудит атауын іздеу" aria-controls="sidebar-history" autocomplete="off"><span id="history-search-status" class="history-search-status" role="status"></span></div><div id="sidebar-history"><p class="note">Тарих жүктелуде...</p></div></div><div class="side-bottom"><button type="button" class="side-button" id="open-settings">⚙ &nbsp; Баптаулар</button><p class="note" style="margin:8px 10px">Жаңа нәтижелер мен промпттар осы браузерде сақталады. Браузер деректерін тазаласаңыз, олар өшеді. </p></div></aside><div class="workspace">
-<dialog class="settings-modal" id="settings-dialog" aria-labelledby="settings-title"><div class="settings-inner"><div class="settings-header"><div><div class="mini">ЖҰМЫС КЕҢІСТІГІ</div><h2 id="settings-title">Баптаулар</h2></div><button type="button" class="side-close" id="close-settings-top" aria-label="Баптауларды жабу">×</button></div><div class="settings-card"><label for="default-ai">Әдепкі AI нұсқасы</label><small>Промптты ашқанда көрсетілетін модельді таңдаңыз.</small><select id="default-ai" class="select"><option value="chatgpt">ChatGPT</option><option value="gemini">Gemini</option><option value="claude">Claude</option></select></div><div class="settings-card"><label for="theme-choice">Фон түсі</label><small>Жұмыс кеңістігінің өзіңізге ыңғайлы түсін таңдаңыз.</small><select id="theme-choice" class="select"><option value="dark">Қара</option><option value="navy">Қою көк</option><option value="warm">Қоңыр</option><option value="light">Ақ</option><option value="burgundy">Қою қызыл</option></select></div><div class="settings-card"><label for="language-choice">Интерфейс тілі</label><small>Негізгі мәзір мен басқару элементтерінің тілі.</small><select id="language-choice" class="select"><option value="kk">Қазақша</option><option value="ru">Русский</option><option value="en">English</option></select></div><div class="settings-card"><label for="text-scale">Масштаб</label><small>Таңдалған масштаб осы браузерде сақталады.</small><select id="text-scale" class="select"><option value="90">90%</option><option value="100">100%</option><option value="120">120%</option><option value="150">150%</option></select></div><p class="note">Баптаулар мен аудит тарихы осы браузерде сақталады. Браузер деректерін тазаласаңыз, олар өшеді.</p><div class="settings-footer"><button type="button" class="copy settings-close" id="close-settings">Дайын</button></div></div></dialog>
+<dialog class="settings-modal" id="settings-dialog" aria-labelledby="settings-title"><div class="settings-inner"><div class="settings-header"><div><div class="mini">ЖҰМЫС КЕҢІСТІГІ</div><h2 id="settings-title">Баптаулар</h2></div><button type="button" class="side-close" id="close-settings-top" aria-label="Баптауларды жабу">×</button></div><div class="settings-body"><div class="settings-card"><label for="default-ai">Әдепкі AI нұсқасы</label><small>Промптты ашқанда көрсетілетін модельді таңдаңыз.</small><select id="default-ai" class="select"><option value="chatgpt">ChatGPT</option><option value="gemini">Gemini</option><option value="claude">Claude</option></select></div><div class="settings-card"><label for="theme-choice">Фон түсі</label><small>Жұмыс кеңістігінің өзіңізге ыңғайлы түсін таңдаңыз.</small><select id="theme-choice" class="select"><option value="dark">Қара</option><option value="navy">Қою көк</option><option value="warm">Қоңыр</option><option value="light">Ақ</option><option value="burgundy">Қою қызыл</option></select></div><div class="settings-card"><label for="language-choice">Интерфейс тілі</label><small>Негізгі мәзір мен басқару элементтерінің тілі.</small><select id="language-choice" class="select"><option value="kk">Қазақша</option><option value="ru">Русский</option><option value="en">English</option></select></div><div class="settings-card"><label for="text-scale">Масштаб</label><small>Таңдалған масштаб осы браузерде сақталады.</small><select id="text-scale" class="select"><option value="90">90%</option><option value="100">100%</option><option value="120">120%</option><option value="150">150%</option></select></div><p class="note">Баптаулар мен аудит тарихы осы браузерде сақталады. Браузер деректерін тазаласаңыз, олар өшеді.</p></div><div class="settings-footer"><button type="button" class="copy settings-close" id="close-settings">Дайын</button></div></div></dialog>
 <header class="top"><div class="shell"><button type="button" class="menu-toggle" id="menu-toggle" aria-label="Мәзірді ашу" aria-controls="sidebar" aria-expanded="false">☰</button><a href="#" class="brand"><img class="brand-icon" src="/static/vibepromt-logo.svg" alt="" aria-hidden="true"><span>VibePrompt <em>AI</em></span></a><nav class="nav" aria-label="Негізгі навигация"><button class="active" data-view="audit">✦ &nbsp; Аудит</button><button data-view="academic">▦ &nbsp; Оқытушы режимі</button></nav><div class="top-language"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 4 6 4 9s-1 6-4 9c-3-3-4-6-4-9s1-6 4-9Z"/></svg><select id="home-language" aria-label="Интерфейс тілі"><option value="kk">ҚАЗ</option><option value="ru">РУС</option><option value="en">ENG</option></select></div></div></header>
 <main class="shell mx-auto">
 <section id="brief-home" class="brief-home">
@@ -584,6 +624,7 @@ $('#text-scale').addEventListener('change',e=>{
  preferences.textScale=Number(e.target.value);
  savePreferences();
  applyTextScale();
+ if($('#settings-dialog').open)e.currentTarget.scrollIntoView({block:'nearest',inline:'nearest'});
 });
 applyTextScale();
 $('#open-settings').addEventListener('click',()=>{closeMenu();$('#theme-choice').value=document.body.dataset.theme||'dark';$('#language-choice').value=preferences.lang||'kk';$('#default-ai').value=promptModel;$('#settings-dialog').showModal()});
