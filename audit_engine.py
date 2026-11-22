@@ -4,7 +4,7 @@ import re
 import os
 import math
 import shutil
-from threading import Lock
+from pdf_runtime import PDF_LOCK
 from collections import Counter
 from urllib.parse import urljoin
 
@@ -164,12 +164,9 @@ def _sample_pdf_page(page, spans, max_pixels=400000):
     return {'colors':counts,'pairs':pairs,'width':pix.width,'height':pix.height}
 
 
-_PDF_LOCK = Lock()
-
-
 def extract_pdf(data, progress=None):
     # PyMuPDF objects must not be used by concurrent threads.
-    with _PDF_LOCK:
+    with PDF_LOCK:
         return _extract_pdf(data, progress)
 
 

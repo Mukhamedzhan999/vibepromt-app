@@ -55,11 +55,12 @@
  function select({title = '', topic = '', domain = ''} = {}) {
   const titleWords = normalize(title);
   const topicWords = normalize(topic);
-  let bestId = domainPresets[domain] || 'corporate_clean';
+  const knownDomain = typeof domain === 'string' && Object.hasOwn(domainPresets, domain) ? domainPresets[domain] : null;
+  let bestId = knownDomain || 'corporate_clean';
   let bestScore = 0;
   for (const entry of entries) {
    const [id, , , , , , terms] = entry;
-   const value = 3 * score(titleWords, terms) + score(topicWords, terms) + (id === domainPresets[domain] ? 1 : 0);
+   const value = 3 * score(titleWords, terms) + score(topicWords, terms) + (id === knownDomain ? 1 : 0);
    if (value > bestScore) {
     bestScore = value;
     bestId = id;

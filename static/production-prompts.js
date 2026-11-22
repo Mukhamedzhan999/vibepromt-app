@@ -30,6 +30,8 @@
   return (lastWord > size * 0.75 ? clipped.slice(0, lastWord) : clipped) + '…';
  };
  const xml = value => value.replace(/[&<>]/g, char => ({'&': '&amp;', '<': '&lt;', '>': '&gt;'})[char]);
+ const list = value => Array.isArray(value) ? value : [];
+ const recordList = value => list(value).filter(item => item && typeof item === 'object' && !Array.isArray(item));
 
  function positiveCount(value) {
   return Number.isSafeInteger(value) && value > 0 ? value : null;
@@ -43,18 +45,19 @@
  function auditContext(audit, kind, tier) {
   if (!audit) return {data: null, title: '', topic: '', domain: '', count: null};
   const editorial = audit.evidence?.editorial;
-  const checks = Array.isArray(audit.checks) ? audit.checks : [];
+  const checks = recordList(audit.checks);
   const issues = checks.filter(check => check.status === 'fail').slice(0, 12).map(check => ({
    finding: limit(check.title, 100), evidence: limit(check.evidence, 190), correction: limit(check.recommendation, 220)
   }));
   const goal = limit(audit.user_goal, 650);
   if (kind === 'presentation') {
-   const records = editorial?.pages?.length ? editorial.pages : audit.evidence?.page_results || [];
+   const editorialPages = recordList(editorial?.pages);
+   const records = editorialPages.length ? editorialPages : recordList(audit.evidence?.page_results);
    const title = limit(editorial?.title, 160);
    const pages = records.map((page, index) => ({
     number: positiveCount(page.page) || index + 1,
-    heading: limit(page.heading || page.headings?.[0], 110),
-    facts: (page.facts || []).slice(0, 4).map(fact => limit(fact, 100)),
+    heading: limit(page.heading || list(page.headings)[0], 110),
+    facts: list(page.facts).slice(0, 4).map(fact => limit(fact, 100)),
     extract: limit(page.source_text || page.excerpt || page.text_excerpt, EVIDENCE_LIMITS[tier]),
     status: page.text_status || undefined
    }));
@@ -64,10 +67,10 @@
     data: {title, goal, orderedObservedPages: pages, confirmedIssues: issues}
    };
   }
-  const headings = (audit.source_headings || []).slice(0, 25).map(heading => limit(heading.text, 125));
-  const routes = (audit.site_pages?.pages || []).map(route => ({
+  const headings = list(audit.source_headings).slice(0, 25).map(heading => limit(heading?.text || (typeof heading === 'string' ? heading : ''), 125)).filter(Boolean);
+  const routes = recordList(audit.site_pages?.pages).map(route => ({
    url: limit(route.url, 300), title: limit(route.title, 120),
-   headings: (route.headings || []).slice(0, 8).map(heading => limit(heading.text || heading, 115)),
+   headings: list(route.headings).slice(0, 8).map(heading => limit(heading?.text || (typeof heading === 'string' ? heading : ''), 115)).filter(Boolean),
    evidence: limit(route.excerpt || route.content_text || route.description, EVIDENCE_LIMITS[tier])
   }));
   const title = routes[0]?.title || headings[0] || '';
@@ -163,11 +166,11 @@
   const level = Object.hasOwn(EVIDENCE_LIMITS, tier) ? tier : 'full';
   const observed = auditContext(audit, documentKind, level);
   const text = String(brief || '').trim().slice(0, 12000);
-  const goal = audit?.user_goal || '';
+  const goal = typeof audit?.user_goal === 'string' ? audit.user_goal : '';
   const preset = designPresets.select({title: observed.title, topic: [text, goal, observed.topic].join(' '), domain: observed.domain});
   const count = website ? null : requestedCount(goal || text) || observed.count || (audit ? null : 8);
   const context = audit ? JSON.stringify(observed.data, null, 2) : text;
-  const languageName = LANGUAGES[language] || LANGUAGES.kk;
+  const languageName = typeof language === 'string' && Object.hasOwn(LANGUAGES, language) ? LANGUAGES[language] : LANGUAGES.kk;
   const unit = website ? 'section' : 'page';
   const sections = [
    ['role', roles[documentKind]],

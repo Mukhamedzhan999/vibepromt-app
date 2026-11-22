@@ -568,7 +568,7 @@ def create_pdf_upload():
         return jsonify(upload_id=vercel_storage.start_upload(g.audit_owner, filename, size, prompt),
                        chunk_bytes=vercel_storage.CHUNK_BYTES), 201
     except vercel_storage.UploadError as exc:
-        return jsonify(error=str(exc)), 429
+        return jsonify(error=str(exc)), 429, {'Retry-After': '1'}
 
 
 @app.put('/api/pdf-uploads/<upload_id>/<int:part>')
@@ -604,8 +604,13 @@ def stream_uploaded_pdf(upload_id):
         data, filename, prompt = vercel_storage.take_upload(owner, upload_id)
     except vercel_storage.UploadError as exc:
         return jsonify(error=str(exc)), 400
-    key = 'pdf-v2:' + owner + ':' + hashlib.sha256(data).hexdigest() + ':' + hashlib.sha256(prompt.strip().encode()).hexdigest()
-    cached = vercel_storage.cached_result(key)
+    identity = json.dumps([filename, prompt.strip()], ensure_ascii=False).encode()
+    key = 'pdf-v3:' + owner + ':' + hashlib.sha256(data).hexdigest() + ':' + hashlib.sha256(identity).hexdigest()
+    try:
+        cached = vercel_storage.cached_result(key)
+    except Exception:
+        vercel_storage.cancel_upload(owner, upload_id)
+        raise
     if cached is not None:
         vercel_storage.cancel_upload(owner, upload_id)
         return jsonify(result=cached, cached=True)
@@ -715,7 +720,7 @@ def start_pdf_job():
     except ValueError as exc:
         return jsonify(error=str(exc)), 400
 
-    key = hashlib.sha256(data).digest(), prompt.strip()
+    key = hashlib.sha256(data).digest(), filename, prompt.strip()
     with PDF_JOB_CHANGED:
         now = time.monotonic()
         for job_id, job in list(PDF_JOBS.items()):

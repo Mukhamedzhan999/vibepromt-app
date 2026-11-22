@@ -5,20 +5,32 @@ import logging
 from concurrent.futures import ThreadPoolExecutor
 from functools import lru_cache
 from pathlib import Path
+from threading import Lock
 from zipfile import ZIP_STORED, ZipFile
 
-import fitz
 import requests
+from PIL import Image, ImageOps
 
 CATALOG_PATH = Path(__file__).with_name("static") / "audit-photo-catalog.json"
 CATALOG = {item["id"]: item for item in json.loads(CATALOG_PATH.read_text(encoding="utf-8"))}
 LOGGER = logging.getLogger(__name__)
 ASSET_LIMIT = 20 * 1024 * 1024
 PACK_PHOTO_LIMIT = 300_000
+_PHOTO_LOCKS = {photo_id: Lock() for photo_id in CATALOG}
+_PHOTO_WORKERS = ThreadPoolExecutor(max_workers=6, thread_name_prefix="web-photo")
+
+
+def get_photo(photo_id):
+    with _PHOTO_LOCKS[photo_id]:
+        return _get_photo(photo_id)
+
+
+def collect_assets(loader, items):
+    return list(_PHOTO_WORKERS.map(loader, items))
 
 
 @lru_cache(maxsize=32)
-def get_photo(photo_id):
+def _get_photo(photo_id):
     entry = CATALOG[photo_id]
     urls = (entry["previewUrl"], entry["imageUrl"])
     for url in urls:
@@ -41,22 +53,17 @@ def get_photo(photo_id):
                         break
                 if not data or len(data) > ASSET_LIMIT:
                     continue
-            pixels = fitz.Pixmap(bytes(data))
-            if pixels.alpha:
-                pixels = fitz.Pixmap(pixels, 0)
-            if pixels.colorspace and pixels.colorspace.n != 3:
-                pixels = fitz.Pixmap(fitz.csRGB, pixels)
-            while max(pixels.width, pixels.height) > 1920:
-                pixels.shrink(1)
-            for quality in (88, 76, 64):
-                jpg = pixels.tobytes("jpeg", jpg_quality=quality)
-                if len(jpg) <= PACK_PHOTO_LIMIT:
-                    return jpg
-            pixels.shrink(1)
-            jpg = pixels.tobytes("jpeg", jpg_quality=76)
-            if len(jpg) <= PACK_PHOTO_LIMIT:
-                return jpg
-        except (requests.RequestException, RuntimeError, ValueError) as exc:
+            with Image.open(io.BytesIO(data), formats=("JPEG", "PNG", "WEBP")) as original:
+                if original.width * original.height > 24_000_000:
+                    continue
+                image = ImageOps.exif_transpose(original).convert("RGB")
+                for size, quality in ((1920, 88), (1500, 78), (1200, 72), (800, 68)):
+                    image.thumbnail((size, size), Image.Resampling.LANCZOS)
+                    jpeg = io.BytesIO()
+                    image.save(jpeg, format="JPEG", quality=quality, optimize=True)
+                    if jpeg.tell() <= PACK_PHOTO_LIMIT:
+                        return jpeg.getvalue()
+        except (requests.RequestException, OSError, ValueError, Image.DecompressionBombError) as exc:
             LOGGER.info("Catalog photo %s unavailable: %s", photo_id, type(exc).__name__)
     raise LookupError(photo_id)
 
@@ -73,8 +80,7 @@ def build_photo_pack(ids):
     ids = list(dict.fromkeys(photo_id for photo_id in ids if photo_id in CATALOG))
     if not ids:
         return None, 0, 0
-    with ThreadPoolExecutor(max_workers=min(5, len(ids))) as pool:
-        assets = list(pool.map(available_photo, ids))
+    assets = collect_assets(available_photo, ids)
     count = sum(asset is not None for asset in assets)
     if not count:
         return None, 0, len(ids)

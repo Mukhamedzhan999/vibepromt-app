@@ -11,14 +11,18 @@
  const fold=s=>s.toLowerCase().normalize('NFKC').replace(/[\p{P}\p{S}]+/gu,' ').replace(/\s+/g,' ').trim();
  function build(audit,catalog){
   const editorial=audit.evidence?.editorial;
-  const sourcePages=editorial?.pages?.length?editorial.pages:audit.evidence?.page_results||[];
+  const pages=Array.isArray(editorial?.pages)?editorial.pages:[];
+  const results=Array.isArray(audit.evidence?.page_results)?audit.evidence.page_results:[];
+  const sourcePages=pages.some(page=>page&&typeof page==='object')?pages:results;
   const title=clean(editorial?.title,100);
   const seen=new Set();
   const rows=sourcePages.map((page,index)=>{
+   if(!page||typeof page!=='object')return null;
    const number=Number.isInteger(page.page)&&page.page>0?page.page:index+1;
-   const titleLine=clean(page.heading||page.headings?.[0],125);
+   const headings=Array.isArray(page.headings)?page.headings:[];
+   const titleLine=clean(page.heading||headings[0],125);
    const excerpt=clean(page.source_text||page.excerpt||page.text_excerpt,2200);
-   const heading=fold([titleLine,...(page.headings||[]).slice(0,4).map(s=>clean(s,125))].join(' '));
+   const heading=fold([titleLine,...headings.slice(0,4).map(s=>clean(s,125))].join(' '));
    const opening=fold(excerpt.slice(0,420)), detail=fold(excerpt);
    const weights=catalog.map(photo=>{
     const score=Math.max(...photo.terms.map(term=>{
@@ -29,7 +33,7 @@
     return {photo,score};
    }).filter(candidate=>candidate.score>=5).sort((a,b)=>b.score-a.score);
    return {number,titleLine,excerpt,weights};
-  }).filter(row=>{if(seen.has(row.number))return false;seen.add(row.number);return true});
+  }).filter(row=>{if(!row||seen.has(row.number))return false;seen.add(row.number);return true});
   const declared=Number.isInteger(audit.pages)?audit.pages:0;
   for(let number=1;number<=Math.min(200,declared);number++){
    if(!seen.has(number))rows.push({number,titleLine:'',excerpt:'',weights:[]});

@@ -41,14 +41,44 @@ function pdfRequestSignal(signal, milliseconds) {
     : signal;
 }
 
+function waitForPdfRetry(signal, milliseconds) {
+  signal.throwIfAborted();
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => {
+      signal.removeEventListener('abort', abort);
+      resolve();
+    }, milliseconds);
+    const abort = () => {
+      clearTimeout(timer);
+      reject(signal.reason);
+    };
+    signal.addEventListener('abort', abort, {once: true});
+  });
+}
+
+async function requestPdfUpload(payload, showProgress, signal) {
+  const deadline = Date.now() + 90000;
+  while (true) {
+    const response = await fetch('/api/pdf-uploads', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload),
+      signal: pdfRequestSignal(signal, 30000),
+    });
+    const retryAfter = Number(response.headers.get('Retry-After'));
+    if (response.status !== 429 || !(retryAfter > 0)) return requirePdfResponse(response);
+    const delay = Math.min(10000, retryAfter * 1000) + Math.round(Math.random() * 450);
+    if (Date.now() + delay >= deadline) return requirePdfResponse(response);
+    await response.body?.cancel().catch(() => {});
+    showProgress(0, uiText('Талдау кезегі босай салысымен файл жүктеледі…'), 0);
+    await waitForPdfRetry(signal, delay);
+  }
+}
+
 async function analyzeVercelPdf(body, showProgress, showState, signal) {
   const file = body.get('file');
-  const start = await requirePdfResponse(await fetch('/api/pdf-uploads', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({filename: file.name, size: file.size, prompt: body.get('prompt') || ''}),
-    signal: pdfRequestSignal(signal, 30000),
-  }));
+  const start = await requestPdfUpload({filename: file.name, size: file.size, prompt: body.get('prompt') || ''},
+    showProgress, signal);
   const {upload_id, chunk_bytes} = await start.json();
   const path = '/api/pdf-uploads/' + encodeURIComponent(upload_id);
 

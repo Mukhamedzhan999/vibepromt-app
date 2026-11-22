@@ -8,7 +8,6 @@ import os
 import re
 import threading
 import time
-from concurrent.futures import ThreadPoolExecutor
 from urllib.parse import urlsplit
 
 import fitz
@@ -16,6 +15,7 @@ import requests
 from PIL import Image, ImageOps
 
 import photo_catalog
+from pdf_runtime import PDF_LOCK
 
 MAX_PAGES = 12
 IMAGE_HOST = "upload.wikimedia.org"
@@ -208,14 +208,18 @@ def _write(page, rect, text, size, color, *, bold=False, serif=False):
 
 def render_plan(plan):
     title, rows = validate_plan(plan)
-    with ThreadPoolExecutor(max_workers=min(6, len(rows))) as pool:
-        assets = list(pool.map(_load_photo, rows))
+    assets = photo_catalog.collect_assets(_load_photo, rows)
     missing = [str(i) for i, (data, _, _) in enumerate(assets, 1) if data is None]
     if missing:
         raise PlanError("Фото жүктелмеген беттер — " + ", ".join(missing) + ". Осы беттерге басқа дереккөз таңдаңыз.")
     if len({hashlib.sha256(data).digest() for data, _, _ in assets}) != len(rows):
         raise PlanError("Бір фото бірнеше рет таңдалған. Әр бетке бөлек фото таңдаңыз.")
 
+    with PDF_LOCK:
+        return _write_pdf(title, rows, assets)
+
+
+def _write_pdf(title, rows, assets):
     with fitz.open() as document:
         document.set_metadata({"title": title, "creator": "VibePrompt AI"})
         for number, (row, (data, credit, source)) in enumerate(zip(rows, assets), 1):
