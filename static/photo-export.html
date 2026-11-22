@@ -1,0 +1,29 @@
+<!doctype html><html lang="kk"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Фотосуретті PDF · VibePrompt AI</title>
+<style>body{background:#100e18;color:#f5f1ff;font:1rem/1.6 system-ui;margin:0;padding:12vh 6vw}main{max-width:38rem;margin:auto}button,a{display:inline-block;background:#d4c1ff;color:#231137;border:0;border-radius:.6rem;padding:.75rem 1.2rem;font:inherit;font-weight:650}button:disabled{opacity:.6}[hidden]{display:none}</style>
+<main><span>VibePrompt AI</span><h1>Фотосуретті PDF</h1><p id="status" role="status">Презентация жоспары оқылуда…</p><button hidden id="start">PDF дайындау</button> <a hidden id="save" download="VibePrompt.pdf">PDF жүктеу</a></main>
+<script>
+const statusText=document.querySelector('#status'),start=document.querySelector('#start'),save=document.querySelector('#save');
+let plan;
+async function init(){
+ try{
+  const fragment=location.hash.slice(1);
+  if(fragment.length>90000)throw Error('Жоспар тым үлкен.');
+  if(fragment==='khanate-medium') {
+   const response=await fetch('khanate-medium.json');
+   if(!response.ok)throw Error('Үлгі ашылмады.');
+   plan=await response.json();
+  }else plan=JSON.parse(decodeURIComponent(fragment));
+  if(!plan || !Array.isArray(plan.pages))throw Error();
+  statusText.textContent=String(plan.title)+' · '+plan.pages.length+' бет';start.hidden=false;
+ }catch{statusText.textContent='Презентация жоспары оқылмады. AI берген толық сілтемені ашыңыз.'}
+}
+start.onclick=async()=>{
+ start.disabled=true;statusText.textContent='Интернеттен фотолар жүктеліп, PDF дайындалуда…';
+ try{
+  const response=await fetch('/api/audit-photo-pdf',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(plan)});
+  if(!response.ok)throw Error((await response.json()).error||'PDF дайындалмады.');
+  save.href=URL.createObjectURL(await response.blob());save.hidden=false;start.hidden=true;
+  statusText.textContent=plan.title+' · '+plan.pages.length+' бет · '+response.headers.get('X-Vibe-Photo-Count')+' фото';
+ }catch(error){statusText.textContent=error.message;start.disabled=false}
+};init();
+</script></html>
