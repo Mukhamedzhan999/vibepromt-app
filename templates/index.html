@@ -596,7 +596,7 @@ body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) .visua
 <style>#audit-photo-export{margin-block:12px}#audit-photo-export label{display:block;margin-block:10px 4px}#photo-export-json{display:block;width:100%;margin-bottom:8px}</style>
 <script src="/static/audit-photos.js?v=3"></script>
 <script src="/static/design-presets.js?v=3"></script>
-<script src="/static/production-prompts.js?v=3"></script>
+<script src="/static/production-prompts.js?v=4"></script>
 <script>
 let mode='URL', radarChart=null, current=null, typingTimer=null, promptModel='chatgpt';
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
@@ -966,6 +966,7 @@ $('#history-search').addEventListener('keydown',event=>{
 $('#sidebar-history').addEventListener('click',e=>{let open=e.target.closest('[data-open-audit]'),remove=e.target.closest('[data-remove-audit]');if(open){let item=getSavedAudits().find(r=>r.id===open.dataset.openAudit);if(item&&item.data){if(item.data.kind==='BRIEF'){restoreBrief(item.data);closeMenu()}else{render({...item.data,source_url:item.data.source_url||item.source});view('audit');closeMenu();$('#results').scrollIntoView({behavior:'smooth',block:'start'})}}}else if(remove){if(!confirm('Осы браузерден аудит нәтижесін өшіру керек пе?'))return;try{localStorage.setItem(HISTORY_KEY,JSON.stringify(getSavedAudits().filter(r=>r.id!==remove.dataset.removeAudit)));historyWarning='';showSavedAudits()}catch{historyWarning='Тарихты өзгерту мүмкін болмады.';showSavedAudits()}}});
 
 let briefKind='site',briefModel='chatgpt',generatedBriefText='',generatedBriefKind='site';
+let insertedStarter='';
 const briefExamples={
  kk:{site:'Мысалы: жеке портфолио сайты. Жобаларым, өзім туралы және байланыс бөлімі болсын.',presentation:'Мысалы: табиғатты қорғау туралы 10 слайдтық презентация. Фотосуреттер мен негізгі деректер қосылсын.'},
  ru:{site:'Например: сайт-портфолио с моими проектами, информацией обо мне и контактами.',presentation:'Например: презентация из 10 слайдов об охране природы с фотографиями и основными фактами.'},
@@ -1187,7 +1188,22 @@ async function refreshAuditPrompt(){
 
 function showBrief(){resetPromptCopyFeedback();document.body.classList.add('brief-mode');$('#brief-result').classList.remove('hidden');syncBriefTierControls();refreshBriefPrompt();updateAiLink('brief-ai-link',briefModel);$$('[data-brief-model]').forEach(x=>{const active=x.dataset.briefModel===briefModel;x.classList.toggle('active',active);x.setAttribute('aria-pressed',String(active))})}
 function restoreBrief(d){briefKind=d.briefKind;generatedBriefKind=d.briefKind;generatedBriefText=d.brief||'';updateBriefExample();$('#brief-text').value=d.brief||'';$$('[data-brief-kind]').forEach(x=>x.classList.toggle('active',x.dataset.briefKind===briefKind));showBrief();window.scrollTo({top:0,behavior:'smooth'})}
-$$('[data-brief-kind]').forEach(b=>b.addEventListener('click',()=>{briefKind=b.dataset.briefKind;updateBriefExample();$$('[data-brief-kind]').forEach(x=>{x.classList.toggle('active',x===b);x.setAttribute('aria-pressed',String(x===b))})}));
+$$('[data-brief-kind]').forEach(button=>button.addEventListener('click',()=>{
+ const nextKind=button.dataset.briefKind;
+ if(nextKind!==briefKind){
+  if(insertedStarter && $('#brief-text').value===insertedStarter) $('#brief-text').value='';
+  insertedStarter='';
+  $('#brief-error').textContent='';
+  briefKind=nextKind;
+ }
+ updateBriefExample();
+ $$('[data-brief-kind]').forEach(option=>{
+  const active=option.dataset.briefKind===briefKind;
+  option.classList.toggle('active',active);
+  option.setAttribute('aria-pressed',String(active));
+ });
+}));
+$('#brief-text').addEventListener('input',()=>{insertedStarter='';});
 const starters={
  portfolio:'UX дизайнерге арналған қазақша жеке портфолио сайтын жаса. Басты бетте қысқа таныстыру мен байланыс батырмасы болсын. Үш жобаны міндеті, шешімі және нәтижесімен көрсет. Өзім туралы және байланыс бөлімдерін қос. Телефонда мәтін оқуға ыңғайлы, мәзір мен батырмалар пернетақтамен қолжетімді болсын. Жоба деректері берілмесе, орнын анық белгіле.',
  startup:'Шағын бизнеске арналған қойма есебін автоматтандыратын IT стартап туралы қазақша 8 слайдтық таныстырылым жаса. Мәселені, шешімді, өнімнің жұмысын, мақсатты нарықты, бизнес моделін, бәсекелік артықшылықты және даму жоспарын көрсет. Соңғы слайдта серіктеске ұсынысты жаз. Нақты дерек жоқ тұста ойдан сан қоспа.',
@@ -1217,6 +1233,7 @@ const translatedStarters={
 $$('[data-starter]').forEach(button=>button.addEventListener('click',()=>{
  if(button.dataset.starterKind!==briefKind)return;
  const text=translatedStarters[uiLanguage()]?.[button.dataset.starter]||starters[button.dataset.starter];
+ insertedStarter=text;
  $('#brief-text').value=text;
  $('#brief-error').textContent='';
  $('#brief-text').focus();
