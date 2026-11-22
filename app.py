@@ -435,6 +435,36 @@ def chrome_audit():
     except Exception:
         app.logger.exception('Chrome capture failed'); return jsonify({'error':'Chrome нәтижесін өңдеу мүмкін болмады.'}),500
 
+@app.post('/api/import-browser-audit')
+def import_browser_audit():
+    """Import numeric observations from a user-selected Chrome tab."""
+    if request.content_length is None or request.content_length > 32_768:
+        return jsonify(error='Аудит коды тым үлкен.'), 413
+    payload = request.get_json(silent=True)
+    if not isinstance(payload, dict) or not isinstance(payload.get('result'), dict):
+        return jsonify(error='Chrome аудитінің коды жарамсыз.'), 400
+    url = payload.get('url')
+    if not isinstance(url, str) or len(url) > 2048:
+        return jsonify(error='Сайт мекенжайы жарамсыз.'), 400
+    try:
+        parsed = urlsplit(url)
+        if parsed.scheme not in ('http', 'https') or not parsed.hostname or parsed.username or parsed.password:
+            raise ValueError('Сайт мекенжайы жарамсыз.')
+        source = urlunsplit((parsed.scheme, parsed.netloc, '/', '', ''))
+        metrics = payload['result'].copy()
+        metrics.pop('source_headings', None)
+        metrics.pop('content_text', None)
+        if isinstance(metrics.get('contrasts'), list):
+            metrics['contrasts'] = [
+                {key: pair[key] for key in ('ratio', 'threshold', 'fg', 'bg') if key in pair}
+                for pair in metrics['contrasts'][:120] if isinstance(pair, dict)
+            ]
+        features, meta, source = browser_audit.from_chrome_capture(source, metrics)
+        return jsonify(finish_evidence(features, meta, 'URL', source, owner=getattr(g, 'audit_owner', None)))
+    except ValueError as error:
+        return jsonify(error=str(error)), 400
+
+
 @app.post('/api/optimize-prompt')
 def optimize_project_prompt():
     if request.content_length is None or request.content_length > 4_000_000:
