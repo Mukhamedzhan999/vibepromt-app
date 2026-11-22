@@ -587,10 +587,39 @@ body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) .visua
 </details><details id="audit-photo-plan" class="note" hidden><summary>Бет бойынша фото көздері</summary><div class="prompt-controls"><button type="button" id="audit-photo-download" class="copy" hidden>Фото жинағын жүктеу (.zip)</button></div><p id="audit-photo-download-status" role="status" hidden></p><ol id="audit-photo-list"></ol></details><p class="prompt-size-note">Промптты көшіріп, AI бетіне қойыңыз. PDF болса, бастапқы файлды да тіркеңіз.</p><div class="prompt-output" id="prompt-output">Аудитті бастаңыз — сізге бейімделген промпт осы жерде пайда болады.</div><div class="note" id="prompt-grade"></div><section id="full-prompt-section" class="full-prompt hidden" aria-label="Толық промпт"><div class="prompt-head"><div><div class="mini">ДАЙЫН МӘТІН</div><h3>Таңдалған промпт</h3></div><button type="button" class="copy" data-copy="prompt">Таңдалған промптты көшіру ↗</button></div><p class="note">Таңдалған AI үшін толық промпт төменде көрсетілген.</p><pre id="full-prompt-text" class="full-prompt-text"></pre></section></section><section class="card result-side"><div class="mini">ҰСЫНЫСТАР</div><h3 style="font-size:15px;margin:5px 0 12px">Неге назар аудару керек?</h3><div id="issues" class="note">Нәтиже шыққан соң ұсыныстар көрсетіледі.</div><div class="note" id="method-note"></div><div id="page-details"></div></section>
 <section class="card result-wide"><div class="prompt-head"><div><div class="mini">ДАЙЫН КОД</div><h3 style="margin:5px 0 0;font-size:15px">CSS түзету үлгісі</h3></div><button type="button" class="copy" data-copy="css">Көшіру ↗</button></div><pre class="prompt-output" id="css-output">CSS үлгісі аудиттен кейін пайда болады.</pre></section><section class="card result-side"><div class="mini">СОҢҒЫ ӘРЕКЕТТЕР</div><h3 style="font-size:15px;margin:5px 0 12px">Аудит тарихы</h3><div id="history" class="history-list">Әзірге аудит жоқ.</div></section></div>
 </section>
-<section id="academic" class="academic"><div class="hero lab-hero"><div class="eyebrow">▦ &nbsp; АКАДЕМИЯЛЫҚ ЗЕРТХАНА</div><h1>Оқытушы <span>режимі.</span></h1><p>Үлгілерді салыстырыңыз, модель нәтижелерін қарап, әдістеменің шектеулерін зерттеңіз.</p></div><div class="below-head" style="margin-top:0"><div><div class="mini">01 / ДАЙЫН СЦЕНАРИЙЛЕР</div><h2>Бір басумен тексеру</h2><p>Симуляция нақты файлды немесе сайтты өңдемейді.</p></div><label class="tag">ДЕРЕККӨЗ &nbsp; <select id="demo-kind" class="select"><option value="URL">URL</option><option value="PDF">PDF</option></select></label></div><div class="lab-grid"><button class="card demo-card" data-demo="1"><span class="demo-num">01 / ЖАҚСЫ</span><h3>Жоғары деңгейлі интерфейс ↗</h3><p>Теңгерімді құрылым және айқын контраст</p></button><button class="card demo-card" data-demo="2"><span class="demo-num">02 / КОНТРАСТ</span><h3>Контраст қатесі ↗</h3><p>Оқылуы қиын мәтін және типографика</p></button><button class="card demo-card" data-demo="3"><span class="demo-num">03 / ТЫҒЫЗДЫҚ</span><h3>Мәтін тым көп ↗</h3><p>Шамадан тыс жүктелген бет</p></button></div>
-<div class="lab-section"><div class="card" style="padding:18px"><strong>Нақты сайттармен оқыту мәртебесі</strong><p class="note">19 жария беттен бақылау жиналды. Сапа белгілерін сарапшы тексергеннен кейін ғана нақты сайт моделі оқытылады; қазіргі кесте — синтетикалық демонстрация. Нұсқаулық: TRAINING_KK.md.</p></div></div><div class="lab-section"><div class="mini">02 / МОДЕЛЬДЕРДІ САЛЫСТЫРУ</div><h2>Тест жиынындағы нәтиже</h2><p class="note">Тек синтетикалық оқу жиыны: бұл көрсеткіштер нақты сайттардағы дәлдікті білдірмейді · 80/20 · macro орташа</p><div class="card table-wrap"><table class="table"><thead><tr><th>МОДЕЛЬ</th><th>ДӘЛДІК</th><th>PRECISION</th><th>RECALL</th><th>F1-SCORE</th></tr></thead><tbody id="model-table"><tr><td colspan="5">Жүктелуде...</td></tr></tbody></table></div></div>
-<div class="lab-section"><div class="mini">03 / ҚАТЕЛЕР МАТРИЦАСЫ</div><h2>Random Forest жіктеуі</h2><p class="note">Жолдар — нақты класс, бағандар — болжам. 0–3 класс атаулары төменде көрсетілген.</p><div class="card" style="padding:20px"><div class="heat" id="matrix"></div><p class="note">0 — жоғары деңгей · 1 — контраст · 2 — жүктеме · 3 — шикі макет</p></div></div>
-<div class="lab-section lab-info"><div class="card"><div class="mini">ҚАТЕ ЖАҒДАЙЫ</div><h3>JavaScript арқылы салынатын сайт</h3><p>Браузерде көрінетін интерфейс бастапқы HTML ішінде болмауы мүмкін. Соның салдарынан толық сайт «шикі макет» деп қате жіктелуі ықтимал. Бұл — ықтимал мысал, тест жиынында тіркелген қате емес.</p></div><div class="card"><div class="mini">ЖҮЙЕ ШЕКТЕУІ</div><h3>Бұл — жуық бағалау</h3><p>PDF-тің барлық беті оқылады, ал контраст үзінділер бойынша жуық тексеріледі. OCR мәтінді қате тануы мүмкін; нақты орналасу мен толық CSS cascade толық бағаланбайды. Белгісіз мәндер ұпайға кірмейді. Синтетикалық деректердегі жоғары нәтиже нақты сайттардағы сапаны дәлелдемейді.</p></div></div></section>
+<section id="academic" class="academic" aria-labelledby="project-title">
+ <header class="hero lab-hero">
+  <div class="eyebrow">QAIRU · AI FUNDAMENTALS 2026</div>
+  <h1 id="project-title">VibePrompt AI жобасы</h1>
+  <p>QAIRU қорытынды жобасы. Веб-сайттар мен PDF құжаттарды талдайтын және оларды жақсартуға промпт құратын қосымша.</p>
+ </header>
+ <div class="lab-grid lab-info" id="project-topics">
+  <article class="card">
+    <div class="mini">2-апта</div>
+    <h2>Іздеу алгоритмдері</h2>
+    <p>BFS бастапқы URL-ден ішкі сілтемелерді табады. Беттер кезекке қосылып, жақын деңгейден алыс деңгейге қарай тексеріледі. Қаралған сілтемелер қайталанбайды. Нәтижеде табылған беттердің атаулары мен бөлімдері көрсетіледі.</p>
+  </article>
+  <article class="card">
+    <div class="mini">8-апта</div>
+    <h2>Классикалық машиналық оқыту</h2>
+    <p>Мәтін тығыздығы мен контраст сияқты аудит белгілері арқылы интерфейс санаты болжанады. Random Forest пен Logistic Regression Accuracy, Precision, Recall және F1 бойынша салыстырылады. Модельдер синтетикалық оқу және тест жиынтықтарымен бағаланады.</p>
+  </article>
+  <article class="card">
+    <div class="mini">10-апта</div>
+    <h2>LLM және промпт инженериясы</h2>
+    <p>Генератор идеяны немесе аудит деректерін тақырыпқа сай үлгімен біріктіріп, ChatGPT, Claude және Gemini үшін бөлек промпт құрады. Толық нұсқада құрылым, түс, қаріп және визуал бағыты анықталады. Дайын нәтижені таңдалған модель жасайды.</p>
+  </article>
+ </div>
+ <div class="lab-section card" style="padding:clamp(16px,3vw,28px)">
+  <h2>Қорғауда не көрсету керек</h2>
+  <ol>
+   <li>Сайтты тексеріп, BFS тапқан беттерді қаралу ретімен көрсетіңіз.</li>
+   <li>Бір интерфейстің болжанған санатын және бағалау деректерінің қалай алынғанын түсіндіріңіз.</li>
+   <li>PDF жүктеп, бір аудиттен үш модельге арналған «Толық» промпттың қалай жасалатынын көрсетіңіз.</li>
+  </ol>
+  <button type="button" class="side-button" id="project-open-audit">Аудитке өту</button>
+ </div>
+</section>
 </main><footer class="shell"><div class="footer"><span><b>VibePrompt AI</b> &nbsp; / &nbsp; Интерфейсті саналы түрде жақсарт.</span><span>ОҚУ ЖОБАСЫ · 2026</span></div></footer></div>
 {% if vercel_pdf_upload %}<script src="{{ url_for('static', filename='vercel-pdf.js') }}?v=3"></script>{% endif %}
 <style>#audit-photo-export{margin-block:12px}#audit-photo-export label{display:block;margin-block:10px 4px}#photo-export-json{display:block;width:100%;margin-bottom:8px}</style>
@@ -750,41 +779,23 @@ const uiTranslations={
 "Нәтиже шыққан соң ұсыныстар көрсетіледі.":["Рекомендации появятся после анализа.","Recommendations will appear after analysis."],
 "Көшіру ↗":["Скопировать ↗","Copy ↗"],
 "CSS үлгісі аудиттен кейін пайда болады.":["Пример CSS появится после аудита.","A CSS example will appear after the audit."],
-"▦ АКАДЕМИЯЛЫҚ ЗЕРТХАНА":["▦ УЧЕБНАЯ ЛАБОРАТОРИЯ","▦ TEACHING LAB"],
-"Оқытушы":["Режим","Teaching"],
-"режимі.":["преподавателя.","mode."],
-"Үлгілерді салыстырыңыз, модель нәтижелерін қарап, әдістеменің шектеулерін зерттеңіз.":["Сравните примеры, посмотрите результаты моделей и изучите ограничения метода.","Compare examples, review model results, and explore the method’s limitations."],
-"01 / ДАЙЫН СЦЕНАРИЙЛЕР":["01 / ГОТОВЫЕ СЦЕНАРИИ","01 / EXAMPLE SCENARIOS"],
-"Бір басумен тексеру":["Проверка в один клик","One-click audit"],
-"Симуляция нақты файлды немесе сайтты өңдемейді.":["Симуляция не обрабатывает реальный файл или сайт.","The simulation does not process a real file or website."],
-"ДЕРЕККӨЗ":["ИСТОЧНИК","SOURCE"],
-"01 / ЖАҚСЫ":["01 / ХОРОШИЙ ПРИМЕР","01 / STRONG EXAMPLE"],
-"Жоғары деңгейлі интерфейс ↗":["Качественный интерфейс ↗","High-quality interface ↗"],
-"Теңгерімді құрылым және айқын контраст":["Сбалансированная структура и чёткий контраст","Balanced structure and clear contrast"],
-"02 / КОНТРАСТ":["02 / КОНТРАСТ","02 / CONTRAST"],
-"Контраст қатесі ↗":["Проблема с контрастом ↗","Contrast issue ↗"],
-"Оқылуы қиын мәтін және типографика":["Текст и типографика, которые трудно читать","Hard-to-read text and typography"],
-"03 / ТЫҒЫЗДЫҚ":["03 / ПЛОТНОСТЬ","03 / DENSITY"],
-"Мәтін тым көп ↗":["Слишком много текста ↗","Too much text ↗"],
-"Шамадан тыс жүктелген бет":["Перегруженная страница","Overcrowded page"],
-"Нақты сайттармен оқыту мәртебесі":["Статус обучения на реальных сайтах","Training status on real websites"],
-"19 жария беттен бақылау жиналды. Сапа белгілерін сарапшы тексергеннен кейін ғана нақты сайт моделі оқытылады; қазіргі кесте — синтетикалық демонстрация. Нұсқаулық: TRAINING_KK.md.":["Собраны наблюдения с 19 общедоступных страниц. Обучение на реальных сайтах начнётся после экспертной проверки меток качества. В таблице пока показана синтетическая демонстрация. Инструкция: TRAINING_KK.md.","Observations were collected from 19 public pages. Training on real websites will start after expert review of the quality labels. The table shows a synthetic demo. Guide: TRAINING_KK.md."],
-"02 / МОДЕЛЬДЕРДІ САЛЫСТЫРУ":["02 / СРАВНЕНИЕ МОДЕЛЕЙ","02 / MODEL COMPARISON"],
-"Тест жиынындағы нәтиже":["Результаты на тестовой выборке","Test-set results"],
-"Тек синтетикалық оқу жиыны: бұл көрсеткіштер нақты сайттардағы дәлдікті білдірмейді · 80/20 · macro орташа":["Синтетическая выборка · 80/20 · макроусреднение. Метрики не отражают точность на реальных сайтах.","Synthetic dataset · 80/20 split · macro average. These metrics do not measure accuracy on real sites."],
-"МОДЕЛЬ":["МОДЕЛЬ","MODEL"],
-"ДӘЛДІК":["ТОЧНОСТЬ","ACCURACY"],
+"VibePrompt AI жобасы":["Проект VibePrompt AI","The VibePrompt AI project"],
+"QAIRU қорытынды жобасы. Веб-сайттар мен PDF құжаттарды талдайтын және оларды жақсартуға промпт құратын қосымша.":["Итоговый проект QAIRU. Приложение анализирует сайты и PDF и создаёт промпты для их улучшения.","QAIRU final project. The app audits websites and PDFs and writes prompts to improve them."],
+"2-апта":["Неделя 2","Week 2"],
+"Іздеу алгоритмдері":["Алгоритмы поиска","Search algorithms"],
+"BFS бастапқы URL-ден ішкі сілтемелерді табады. Беттер кезекке қосылып, жақын деңгейден алыс деңгейге қарай тексеріледі. Қаралған сілтемелер қайталанбайды. Нәтижеде табылған беттердің атаулары мен бөлімдері көрсетіледі.":["BFS находит внутренние ссылки с начального URL. Страницы проверяются по очереди, от ближних уровней к дальним. Повторные ссылки пропускаются. В результате видны заголовки и разделы найденных страниц.","BFS discovers internal links from the starting URL and visits pages by depth using a queue. Previously visited links are skipped. The output lists detected pages and headings."],
+"8-апта":["Неделя 8","Week 8"],
+"Классикалық машиналық оқыту":["Классическое машинное обучение","Classical machine learning"],
+"Мәтін тығыздығы мен контраст сияқты аудит белгілері арқылы интерфейс санаты болжанады. Random Forest пен Logistic Regression Accuracy, Precision, Recall және F1 бойынша салыстырылады. Модельдер синтетикалық оқу және тест жиынтықтарымен бағаланады.":["Категория интерфейса прогнозируется по признакам, включая плотность текста и контраст. Random Forest и Logistic Regression сравниваются по Accuracy, Precision, Recall и F1 на синтетических обучающей и тестовой выборках.","The interface class is predicted from audit features such as text density and contrast. Random Forest and Logistic Regression are compared using accuracy, precision, recall and F1 on synthetic training and test data."],
+"10-апта":["Неделя 10","Week 10"],
+"LLM және промпт инженериясы":["LLM и промпт-инжиниринг","LLMs and prompt engineering"],
+"Генератор идеяны немесе аудит деректерін тақырыпқа сай үлгімен біріктіріп, ChatGPT, Claude және Gemini үшін бөлек промпт құрады. Толық нұсқада құрылым, түс, қаріп және визуал бағыты анықталады. Дайын нәтижені таңдалған модель жасайды.":["Генератор объединяет идею или данные аудита с тематическим шаблоном и создаёт отдельные промпты для ChatGPT, Claude и Gemini. Полная версия задаёт структуру, цвета, шрифты и визуальное направление. Итоговый материал создаёт выбранная модель.","The generator combines a brief or audit findings with a matching template and writes separate prompts for ChatGPT, Claude and Gemini. The full version defines structure, colors, typography and visuals. The selected model produces the final material."],
+"Қорғауда не көрсету керек":["Что показать на защите","What to show in the demo"],
+"Сайтты тексеріп, BFS тапқан беттерді қаралу ретімен көрсетіңіз.":["Запустите аудит сайта и покажите порядок обхода страниц BFS.","Run a site audit and show the order in which BFS visits the pages."],
+"Бір интерфейстің болжанған санатын және бағалау деректерінің қалай алынғанын түсіндіріңіз.":["Покажите прогноз категории интерфейса и объясните происхождение тестовых данных.","Show one predicted interface class and explain how the evaluation data was produced."],
+"PDF жүктеп, бір аудиттен үш модельге арналған «Толық» промпттың қалай жасалатынын көрсетіңіз.":["Загрузите PDF и покажите, как по одному аудиту создаются полные промпты для трёх моделей.","Upload a PDF and show how one audit produces full prompts for three models."],
+"Аудитке өту":["Перейти к аудиту","Open audit"],
 "Жүктелуде...":["Загрузка…","Loading…"],
-"03 / ҚАТЕЛЕР МАТРИЦАСЫ":["03 / МАТРИЦА ОШИБОК","03 / CONFUSION MATRIX"],
-"Random Forest жіктеуі":["Классификация Random Forest","Random Forest classification"],
-"Жолдар — нақты класс, бағандар — болжам. 0–3 класс атаулары төменде көрсетілген.":["Строки — фактические классы, столбцы — предсказанные. Названия классов 0–3 приведены ниже.","Rows show actual classes; columns show predicted classes. Class labels 0–3 are listed below."],
-"0 — жоғары деңгей · 1 — контраст · 2 — жүктеме · 3 — шикі макет":["0 — качественный · 1 — низкий контраст · 2 — перегруженный · 3 — черновой","0 — high quality · 1 — low contrast · 2 — overcrowded · 3 — draft layout"],
-"ҚАТЕ ЖАҒДАЙЫ":["ПРИМЕР ОШИБКИ","FAILURE CASE"],
-"JavaScript арқылы салынатын сайт":["Сайт с отрисовкой на JavaScript","JavaScript-rendered website"],
-"Браузерде көрінетін интерфейс бастапқы HTML ішінде болмауы мүмкін. Соның салдарынан толық сайт «шикі макет» деп қате жіктелуі ықтимал. Бұл — ықтимал мысал, тест жиынында тіркелген қате емес.":["В исходном HTML может не быть интерфейса, который браузер отрисовывает позже. Из-за этого готовый сайт может получить метку «черновой». Это гипотетический пример.","The source HTML may omit UI that renders later in the browser. A complete site could therefore be classified as a draft. This is a hypothetical example."],
-"ЖҮЙЕ ШЕКТЕУІ":["ОГРАНИЧЕНИЕ СИСТЕМЫ","SYSTEM LIMITATION"],
-"Бұл — жуық бағалау":["Оценка приблизительная","The assessment is approximate"],
-"PDF-тің барлық беті оқылады, ал контраст үзінділер бойынша жуық тексеріледі. OCR мәтінді қате тануы мүмкін; нақты орналасу мен толық CSS cascade толық бағаланбайды. Белгісіз мәндер ұпайға кірмейді. Синтетикалық деректердегі жоғары нәтиже нақты сайттардағы сапаны дәлелдемейді.":["Читаются все страницы PDF, а контраст оценивается по образцам. OCR может ошибаться. Точная вёрстка и весь каскад CSS не оцениваются. Неизвестные значения не входят в оценку. Результаты на синтетических данных не подтверждают качество на реальных сайтах.","All PDF pages are read, and contrast is estimated from samples. OCR can misread text. Exact layout and the full CSS cascade are outside the assessment. Unknown values are excluded from the score. Synthetic results do not establish performance on real websites."],
 "/ Интерфейсті саналы түрде жақсарт.":["/ Улучшайте интерфейсы осознанно.","/ Improve interfaces with intent."],
 "ОҚУ ЖОБАСЫ · 2026":["УЧЕБНЫЙ ПРОЕКТ · 2026","EDUCATIONAL PROJECT · 2026"],
 'Масштаб':['Масштаб','Scale'],
@@ -1246,7 +1257,6 @@ $('#open-url-audit').addEventListener('click',()=>openAudit('URL'));$('#open-pdf
 
 async function refreshHistory(){showSavedAudits();try{const rows=await fetch('/api/history').then(r=>r.json());$('#history').innerHTML=rows.length?rows.slice(0,5).map(r=>`<div class="history-row"><span>${esc(r.kind)}${r.kind==='PDF'?` · ${r.size_mb} МБ · ${r.pages} бет`:''}<br><small>${esc(r.source)}</small></span><b>${r.score < 0 || r.class_id === -2 ? '—' : r.score}${r.class_id === -2 ? '<br><small>Ескі баға көрсетілмейді</small>' : r.class_id >= 0 ? '<br><small>Ескі әдіс</small>' : ''}</b></div>`).join(''):'Әзірге аудит жоқ.'}catch{}}
 
-async function loadModels(){try{let d=await fetch('/api/models').then(r=>r.json());$('#model-table').innerHTML=Object.entries(d.models).map(([name,m])=>`<tr><td>${esc(name)}</td><td>${pct(m.accuracy)}</td><td>${pct(m.precision)}</td><td>${pct(m.recall)}</td><td>${pct(m.f1)}</td></tr>`).join('');let m=d.models['Random Forest'].matrix,max=Math.max(1,...m.flat());$('#matrix').innerHTML='<div></div>'+[0,1,2,3].map(i=>`<div class="axis">${i}</div>`).join('')+m.map((row,i)=>`<div class="axis">${i}</div>`+row.map(v=>`<div style="background:color-mix(in srgb,var(--theme-accent,#6f69f4) ${(12+75*v/max).toFixed(2)}%,transparent)">${v}</div>`).join('')).join('')}catch{$('#model-table').innerHTML='<tr><td colspan="5">Модель деректерін жүктеу мүмкін болмады.</td></tr>'}}
 function typeText(el,text){clearInterval(typingTimer);el.textContent='';if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){el.textContent=text;return}let i=0;typingTimer=setInterval(()=>{i=Math.min(text.length,i+Math.max(5,Math.ceil(text.length/120)));el.textContent=text.slice(0,i);if(i===text.length)clearInterval(typingTimer)},12)}
 $$('[data-prompt-model]').forEach(b=>b.addEventListener('click',()=>{promptModel=b.dataset.promptModel;$$('[data-prompt-model]').forEach(x=>{x.classList.toggle('active',x===b);x.setAttribute('aria-pressed',String(x===b))});if(current)refreshAuditPrompt()}));
 function renderPrompt(text){resetPromptCopyFeedback();clearInterval(typingTimer);let parts=(/^# 1\./m.test(text)?text.split(/(?=^# [1-5]\.)/m):text.split(/\n\n+/)).filter(part=>part.trim());$('#prompt-output').innerHTML=parts.map((part,i)=>{let lines=part.split('\n'),head=lines.shift();return `<details class="prompt-section" ${i===0?'open':''}><summary>${esc(head)}</summary><p>${esc(lines.join('\n'))}</p></details>`}).join('');$('#full-prompt-text').textContent=text;$('#full-prompt-section').classList.toggle('hidden',!text)}
@@ -1460,5 +1470,6 @@ $('#audit-form').addEventListener('submit',event=>{
  }
  run('/api/audit',body);
 });
-$$('[data-demo]').forEach(b=>b.addEventListener('click',()=>{let d=new FormData();d.append('kind',$('#demo-kind').value);d.append('prompt',$('#goal').value);run('/api/demo/'+b.dataset.demo,d,true)}));$$('[data-copy]').forEach(b=>b.addEventListener('click',()=>{if(current)copyWithFeedback(b,()=>b.dataset.copy==='prompt'?$('#full-prompt-text').textContent:current[b.dataset.copy])}));loadModels();refreshHistory();
+$('#project-open-audit').addEventListener('click',()=>view('audit'));
+$$('[data-copy]').forEach(b=>b.addEventListener('click',()=>{if(current)copyWithFeedback(b,()=>b.dataset.copy==='prompt'?$('#full-prompt-text').textContent:current[b.dataset.copy])}));refreshHistory();
 </script><script>if ('serviceWorker' in navigator && window.isSecureContext) navigator.serviceWorker.register('/sw.js').catch(()=>{});</script></body></html>
