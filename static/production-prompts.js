@@ -115,7 +115,7 @@
   const count = requestedCount(topic) || observed.count || (audit ? null : 8);
   const pptx = /\b(?:pptx|powerpoint)\b/i.test(topic);
   const format = pptx ? 'editable PowerPoint presentation' + (/\bpdf\b/i.test(topic) ? ' with a PDF export' : '') : 'presentation as a downloadable PDF';
-  const deliverable = site ? 'a responsive website' : (count ? 'a ' + count + '-' + (pptx ? 'slide' : 'page') : 'a') + ' ' + format;
+  const deliverable = site ? 'a responsive website' : (pptx ? 'an ' : 'a ') + format + (count ? ' with ' + count + (pptx ? ' slides' : ' pages') : '');
   const goal = 'As a ' + (site ? 'UX designer and frontend developer' : 'presentation designer and editor') +
    ', ' + (audit ? 'redesign the supplied work as ' : 'create ') + deliverable + ' in ' + lang + '.';
   const palette = Object.entries(preset.palette).map(([name, hex]) => name + ' ' + hex).join(', ');
