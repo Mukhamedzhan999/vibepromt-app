@@ -623,35 +623,24 @@ body[data-theme='light'] .qairu-logo {
 </section>
 <section id="academic" class="academic" aria-labelledby="project-title">
  <header class="hero lab-hero">
-  <div class="eyebrow">QAIRU · AI FUNDAMENTALS 2026</div>
+  <div class="eyebrow">QAIRU</div>
   <h1 id="project-title">VibePrompt AI жобасы</h1>
-  <p>QAIRU қорытынды жобасы. Веб-сайттар мен PDF құжаттарды талдайтын және оларды жақсартуға промпт құратын қосымша.</p>
+  <p>VibePrompt AI жаңа веб-сайт пен презентацияны жоспарлауға көмектеседі. Идеяңызды сипаттасаңыз, қосымша тақырыпқа сай құрылым, дизайн және мазмұн нұсқауларын промптқа біріктіреді. Дайын сайтты сілтеме арқылы, ал презентацияны PDF файлын жүктеу арқылы тексеруге болады. Аудит құрылым, мәтіннің оқылымы және контраст бойынша жақсартуға болатын тұстарды көрсетеді. Дайын промптты көшіріп, ChatGPT, Claude немесе Gemini арқылы жобаңызды әрі қарай дамыта аласыз.</p>
  </header>
+ <h2 style="margin-bottom:14px">Жасанды интеллект негіздеріне арналған</h2>
  <div class="lab-grid" id="project-topics">
   <article class="card" style="padding:21px">
-    <div class="mini">2-апта</div>
-    <h2>Іздеу алгоритмдері</h2>
+    <h3>Іздеу алгоритмдері</h3>
     <p>BFS бастапқы URL-ден ішкі сілтемелерді табады. Беттер кезекке қосылып, жақын деңгейден алыс деңгейге қарай тексеріледі. Қаралған сілтемелер қайталанбайды. Нәтижеде табылған беттердің атаулары мен бөлімдері көрсетіледі.</p>
   </article>
   <article class="card" style="padding:21px">
-    <div class="mini">8-апта</div>
-    <h2>Классикалық машиналық оқыту</h2>
+    <h3>Классикалық машиналық оқыту</h3>
     <p>Мәтін тығыздығы мен контраст сияқты аудит белгілері арқылы интерфейс санаты болжанады. Random Forest пен Logistic Regression Accuracy, Precision, Recall және F1 бойынша салыстырылады. Модельдер синтетикалық оқу және тест жиынтықтарымен бағаланады.</p>
   </article>
   <article class="card" style="padding:21px">
-    <div class="mini">10-апта</div>
-    <h2>LLM және промпт инженериясы</h2>
+    <h3>LLM және промпт инженериясы</h3>
     <p>Генератор идеяны немесе аудит деректерін тақырыпқа сай үлгімен біріктіріп, ChatGPT, Claude және Gemini үшін бөлек промпт құрады. Толық нұсқада құрылым, түс, қаріп және визуал бағыты анықталады. Дайын нәтижені таңдалған модель жасайды.</p>
   </article>
- </div>
- <div class="lab-section card" style="padding:clamp(16px,3vw,28px)">
-  <h2>Қорғауда не көрсету керек</h2>
-  <ol>
-   <li>Сайтты тексеріп, BFS тапқан беттерді қаралу ретімен көрсетіңіз.</li>
-   <li>Бір интерфейстің болжанған санатын және бағалау деректерінің қалай алынғанын түсіндіріңіз.</li>
-   <li>PDF жүктеп, бір аудиттен үш модельге арналған «Толық» промпттың қалай жасалатынын көрсетіңіз.</li>
-  </ol>
-  <button type="button" class="side-button" id="project-open-audit">Аудитке өту</button>
  </div>
 </section>
 </main><footer class="shell"><div class="footer"><span><b>VibePrompt AI</b> &nbsp; / &nbsp; Интерфейсті саналы түрде жақсарт.</span></div></footer></div>
@@ -814,21 +803,14 @@ const uiTranslations={
 "Көшіру ↗":["Скопировать ↗","Copy ↗"],
 "CSS үлгісі аудиттен кейін пайда болады.":["Пример CSS появится после аудита.","A CSS example will appear after the audit."],
 "VibePrompt AI жобасы":["Проект VibePrompt AI","The VibePrompt AI project"],
-"QAIRU қорытынды жобасы. Веб-сайттар мен PDF құжаттарды талдайтын және оларды жақсартуға промпт құратын қосымша.":["Итоговый проект QAIRU. Приложение анализирует сайты и PDF и создаёт промпты для их улучшения.","QAIRU final project. The app audits websites and PDFs and writes prompts to improve them."],
-"2-апта":["Неделя 2","Week 2"],
+"VibePrompt AI жаңа веб-сайт пен презентацияны жоспарлауға көмектеседі. Идеяңызды сипаттасаңыз, қосымша тақырыпқа сай құрылым, дизайн және мазмұн нұсқауларын промптқа біріктіреді. Дайын сайтты сілтеме арқылы, ал презентацияны PDF файлын жүктеу арқылы тексеруге болады. Аудит құрылым, мәтіннің оқылымы және контраст бойынша жақсартуға болатын тұстарды көрсетеді. Дайын промптты көшіріп, ChatGPT, Claude немесе Gemini арқылы жобаңызды әрі қарай дамыта аласыз.":["VibePrompt AI помогает планировать сайты и презентации. Опишите идею, и приложение объединит рекомендации по структуре, дизайну и содержанию в одном промпте. Готовый сайт можно проверить по ссылке, а презентацию — загрузив PDF. Аудит показывает, где можно улучшить структуру, читаемость текста и контраст. Готовый промпт можно скопировать и продолжить работу над проектом в ChatGPT, Claude или Gemini.","VibePrompt AI helps you plan websites and presentations. Describe an idea, and the app combines guidance on structure, design and content in one prompt. You can audit an existing website by entering its URL or a presentation by uploading a PDF. The audit identifies opportunities to improve structure, readability and contrast. Copy the prompt into ChatGPT, Claude or Gemini to develop your project further."],
+"Жасанды интеллект негіздеріне арналған":["Для курса «Основы искусственного интеллекта»","Built for AI Fundamentals"],
 "Іздеу алгоритмдері":["Алгоритмы поиска","Search algorithms"],
 "BFS бастапқы URL-ден ішкі сілтемелерді табады. Беттер кезекке қосылып, жақын деңгейден алыс деңгейге қарай тексеріледі. Қаралған сілтемелер қайталанбайды. Нәтижеде табылған беттердің атаулары мен бөлімдері көрсетіледі.":["BFS находит внутренние ссылки с начального URL. Страницы проверяются по очереди, от ближних уровней к дальним. Повторные ссылки пропускаются. В результате видны заголовки и разделы найденных страниц.","BFS discovers internal links from the starting URL and visits pages by depth using a queue. Previously visited links are skipped. The output lists detected pages and headings."],
-"8-апта":["Неделя 8","Week 8"],
 "Классикалық машиналық оқыту":["Классическое машинное обучение","Classical machine learning"],
 "Мәтін тығыздығы мен контраст сияқты аудит белгілері арқылы интерфейс санаты болжанады. Random Forest пен Logistic Regression Accuracy, Precision, Recall және F1 бойынша салыстырылады. Модельдер синтетикалық оқу және тест жиынтықтарымен бағаланады.":["Категория интерфейса прогнозируется по признакам, включая плотность текста и контраст. Random Forest и Logistic Regression сравниваются по Accuracy, Precision, Recall и F1 на синтетических обучающей и тестовой выборках.","The interface class is predicted from audit features such as text density and contrast. Random Forest and Logistic Regression are compared using accuracy, precision, recall and F1 on synthetic training and test data."],
-"10-апта":["Неделя 10","Week 10"],
 "LLM және промпт инженериясы":["LLM и промпт-инжиниринг","LLMs and prompt engineering"],
 "Генератор идеяны немесе аудит деректерін тақырыпқа сай үлгімен біріктіріп, ChatGPT, Claude және Gemini үшін бөлек промпт құрады. Толық нұсқада құрылым, түс, қаріп және визуал бағыты анықталады. Дайын нәтижені таңдалған модель жасайды.":["Генератор объединяет идею или данные аудита с тематическим шаблоном и создаёт отдельные промпты для ChatGPT, Claude и Gemini. Полная версия задаёт структуру, цвета, шрифты и визуальное направление. Итоговый материал создаёт выбранная модель.","The generator combines a brief or audit findings with a matching template and writes separate prompts for ChatGPT, Claude and Gemini. The full version defines structure, colors, typography and visuals. The selected model produces the final material."],
-"Қорғауда не көрсету керек":["Что показать на защите","What to show in the demo"],
-"Сайтты тексеріп, BFS тапқан беттерді қаралу ретімен көрсетіңіз.":["Запустите аудит сайта и покажите порядок обхода страниц BFS.","Run a site audit and show the order in which BFS visits the pages."],
-"Бір интерфейстің болжанған санатын және бағалау деректерінің қалай алынғанын түсіндіріңіз.":["Покажите прогноз категории интерфейса и объясните происхождение тестовых данных.","Show one predicted interface class and explain how the evaluation data was produced."],
-"PDF жүктеп, бір аудиттен үш модельге арналған «Толық» промпттың қалай жасалатынын көрсетіңіз.":["Загрузите PDF и покажите, как по одному аудиту создаются полные промпты для трёх моделей.","Upload a PDF and show how one audit produces full prompts for three models."],
-"Аудитке өту":["Перейти к аудиту","Open audit"],
 "Жүктелуде...":["Загрузка…","Loading…"],
 "/ Интерфейсті саналы түрде жақсарт.":["/ Улучшайте интерфейсы осознанно.","/ Improve interfaces with intent."],
 'Масштаб':['Масштаб','Scale'],
@@ -1503,6 +1485,5 @@ $('#audit-form').addEventListener('submit',event=>{
  }
  run('/api/audit',body);
 });
-$('#project-open-audit').addEventListener('click',()=>view('audit'));
 $$('[data-copy]').forEach(b=>b.addEventListener('click',()=>{if(current)copyWithFeedback(b,()=>b.dataset.copy==='prompt'?$('#full-prompt-text').textContent:current[b.dataset.copy])}));refreshHistory();
 </script><script>if ('serviceWorker' in navigator && window.isSecureContext) navigator.serviceWorker.register('/sw.js').catch(()=>{});</script></body></html>
