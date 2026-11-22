@@ -108,8 +108,8 @@ def direct_image_url(value):
         return False
     try:
         parts = urlsplit(value)
-        return (parts.scheme == "https" and parts.netloc == IMAGE_HOST
-                and parts.path.startswith("/wikipedia/commons/")
+        return (parts.scheme == "https" and ((parts.netloc == IMAGE_HOST and parts.path.startswith("/wikipedia/commons/"))
+                or (parts.netloc == "cdn.loc.gov" and re.fullmatch(r"/service/pnp/ppmsca/[0-9]{5}/[0-9]{5}[vr]\.jpg", parts.path)))
                 and parts.path.lower().endswith((".jpg", ".jpeg", ".png", ".webp"))
                 and not parts.query and not parts.fragment)
     except ValueError:
@@ -140,7 +140,12 @@ def validate_plan(plan):
         if not isinstance(asset, str) or (asset and asset not in photo_catalog.CATALOG):
             raise PlanError(f"{number}-беттегі фото идентификаторы жарамсыз.")
         if url and not direct_image_url(url):
-            raise PlanError(f"{number}-бетке Wikimedia Commons-тың тікелей JPEG, PNG не WebP сілтемесін беріңіз.")
+            raise PlanError(f"{number}-бетке Wikimedia Commons не Конгресс кітапханасының тікелей JPEG, PNG не WebP сілтемесін беріңіз.")
+        if plan.get("tier") == "medium" and number % 2 == 0:
+            if asset or url:
+                raise PlanError(f"{number}-бет мәтін мен кестеге арналған.")
+            normalized.append({"title": _text(page, "title", 140), "body": _text(page, "body", 960), "text_only": True})
+            continue
         if not asset and not url:
             raise PlanError(f"{number}-бетке фото таңдалмаған.")
         normalized.append({
@@ -185,6 +190,8 @@ def download_web_photo(url):
 
 
 def _load_photo(page):
+    if page.get("text_only"):
+        return None, "", ""
     if page["image_url"]:
         image = download_web_photo(page["image_url"])
         if image is not None:
@@ -209,10 +216,11 @@ def _write(page, rect, text, size, color, *, bold=False, serif=False):
 def render_plan(plan):
     title, rows = validate_plan(plan)
     assets = photo_catalog.collect_assets(_load_photo, rows)
-    missing = [str(i) for i, (data, _, _) in enumerate(assets, 1) if data is None]
+    missing = [str(i) for i, (data, _, _) in enumerate(assets, 1) if data is None and not rows[i-1].get("text_only")]
     if missing:
         raise PlanError("Фото жүктелмеген беттер — " + ", ".join(missing) + ". Осы беттерге басқа дереккөз таңдаңыз.")
-    if len({hashlib.sha256(data).digest() for data, _, _ in assets}) != len(rows):
+    photos = [data for data, _, _ in assets if data is not None]
+    if len({hashlib.sha256(data).digest() for data in photos}) != len(photos):
         raise PlanError("Бір фото бірнеше рет таңдалған. Әр бетке бөлек фото таңдаңыз.")
 
     with PDF_LOCK:
@@ -228,21 +236,24 @@ def _write_pdf(title, rows, assets):
             page.draw_rect(fitz.Rect(0, 0, 960, 8), color=None, fill=(0.46, 0.29, 0.21))
             _write(page, fitz.Rect(52, 27, 908, 49), title, 12, "#79513A", bold=True)
             _write(page, fitz.Rect(52, 57, 908, 146), row["title"], 36, "#16263D", bold=True, serif=True)
-            photo_x, text_x = (52, 490) if number % 2 else (510, 52)
-            photo_rect = fitz.Rect(photo_x, 151, photo_x + 398, 441)
-            page.insert_image(photo_rect, stream=data, keep_proportion=True)
-            credit_rect = fitz.Rect(photo_x, 448, photo_x + 398, 479)
-            _write(page, credit_rect, credit, 9, "#594537")
-            page.insert_link({"kind": fitz.LINK_URI, "from": credit_rect, "uri": source})
-            _write(page, fitz.Rect(text_x, 151, text_x + 418, 328), row["body"], 18, "#201817")
-            page.draw_rect(fitz.Rect(text_x, 334, text_x + 418, 481), color=None, fill=(0.91, 0.85, 0.78))
-            _write(page, fitz.Rect(text_x + 14, 348, text_x + 404, 370), "Фото туралы", 11, "#79513A", bold=True)
-            _write(page, fitz.Rect(text_x + 14, 374, text_x + 404, 472), row["caption"], 15, "#16263D")
+            if row.get("text_only"):
+                _write(page, fitz.Rect(52, 164, 850, 474), row["body"], 23, "#201817")
+            else:
+                photo_x, text_x = (52, 490) if number % 2 else (510, 52)
+                photo_rect = fitz.Rect(photo_x, 151, photo_x + 398, 441)
+                page.insert_image(photo_rect, stream=data, keep_proportion=True)
+                credit_rect = fitz.Rect(photo_x, 448, photo_x + 398, 479)
+                _write(page, credit_rect, credit, 9, "#594537")
+                page.insert_link({"kind": fitz.LINK_URI, "from": credit_rect, "uri": source})
+                _write(page, fitz.Rect(text_x, 151, text_x + 418, 328), row["body"], 18, "#201817")
+                page.draw_rect(fitz.Rect(text_x, 334, text_x + 418, 481), color=None, fill=(0.91, 0.85, 0.78))
+                _write(page, fitz.Rect(text_x + 14, 348, text_x + 404, 370), "Фото туралы", 11, "#79513A", bold=True)
+                _write(page, fitz.Rect(text_x + 14, 374, text_x + 404, 472), row["caption"], 15, "#16263D")
             page.draw_line((52, 497), (908, 497), color=(0.65, 0.54, 0.46), width=0.75)
             _write(page, fitz.Rect(52, 501, 280, 525), "VibePrompt AI", 10, "#79513A", bold=True)
             _write(page, fitz.Rect(853, 501, 908, 525), f"{number} / {len(rows)}", 10, "#79513A")
         pdf = document.tobytes(garbage=4, deflate=True)
     with fitz.open(stream=pdf, filetype="pdf") as exported:
-        if len(exported) != len(rows) or any(not page.get_image_info() for page in exported):
+        if len(exported) != len(rows) or any(len(page.get_image_info()) != (0 if row.get("text_only") else 1) for page, row in zip(exported, rows)):
             raise PlanError("Дайын PDF-тегі фотоларды растау мүмкін болмады.")
-    return pdf, len(rows)
+    return pdf, sum(not row.get("text_only") for row in rows)
