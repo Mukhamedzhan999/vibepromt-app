@@ -94,7 +94,7 @@
    'Preset: ' + preset.id + '. Use these exact color roles: ' + Object.entries(preset.palette).map(([role, hex]) => role + ' ' + hex).join(' · ') + '.',
    'Type: ' + heading + ' 700–800 for headings; ' + body + ' 400–600 for body and captions.' + (mono ? ' Use ' + mono + ' 400–500 for code and technical specifications.' : ''),
    'Load Cyrillic Extended and verify the complete Kazakh alphabet (including Ә Ғ Қ Ң Ө Ұ Ү Һ І and lowercase). If a needed glyph is missing, use Noto Serif for serif headings or Noto Sans for sans-serif text. ' + delivery,
-   'Art direction: ' + preset.mood + (tier === 'short' ? ' Express the mood through typography, color and spacing.' : ''),
+   'Art direction: ' + (tier === 'short' ? 'Express the selected visual identity through typography, color and spacing only.' : preset.mood),
    'Keep normal text at 4.5:1 contrast and large text at 3:1 or better. Use the preset accents decoratively where they fail on a given surface.'
   ].join('\n');
  }
@@ -103,7 +103,7 @@
   const intro = website ? 'PRIMARY HERO' : 'PAGE 1 / COVER';
   const centerpiece = tier === 'short'
    ? intro + ': Set a bold 3–6 word headline, one concise subtitle and a clean text-only background.'
-   : intro + ': Use one full-bleed 4K centerpiece image with a dark contrast scrim' +
+   : intro + ': Use one full-bleed centerpiece image (native 4K when available) with a dark contrast scrim' +
     (website ? ' using CSS linear-gradient' : ' using a dark linear-gradient overlay') +
     '. Place a bold 3–6 word headline and one concise subtitle in a clear, high-contrast text zone. Render the text separately from the image.';
   const rotations = tier === 'short'
@@ -146,12 +146,13 @@
   const wantsPptx = /\b(?:pptx|powerpoint)\b/i.test(text);
   const wantsPdf = /\bpdf\b/i.test(text);
   const format = wantsPptx ? (wantsPdf ? 'editable PPTX and exported PDF' : 'editable PPTX') : 'downloadable PDF';
+  const unit = wantsPptx && !wantsPdf ? 'slides' : 'pages';
   return 'Create and attach the finished ' + format + ' now' +
-   (count ? ' with exactly ' + count + ' pages.' : '. Preserve the order and count of the supplied source pages.') +
+   (count ? ' with exactly ' + count + ' ' + unit + '.' : '. Preserve the order and count of the supplied source pages.') +
    (audited ? ' Read the attached original PDF in full. Preserve its factual information and page order; use the observed audit evidence to correct documented weaknesses.' : '');
  }
 
- function projectDirection(website, preset, topic, count) {
+ function projectDirection(website, preset, topic, count, tier, source) {
   if (website && /portfolio|портфолио/iu.test(topic)) {
    return {
     objective: 'Help a hiring manager or client understand the designer’s specialty, assess three case studies and find a direct contact path.',
@@ -160,10 +161,13 @@
   }
   if (!website && preset.id === 'editorial_warm') {
    const khanate = /қазақ хандығ|казахск\p{L}* ханств|kazakh khanate/iu.test(topic);
+   const photoSuggestions = tier !== 'short' && source === 'web'
+    ? ' Follow the tier photo schedule. Look for a documented landscape of the Shu valley on page 1, a credited photograph of a later Kerei–Janibek monument on page 3, a catalogued manuscript or early printed edition of a relevant source on page 5, and a museum object or heritage site on page 7. Verify their connection to the topic and label modern depictions accordingly.'
+    : '';
    return {
     objective: 'Help readers explain the historical topic in order, identify key participants and distinguish documented evidence from interpretations.',
     plan: khanate && count === 8
-     ? 'Assign one job to each page: 1 title and guiding question; 2 political context; 3 Kerei and Janibek; 4 migration and settlement; 5 chronology and founding-date uncertainty; 6 early state formation; 7 historical significance; 8 synthesis and references. Follow the tier photo schedule. Where a real web photo is required, look for a documented landscape of the Shu valley on page 1, a credited photograph of a later Kerei–Janibek monument on page 3, a catalogued manuscript or early printed edition of a relevant source on page 5, and a documented museum object or heritage site on page 7. Verify any connection to the topic and label modern depictions accordingly. Explain where historians disagree and connect dates to actual sources. Do not present a later artifact or portrait as contemporary evidence.'
+     ? 'Assign one job to each page: 1 title and guiding question; 2 political context; 3 Kerei and Janibek; 4 migration and settlement; 5 chronology and founding-date uncertainty; 6 early state formation; 7 historical significance; 8 synthesis and references. Explain where historians disagree and connect dates to actual sources. Do not present a later artifact or portrait as contemporary evidence.' + photoSuggestions
      : 'Organize the narrative through context, participants, events, evidence and historical significance. Give disputed dates and claims their own source notes.'
    };
   }
@@ -181,16 +185,22 @@
    'Test in Chromium or Firefox DevTools at 375 px and 1440 px. Use Playwright for the primary user flow and axe-core if available for automated accessibility checks. Verify keyboard navigation and links manually. Deliver the working files or complete source, and a short run command such as python -m http.server 8000 for a static build.'
   ].join('\n');
   const editable = /\b(?:pptx|powerpoint)\b/i.test(text);
+  const pdfExport = !editable || /\bpdf\b/i.test(text);
   const route = editable
    ? 'Use PowerPoint or PptxGenJS for editable slides, then export through PowerPoint or LibreOffice when PDF is requested.'
    : 'Use one available production path: ReportLab with embedded Cyrillic fonts for a direct PDF, or semantic HTML with print CSS and embedded image assets printed using headless Chromium.';
   const studio = {
    chatgpt: 'Use the available document or code execution workspace to create and attach the export.',
    claude: 'Use the available document or code tools to generate a downloadable artifact. An in-chat preview is a preview until you export it.',
-   gemini: 'Use Google Slides or Canvas PDF export if that tool is available and retains embedded visuals. Return the exported file.'
+   gemini: editable
+    ? 'Use Google Slides and export to Microsoft PowerPoint if that route preserves editable text and embedded visuals.'
+    : 'Use Google Slides or Canvas PDF export if it retains embedded visuals. Return the exported file.'
   };
   const native = Object.hasOwn(studio, model) ? studio[model] : '';
-  return [route, native, 'Reopen the saved presentation. Inspect PDF exports with a viewer, PyMuPDF or Poppler. Report actual page, image and overflow checks. If the session lacks export tools, state the exact blocker and deliver the complete page content with a runnable source when possible.'].filter(Boolean).join('\n');
+  const inspect = pdfExport
+   ? 'In the exported PDF, use PyMuPDF or Poppler pdfinfo/pdfimages to count pages and embedded images.'
+   : 'Inspect the saved PPTX with PowerPoint or python-pptx to count slides and embedded pictures.';
+  return [route, native, inspect + ' Render a preview to check image placement, text clipping and Kazakh glyphs. Report the observed results. If the session lacks export tools, state the exact blocker and deliver the complete page content with a runnable source when possible.'].filter(Boolean).join('\n');
  }
 
  function formatPrompt(model, sections, finalLanguage) {
@@ -216,7 +226,7 @@
   const context = audit ? JSON.stringify(observed.data, null, 2) : text;
   const languageName = typeof language === 'string' && Object.hasOwn(LANGUAGES, language) ? LANGUAGES[language] : LANGUAGES.kk;
   const unit = website ? 'section' : 'page';
-  const direction = projectDirection(website, preset, [text, goal, observed.title, observed.topic].join(' '), count);
+  const direction = projectDirection(website, preset, [text, goal, observed.title, observed.topic].join(' '), count, level, source);
   const sections = [
    ['role', roles[documentKind]],
    ['objective', direction.objective],
