@@ -1,5 +1,9 @@
 """Render an AI-authored photo plan using public images fetched by VibePrompt."""
 
+import base64
+from functools import lru_cache
+from pathlib import Path
+
 import hashlib
 import html
 import io
@@ -159,10 +163,22 @@ def validate_plan(plan):
     return title, normalized
 
 
+@lru_cache(maxsize=1)
+def _archive_cache():
+    path = Path(__file__).with_name("static") / "history-photo-cache.json"
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+
+
 def download_web_photo(url):
     """Fetch only direct Commons images, without following redirects."""
     if not direct_image_url(url):
         return None
+    cached = _archive_cache().get(url)
+    if cached:
+        return base64.b64decode(cached)
     try:
         deadline = time.monotonic() + 9
         with requests.get(url, stream=True, allow_redirects=False, timeout=(3, 5),
