@@ -13,6 +13,32 @@
   clinical_fresh: 'Show the method, observations, units, sample or study context, findings and limitations. Keep correlation, causation and unverified hypotheses distinct.',
   modern_bold: 'Define the audience and offer. Use specific product attributes, a substantiated example and an actionable next step. Use exact supplied prices and outcomes.'
  };
+
+ // Original examples adapted from patterns in these public GitHub collections.
+ // f/prompts.chat: specialist roles tailored to the deliverable.
+ // langgptai/LangGPT: separate the goal, context and requested result.
+ // dair-ai/Prompt-Engineering-Guide: give a brief example of the desired structure.
+ // anthropics/prompt-eng-interactive-tutorial: separate source material with clear labels.
+ // GoogleCloudPlatform/generative-ai: establish context and specify the output format.
+ const fullPatterns = [
+  {kind: 'site', match: /portfolio|портфолио/iu, content: 'Build the journey from specialty to selected work to contact. Give each case study a problem, contribution, design decision and outcome.', visual: 'Show the actual project artifact or a labeled illustrative mockup beside its case study.'},
+  {kind: 'site', match: /e.?commerce|online store|интернет.магазин|дүкен/iu, content: 'Organize the experience around discovery, product selection and purchase. Include product details, price or price basis, delivery and a clear purchase action.', visual: 'Show each product in use or at a useful scale and pair the image with a feature the shopper can evaluate.'},
+  {kind: 'site', match: /dashboard|бақылау тақтасы|дашборд/iu, content: 'Start with the decision the dashboard supports. Group metrics by priority and show units, time ranges, comparison baselines and useful empty states.', visual: 'Use labeled charts, interface previews and data cards that answer specific decision questions.'},
+  {kind: 'site', match: /event|conference|іс.шара|конференци/iu, content: 'Lead with the event promise, date and location, then present the schedule, participants and registration details.', visual: 'Choose venue, speaker or event photos that help attendees understand what to expect.'},
+  {kind: 'presentation', match: /қазақ хандығ|қазақстан тарих|казахск\p{L}* ханств|kazakh(?:stan history| khanate)/iu, content: 'Build the story through political context, key people, migration, chronology, consolidation and legacy. Distinguish primary written evidence from later photographs through their dates and captions.', visual: 'Use documented landscapes, archival photographs and museum objects. Identify the place or object, its period and its connection to the page.'},
+  {kind: 'presentation', preset: 'editorial_warm', content: 'Sequence the story from setting and participants to turning points, historical evidence and legacy. Attribute disputed dates and interpretations.', visual: 'Pair period-appropriate documentary images or labeled maps with a short explanation of their historical relevance.'},
+  {kind: 'presentation', match: /startup|pitch deck|стартап|питч/iu, content: 'Build the pitch around the customer problem, solution, market, business model, evidence of demand and the decision you want from the audience.', visual: 'Use product screens, workflow graphics and clearly labeled charts to illustrate specific claims.'},
+  {kind: 'presentation', preset: 'tech_dark', content: 'Move from the problem to a system diagram, practical example, trade-offs and concrete next steps. Define unfamiliar terminology where it first appears.', visual: 'Alternate tool or hardware images with meaningful diagrams and annotated workflow illustrations.'},
+  {kind: 'presentation', preset: 'clinical_fresh', content: 'Explain the question, method, results and implications. Give observations their units and context, and distinguish measured effects from interpretation.', visual: 'Use documented subject photographs, labeled charts or diagrams tied to the result being discussed.'},
+  {kind: 'presentation', match: /lesson|course|curriculum|сабақ|дәріс|урок|лекци/iu, content: 'Start with a learning objective, explain the concept through a worked example, then give a brief practice task and recap.', visual: 'Choose visuals that explain a step, relationship or common mistake.'}
+ ];
+
+ function fullDirection(site, preset, topic) {
+  const kind = site ? 'site' : 'presentation';
+  const candidates = fullPatterns.filter(pattern => pattern.kind === kind);
+  return candidates.find(pattern => pattern.match?.test(topic)) ??
+   candidates.find(pattern => pattern.preset === preset.id);
+ }
  const limit = (value, size) => {
   const text = String(value ?? '').replace(/\s+/g, ' ').trim();
   if (text.length <= size) return text;
@@ -116,19 +142,30 @@
   const pptx = /\b(?:pptx|powerpoint)\b/i.test(topic);
   const format = pptx ? 'editable PowerPoint presentation' + (/\bpdf\b/i.test(topic) ? ' with a PDF export' : '') : 'presentation as a downloadable PDF';
   const deliverable = site ? 'a responsive website' : (pptx ? 'an ' : 'a ') + format + (count ? ' with ' + count + (pptx ? ' slides' : ' pages') : '');
+  const direction = level === 'full' ? fullDirection(site, preset, topic + ' ' + observed.title + ' ' + observed.topic) : null;
   const goal = 'As a ' + (site ? 'UX designer and frontend developer' : 'presentation designer and editor') +
    ', ' + (audit ? 'redesign the supplied work as ' : 'create ') + deliverable + ' in ' + lang + '.';
   const palette = Object.entries(preset.palette).map(([name, hex]) => name + ' ' + hex).join(', ');
   const {heading, body, mono} = preset.fonts;
   const design = palette + '. Use ' + heading + ' for headings, ' + body + ' for body text' +
    (mono ? ' and ' + mono + ' for code' : '') + ', with Cyrillic Extended (cyrillic-ext) and Noto Sans for Kazakh glyphs.' +
-   (level === 'short' ? '' : ' ' + preset.mood);
+   (level === 'short' ? '' : ' ' + preset.mood) +
+   (level !== 'full' ? '' : site
+    ? ' Establish a clear hero and primary action, then vary the page with feature cards and comparison sections. Reflow these layouts into a readable single column on phones.'
+    : ' Use a clear cover, then rotate photo-and-text spreads, timelines and data layouts as the material calls for them. Keep each visual within half the page width, with its explanation alongside.');
   const evidence = sourceNotes(observed.data);
   const content = ['Write in natural ' + lang + ' and ground each main point in a fact, date or example.',
-   subjectFlows[preset.id], site ? 'Guide visitors toward the main action.' : 'Give each page one clear takeaway.',
+   direction?.content ?? subjectFlows[preset.id], site ? 'Guide visitors toward the main action.' : 'Give each page one clear takeaway.',
+   level === 'full' && (site
+    ? 'Deliver the working project files. Use the requested stack or semantic HTML, CSS and lightweight JavaScript when none is specified.'
+    : 'Deliver the finished document using your presentation or file tools. Print-ready HTML/CSS is a useful source format when direct file export is unavailable.'),
+   level === 'full' && (site
+    ? 'Shape each substantive section around a visitor question, one concrete supporting detail and a relevant next action.'
+    : 'Shape each page around a specific title, its main claim, supporting evidence and a short visual caption.'),
    topic && 'Brief: ' + topic, audit && observed.title && 'Source: ' + observed.title,
    evidence && 'Use these observations to guide the redesign:\n' + evidence].filter(Boolean).join('\n');
-  const parts = [['Goal', goal], ['Design', design], ['Content', content], ['Visuals', visualGuide(level, source, site)]];
+  const visuals = [visualGuide(level, source, site), direction?.visual].filter(Boolean).join(' ');
+  const parts = [['Goal', goal], ['Design', design], ['Content', content], ['Visuals', visuals]];
   return parts.map(([name, value]) => {
    const tag = name.toLowerCase();
    if (model === 'claude') return '<' + tag + '>\n' + xml(value) + '\n</' + tag + '>';
