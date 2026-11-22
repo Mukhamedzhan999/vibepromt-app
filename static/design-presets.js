@@ -13,7 +13,7 @@
   ['tech_dark', ['#0B0F19', '#131A2A', '#6366F1', '#10B981', '#F8FAFC'],
    'Plus Jakarta Sans', 'Inter', 'JetBrains Mono',
    'Dark studio lighting, macro hardware and readable code details, with sleek product typography and restrained motion.',
-   ['it', 'tech', 'technology', 'startup', 'saas', 'software', 'hardware', 'programming', 'developer', 'algorithm', 'ai', 'machine learning', 'cybersecurity', 'api', 'технолог', 'бағдарлам', 'компьютер', 'стартап', 'жасанды интеллект', 'киберқауіпсіз', 'ақпараттық жүй', 'ақпараттық технология', 'информатик', 'программир', 'искусственный интеллект', 'разработ', 'кибербезопас']],
+   ['it', 'tech', 'technology', 'startup', 'saas', 'software', 'hardware', 'programming', 'developer', 'algorithm', 'ai', 'machine learning', 'cybersecurity', 'api', 'алгоритм', 'код', 'технолог', 'бағдарлам', 'компьютер', 'стартап', 'жасанды интеллект', 'киберқауіпсіз', 'ақпараттық жүй', 'ақпараттық технология', 'информатик', 'программир', 'искусственный интеллект', 'разработ', 'кибербезопас']],
   ['corporate_clean', ['#F8FAFC', '#FFFFFF', '#1E3A8A', '#0EA5E9', '#0F172A'],
    'Manrope', 'Inter', null,
    'Crisp editorial photography, clean comparison grids and high-trust executive clarity.',
