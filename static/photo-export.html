@@ -1,6 +1,19 @@
 <!doctype html><html lang="kk"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Фотосуретті PDF · VibePrompt AI</title>
-<style>body{background:#100e18;color:#f5f1ff;font:1rem/1.6 system-ui;margin:0;padding:12vh 6vw}main{max-width:38rem;margin:auto}button,a{display:inline-block;background:#d4c1ff;color:#231137;border:0;border-radius:.6rem;padding:.75rem 1.2rem;font:inherit;font-weight:650}button:disabled{opacity:.6}[hidden]{display:none}</style>
-<main><span>VibePrompt AI</span><h1>Фотосуретті PDF</h1><p id="status" role="status">Презентация жоспары оқылуда…</p><button hidden id="start">PDF дайындау</button> <a hidden id="save" download="VibePrompt.pdf">PDF жүктеу</a></main>
+<style>body{background:#100e18;color:#f5f1ff;font:1rem/1.6 system-ui;margin:0;padding:12vh 6vw}main{max-width:38rem;margin:auto}button,a{display:inline-block;background:#d4c1ff;color:#231137;border:0;border-radius:.6rem;padding:.75rem 1.2rem;font:inherit;font-weight:650}button:disabled{opacity:.6}[hidden]{display:none}#pages{display:none}
+@media print{
+ @page{size:240mm 135mm;margin:0}
+ body{margin:0;padding:0;background:white;color:#201817}
+ main{display:none}
+ #pages{display:block;font:14pt/1.35 system-ui,sans-serif}
+ article{box-sizing:border-box;width:240mm;height:135mm;padding:8mm 12mm;background:#f1e5d6;break-after:page;print-color-adjust:exact}
+ article:last-child{break-after:auto}article h2{font:700 23pt/1.1 Georgia,serif;color:#16263d;margin:0 0 4mm}
+ .spread{display:grid;grid-template-columns:42% 1fr;gap:7mm;align-items:start}
+ .spread img{display:block;width:100%;height:75mm;object-fit:contain}
+ article p{margin:0 0 4mm;overflow-wrap:anywhere}article small{display:block;font:9pt/1.2 system-ui}
+ .caption{font-size:12pt;border-left:2pt solid #79513a;padding-left:3mm}figure{margin:0}
+}
+</style>
+<main><span>VibePrompt AI</span><h1>Фотосуретті PDF</h1><p id="status" role="status">Презентация жоспары оқылуда…</p><button hidden id="start">PDF дайындау</button> <a hidden id="save" download="VibePrompt.pdf">PDF жүктеу</a> <button id="print" hidden>PDF ретінде сақтау</button></main><section id="pages"></section>
 <script>
 const statusText=document.querySelector('#status'),start=document.querySelector('#start'),save=document.querySelector('#save');
 let plan;
@@ -17,11 +30,49 @@ async function init(){
   statusText.textContent=String(plan.title)+' · '+plan.pages.length+' бет';start.hidden=false;
  }catch{statusText.textContent='Презентация жоспары оқылмады. AI берген толық сілтемені ашыңыз.'}
 }
+function element(tag,text){
+ const node=document.createElement(tag);
+ if(text)node.textContent=text;
+ return node;
+}
+async function browserExport(){
+ const pages=document.createDocumentFragment();
+ const downloads=[];
+ const seen=new Set();
+ for(const [index,row] of plan.pages.entries()){
+  const article=element('article'),body=element('p',row.body);
+  article.append(element('h2',row.title));
+  if(plan.tier==='medium' && index%2===1){article.append(body)}
+  else{
+   const src=new URL(row.image_url);
+   if(src.protocol!=='https:' || !['upload.wikimedia.org','cdn.loc.gov'].includes(src.host) || seen.has(src.href) || !row.caption || !row.image_credit)throw Error();
+   seen.add(src.href);
+   const img=new Image();img.referrerPolicy='no-referrer';img.src=src.href;img.alt=row.caption;
+   downloads.push(img.decode().then(()=>{if(Math.min(img.naturalWidth,img.naturalHeight)<180)throw Error()}));
+   const figure=element('figure');figure.append(img,element('small',row.image_credit));
+   const column=element('div'),caption=element('p',row.caption);caption.className='caption';column.append(body,caption);
+   const spread=element('div');spread.className='spread';spread.append(figure,column);article.append(spread);
+  }
+  pages.append(article);
+ }
+ await Promise.all(downloads);
+ document.querySelector('#pages').replaceChildren(pages);
+ const printButton=document.querySelector('#print');printButton.hidden=false;
+ printButton.onclick=()=>window.print();
+ statusText.textContent=plan.title+' · '+plan.pages.length+' бет · '+downloads.length+' фото браузерге жүктелді. Басып шығару мәзірінен PDF ретінде сақтаңыз.';
+ start.hidden=true;
+}
 start.onclick=async()=>{
  start.disabled=true;statusText.textContent='Интернеттен фотолар жүктеліп, PDF дайындалуда…';
  try{
   const response=await fetch('/api/audit-photo-pdf',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(plan)});
-  if(!response.ok)throw Error((await response.json()).error||'PDF дайындалмады.');
+  if(!response.ok){
+   const message=(await response.json()).error||'PDF дайындалмады.';
+   if(response.status===422 && message.startsWith('Фото жүктелмеген')){
+    try{await browserExport();return}catch{}
+   }
+   throw Error(message);
+  }
   save.href=URL.createObjectURL(await response.blob());save.hidden=false;start.hidden=true;
   statusText.textContent=plan.title+' · '+plan.pages.length+' бет · '+response.headers.get('X-Vibe-Photo-Count')+' фото';
  }catch(error){statusText.textContent=error.message;start.disabled=false}
