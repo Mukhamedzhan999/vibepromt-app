@@ -133,6 +133,7 @@
   return [
    schedule + numbered + (website ? ' Count sections independently on every requested route, starting with its first content section.' : ''),
    sources,
+   ...(source === 'web' ? ['Before building the layout, make an asset list for all required units with a subject, source-page link, downloadable image URL, and caption. Prefer the source’s original image file. Open it with the available web/media tool and verify that the downloaded file decodes as an image. If one source or download method fails, try another relevant host or use the provider’s own media insertion tool. Pass the actual image bytes to the exporter and verify them in the saved file. Mark the deliverable incomplete if any required photograph is still missing.'] : []),
    'CRITICAL: Complete EVERY ' + unit + ' from start to finish and embed verified, topic-specific high-resolution assets wherever required. Never stop halfway, leave empty image boxes, count URLs as embedded photos, or use cliché corporate stock photos.',
    'For every required asset, add two substantive sentences explaining what it depicts and how it supports the main point. Never request photo uploads or a ZIP; use your available web or image tools.'
   ].join('\n');
@@ -154,7 +155,7 @@
   if (website && /portfolio|портфолио/iu.test(topic)) {
    return {
     objective: 'Help a hiring manager or client understand the designer’s specialty, assess three case studies and find a direct contact path.',
-    plan: 'Order the site as hero and primary work CTA → three case studies → about → contact. In each case show the problem, the designer’s contribution, a specific design decision and the outcome or learning. Label illustrative case studies and example contact data clearly. Provide a direct contact link or an explicitly labeled demo when no real address is supplied.'
+    plan: 'Order the site as hero and primary work CTA → three case studies → about → contact. In each case show the problem, the designer’s contribution, a specific design decision and the outcome or learning. Label illustrative case studies clearly. Use a working contact link only when a real address is supplied; otherwise build an inline demo that clearly confirms no message was sent and makes no external request.'
    };
   }
   if (!website && preset.id === 'editorial_warm') {
@@ -162,7 +163,7 @@
    return {
     objective: 'Help readers explain the historical topic in order, identify key participants and distinguish documented evidence from interpretations.',
     plan: khanate && count === 8
-     ? 'Assign one job to each page: 1 title and guiding question; 2 political context; 3 Kerei and Janibek; 4 migration and settlement; 5 chronology and founding-date uncertainty; 6 early state formation; 7 historical significance; 8 synthesis and references. Explain where historians disagree and connect dates to actual sources. Do not present a later artifact or portrait as contemporary evidence.'
+     ? 'Assign one job to each page: 1 title and guiding question; 2 political context; 3 Kerei and Janibek; 4 migration and settlement; 5 chronology and founding-date uncertainty; 6 early state formation; 7 historical significance; 8 synthesis and references. Follow the tier photo schedule. Where a real web photo is required, look for a documented landscape of the Shu valley on page 1, a credited photograph of a later Kerei–Janibek monument on page 3, a catalogued manuscript or early printed edition of a relevant source on page 5, and a documented museum object or heritage site on page 7. Verify any connection to the topic and label modern depictions accordingly. Explain where historians disagree and connect dates to actual sources. Do not present a later artifact or portrait as contemporary evidence.'
      : 'Organize the narrative through context, participants, events, evidence and historical significance. Give disputed dates and claims their own source notes.'
    };
   }
