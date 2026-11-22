@@ -5,6 +5,8 @@ import secrets
 from contextlib import contextmanager
 
 CHUNK_BYTES = 3 * 1024 * 1024
+PDF_CACHE_PER_OWNER = 8
+PDF_CACHE_TOTAL = 128
 
 
 class UploadError(ValueError):
@@ -124,7 +126,7 @@ def cached_result(key):
     return row['result'] if row else None
 
 
-def cache_result(key, result):
+def cache_result(owner, key, result):
     from psycopg.types.json import Jsonb
 
     with connect() as db:
@@ -134,4 +136,9 @@ def cache_result(key, result):
                       ON CONFLICT (cache_key) DO UPDATE SET result = EXCLUDED.result, created_at = now()''',
                    (key, Jsonb(result)))
         db.execute('''DELETE FROM pdf_results WHERE cache_key IN
-                      (SELECT cache_key FROM pdf_results ORDER BY created_at DESC OFFSET 8)''')
+                      (SELECT cache_key FROM pdf_results
+                       WHERE split_part(cache_key, ':', 2) = %s
+                       ORDER BY created_at DESC, cache_key DESC OFFSET %s)''', (owner, PDF_CACHE_PER_OWNER))
+        db.execute('''DELETE FROM pdf_results WHERE cache_key IN
+                      (SELECT cache_key FROM pdf_results
+                       ORDER BY created_at DESC, cache_key DESC OFFSET %s)''', (PDF_CACHE_TOTAL,))

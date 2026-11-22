@@ -57,7 +57,7 @@ function waitForPdfRetry(signal, milliseconds) {
 }
 
 async function requestPdfUpload(payload, showProgress, signal) {
-  const deadline = Date.now() + 90000;
+  const deadline = Date.now() + 120000;
   while (true) {
     const response = await fetch('/api/pdf-uploads', {
       method: 'POST',

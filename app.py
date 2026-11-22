@@ -641,7 +641,7 @@ def stream_uploaded_pdf(upload_id):
             updates.put(dict(state='running', phase='analyzing', done=pages, total=pages))
             result = finish_evidence(features, meta, 'PDF', filename, prompt,
                                      round(len(data) / 1024 / 1024, 2), pages, owner)
-            vercel_storage.cache_result(key, result)
+            vercel_storage.cache_result(owner, key, result)
             updates.put(dict(state='done', result=result))
         except InterruptedError:
             updates.put(dict(state='error', error='Тексеру тоқтатылды.'))
