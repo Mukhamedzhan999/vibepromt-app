@@ -9,7 +9,7 @@
   ['editorial_warm', ['#F1E5D6', '#E4D2BE', '#79513A', '#16263D', '#201817'],
    'Noto Serif', 'Noto Sans', null,
    'Warm documentary photography, authentic archival material and museum-grade editorial composition.',
-   ['history', 'historical', 'culture', 'literature', 'archive', 'museum', 'archaeology', 'heritage', 'тарих', 'мәдениет', 'әдебиет', 'мұра', 'кесене', 'өркениет', 'хандық', 'архив', 'музей', 'истори', 'культур', 'литератур', 'археолог', 'наследие']],
+   ['history', 'historical', 'culture', 'literature', 'archive', 'museum', 'archaeology', 'heritage', 'khanate', 'тарих', 'мәдениет', 'әдебиет', 'мұра', 'кесене', 'өркениет', 'хандық', 'хандығ', 'ханств', 'архив', 'музей', 'истори', 'культур', 'литератур', 'археолог', 'наследие']],
   ['tech_dark', ['#0B0F19', '#131A2A', '#6366F1', '#10B981', '#F8FAFC'],
    'Plus Jakarta Sans', 'Inter', 'JetBrains Mono',
    'Dark studio lighting, macro hardware and readable code details, with sleek product typography and restrained motion.',
