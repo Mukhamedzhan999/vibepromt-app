@@ -678,7 +678,14 @@ body[data-theme='light'] :is(.brief-submit,.primary,.settings-footer .settings-c
 <div class="hero"><div class="eyebrow"><span class="dot"></span> ИНТЕРФЕЙСТІ АҚЫЛДЫ ТАЛДАУ</div><h1>Жақсы дизайн кездейсоқ<br><span>пайда болмайды.</span></h1><p>Сайтыңызды немесе PDF макетіңізді талдап, нақты ұсыныстар мен дайын AI промпт алыңыз.</p></div>
 <div class="layout"><section class="card input-card"><div class="card-head"><div><h2>Жаңа аудит</h2><p>Талдау үшін дереккөзді таңдаңыз</p></div><span class="step">01 / 02</span></div>
 <form id="audit-form"><div class="tabs" role="group" aria-label="Дереккөз түрі"><button type="button" class="active" data-mode="URL">↗ &nbsp; Сайт / PDF сілтемесі</button><button type="button" data-mode="PDF">▤ &nbsp; PDF құжат</button></div>
-<div id="url-field"><label class="label" for="url">САЙТ МЕКЕНЖАЙЫ <span>URL</span></label><div class="urlbox"><span class="chain">↗</span><input id="url" name="url" type="text" inputmode="url" autocapitalize="none" spellcheck="false" placeholder="youtube.com немесе example.com/page" autocomplete="url"></div><details style="margin-top:15px;border:1px solid #33394b;border-radius:10px;padding:12px"><summary style="cursor:pointer;font-weight:700;color:#d9dcff">Chrome-да өзім ашқан бетті талдау</summary><div class="note" style="line-height:1.8"><p>1. Chrome-да қалаған профиліңізді таңдаңыз. <strong>chrome://extensions</strong> ашып, «Developer mode» қосыңыз.</p><p>2. «Load unpacked» басып, мына қалтаны таңдаңыз:</p><code id="extension-path" style="display:block;overflow-wrap:anywhere;color:#d6d9ff">{{ extension_dir }}</code><button type="button" id="copy-extension-path" class="copy" style="margin-top:7px">Қалта жолын көшіру</button><p>3. Жұптау кодын көшіріп, Chrome кеңейтіміне қойыңыз. Сервер қайта іске қосылса, жаңа код керек.</p><button type="button" id="copy-chrome-key" class="copy">Жұптау кодын көшіру</button><span id="chrome-pair-status" role="status" style="margin-left:8px"></span><p>4. Сол Chrome профилінде қалаған сайтты өзіңіз ашып, қажет болса өзіңіз кіріңіз. Кеңейтімде «Осы бетті талдау» басыңыз; нәтиже осы қосымшада көрінеді.</p><p>Тек таңдалған қойындыдағы көрінетін дерек жергілікті қосымшаға жіберіледі. Құпиясөз өрістері, cookie және басқа қойындылар алынбайды. Кейбір ішкі браузер беттері мен iframe ішіндегі мазмұнды тексеру мүмкін емес.</p></div></details></div>
+<div id="url-field"><label class="label" for="url">САЙТ МЕКЕНЖАЙЫ <span>URL</span></label><div class="urlbox"><span class="chain">↗</span><input id="url" name="url" type="text" inputmode="url" autocapitalize="none" spellcheck="false" placeholder="youtube.com немесе example.com/page" autocomplete="url"></div><details class="card" style="margin-top:15px;padding:14px">
+ <summary style="cursor:pointer;font-weight:700">Chrome-да ашылған бетті талдау</summary>
+ <p class="note">Chrome кеңейтімі жасаған аудит кодын енгізіңіз. Код сайттың шығу тегі мен интерфейс өлшемдерін қамтиды.</p>
+ <label class="label" for="chrome-audit-code">Chrome аудитінің коды</label>
+ <textarea id="chrome-audit-code" rows="3" maxlength="30000" spellcheck="false" autocomplete="off" style="width:100%"></textarea>
+ <button type="button" id="run-chrome-import" class="copy">Код арқылы талдау</button>
+ <p class="note" role="status" id="chrome-audit-status"></p>
+</details></div>
 <div id="pdf-field" class="hidden"><div class="label">PDF ҚҰЖАТЫ <span>30 МБ-ҚА ДЕЙІН</span></div><div class="pdf-file-shell"><label class="drop" id="drop"><span class="drop-icon">⇧</span><span><strong>Файлды осында тастаңыз немесе таңдаңыз</strong><small id="file-label">PDF · ең көбі 30 МБ</small></span><input id="file" type="file" accept="application/pdf,.pdf" aria-describedby="file-label file-error"></label><button class="remove-pdf" id="remove-pdf" type="button" title="Файлды алып тастау" aria-label="PDF файлын алып тастау" hidden>×</button></div><p id="file-error" class="error" role="alert"></p></div>
 <label class="label" for="goal">ЖОБА МАҚСАТЫ <span>МІНДЕТТІ ЕМЕС</span></label><textarea id="goal" name="prompt" maxlength="5000" placeholder="Мысалы: студенттерге арналған ыңғайлы платформа жасағым келеді..."></textarea><button class="primary" id="submit" type="submit">Аудитті бастау <span>↗</span></button><div id="pdf-progress" class="progress-box hidden"><ol id="pdf-steps" class="pdf-steps">
 <li>Файл жүктелуде</li><li>Мәтін мен құрылым оқылуда</li><li>Аудит нәтижесі дайындалуда</li>
@@ -727,6 +734,17 @@ body[data-theme='light'] :is(.brief-submit,.primary,.settings-footer .settings-c
     <h3>LLM және промпт инженериясы</h3>
     <p>Генератор идеяны немесе аудит деректерін тақырыпқа сай үлгімен біріктіріп, ChatGPT, Claude және Gemini үшін бөлек промпт құрады. Толық нұсқада құрылым, түс, қаріп және визуал бағыты анықталады. Дайын нәтижені таңдалған модель жасайды.</p>
   </article>
+ </div>
+ <div class="lab-section card" style="padding:clamp(16px,3vw,28px)">
+  <h2>Chrome кеңейтімін орнату</h2>
+  <a class="copy" download="VibePrompt-Chrome.zip" href="data:application/zip;base64,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">Кеңейтімді ZIP түрінде жүктеу</a>
+  <ol style="line-height:1.7">
+   <li>ZIP файлын шығарыңыз. Ішінде <code>manifest.json</code> тұрған <code>chrome-extension</code> қалтасын табыңыз.</li>
+   <li>Компьютердегі Chrome мекенжай жолына <code>chrome://extensions</code> жазыңыз. «Әзірлеуші режимін» қосып, «Қапталмаған кеңейтімді жүктеу» (Load unpacked) арқылы сол қалтаны таңдаңыз.</li>
+   <li>Тексеретін сайтты ашыңыз. Chrome-ның басқатырғыш белгісінен «VibePrompt AI — Chrome аудиті» кеңейтімін ашып, «Аудит кодын жасау», содан кейін «Кодты көшіру» батырмасын басыңыз.</li>
+   <li>VibePrompt AI-да «Аудит» → «Chrome-да ашылған бетті талдау» бөлімін ашып, кодты қойыңыз. «Код арқылы талдау» батырмасы нәтижені шығарады.</li>
+  </ol>
+  <p class="note">Код тек ашық қойындының интерфейс өлшемдерін қамтиды. Бет мәтіні, формадағы мәндер мен cookie файлдары кодқа кірмейді.</p>
  </div>
 </section>
 </main><footer class="shell"><div class="footer"><span><b>VibePrompt AI</b> &nbsp; / &nbsp; Интерфейсті саналы түрде жақсарт.</span></div></footer></div>
@@ -1014,11 +1032,30 @@ $$('[data-prompt-model]').forEach(b=>{const active=b.dataset.promptModel===promp
 
 function view(name){document.body.classList.remove('brief-mode');$('#side-audit').classList.toggle('current',name==='audit');$('#side-lab').classList.toggle('current',name==='academic');$$('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.view===name));$$('main > section').forEach(x=>x.classList.toggle('active',x.id===name));window.scrollTo({top:0,behavior:'smooth'})}
 $$('.nav button').forEach(b=>b.addEventListener('click',()=>view(b.dataset.view)));
-$('#copy-extension-path').addEventListener('click',async()=>{try{await navigator.clipboard.writeText($('#extension-path').textContent);$('#copy-extension-path').textContent='Көшірілді ✓'}catch{$('#copy-extension-path').textContent='Жолды қолмен көшіріңіз'}});
-$('#copy-chrome-key').addEventListener('click',async()=>{try{let r=await fetch('/api/chrome-key',{cache:'no-store'});let d=await r.json();if(!r.ok)throw Error(d.error);await navigator.clipboard.writeText(d.key);$('#chrome-pair-status').textContent='Код көшірілді ✓'}catch{$('#chrome-pair-status').textContent='Кодты көшіру мүмкін болмады.'}});
-let lastChromeId=0;
-async function pollChrome(){try{let r=await fetch('/api/chrome-result',{cache:'no-store'});if(!r.ok)return;let d=await r.json();if(d.id>lastChromeId && d.data){lastChromeId=d.id;saveAudit(d.data,'Chrome: '+(d.data.detail||'Аудит'));render(d.data);view('audit');$('#results').scrollIntoView({behavior:'smooth',block:'start'})}}catch{}}
-setInterval(pollChrome,4000);pollChrome();
+$('#run-chrome-import').addEventListener('click',async()=>{
+ const button=$('#run-chrome-import'),status=$('#chrome-audit-status'),input=$('#chrome-audit-code');
+ const code=input.value.trim();
+ if(!/^VPA1\.[A-Za-z0-9+/]+={0,2}$/.test(code)||code.length>30000){
+  status.textContent='Кеңейтім жасаған аудит кодын толық қойыңыз.';
+  return;
+ }
+ button.disabled=true;
+ status.textContent='Аудит дайындалып жатыр…';
+ try{
+  let payload;
+  try{payload=JSON.parse(atob(code.slice(5)))}catch{throw Error('Аудит коды жарамсыз. Жаңа код жасаңыз.')}
+  const response=await fetch('/api/import-browser-audit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  const data=await response.json();
+  if(!response.ok)throw Error(data.error||'Аудит орындалмады.');
+  saveAudit(data,'Chrome: '+(data.detail||'Аудит'));
+  view('audit');
+  render(data);
+  input.value='';
+  status.textContent='Аудит дайын.';
+  $('#results').scrollIntoView({behavior:'smooth',block:'start'});
+ }catch(error){status.textContent=error.message}
+ finally{button.disabled=false}
+});
 $$('[data-mode]').forEach(b=>b.addEventListener('click',()=>{mode=b.dataset.mode;$$('[data-mode]').forEach(x=>{x.classList.toggle('active',x===b);x.setAttribute('aria-pressed',String(x===b))});$('#url-field').classList.toggle('hidden',mode!=='URL');$('#pdf-field').classList.toggle('hidden',mode!=='PDF');$('#error').textContent=''}));
 const PDF_FILE_LIMIT=30*1024*1024;
 const fileInput=$('#file');
