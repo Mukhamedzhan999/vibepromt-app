@@ -335,7 +335,7 @@ main.shell{padding:65px var(--page-gutter) 34px}
 .pdf-file-shell .drop{padding-inline:52px}
 .pdf-file-shell #file-label{overflow-wrap:anywhere}
 .remove-pdf{position:absolute;right:8px;top:8px;z-index:2;width:44px;height:44px;border:1px solid var(--line);border-radius:10px;background:var(--theme-panel-deep,var(--surface));color:inherit;font:inherit;font-size:24px;cursor:pointer}
-.remove-pdf[hidden],.audit-stop[hidden]{display:none}
+.remove-pdf[hidden],.audit-stop[hidden],.example-chips [hidden]{display:none}
 .audit-stop{margin-top:10px;width:100%;min-height:44px;font:inherit}
 
 /* Layout scale reflows the workspace and settings without resizing the viewport. */
@@ -531,9 +531,12 @@ body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) .visua
 <div class="brief-card"><div class="brief-types" role="group" aria-label="Жоба түрі"><button type="button" data-brief-kind="site" class="active">↗ Сайт</button><button type="button" data-brief-kind="presentation">▤ PDF/презентация</button></div>
 <label for="brief-text" class="brief-label">ЖОБАҢЫЗДЫ СИПАТТАҢЫЗ</label><textarea id="brief-text" maxlength="5000" placeholder="Мысалы: жеке портфолио сайты. Жобаларым, өзім туралы және байланыс бөлімі болсын."></textarea>
 <div class="example-chips" role="group" aria-label="Дайын мысалдар">
-<button type="button" data-starter="portfolio">Жеке портфолио</button>
-<button type="button" data-starter="startup">IT стартап презентациясы</button>
-<button type="button" data-starter="shop">Онлайн дүкен лендингі</button>
+<button type="button" data-starter="portfolio" data-starter-kind="site">Жеке портфолио</button>
+<button type="button" data-starter="shop" data-starter-kind="site">Онлайн дүкен лендингі</button>
+<button type="button" data-starter="services" data-starter-kind="site">Қызмет көрсету сайты</button>
+<button type="button" data-starter="history" data-starter-kind="presentation" hidden>Қазақстан тарихы</button>
+<button type="button" data-starter="startup" data-starter-kind="presentation" hidden>IT стартап презентациясы</button>
+<button type="button" data-starter="nature" data-starter-kind="presentation" hidden>Табиғатты қорғау</button>
 </div>
 <div class="brief-actions"><button id="brief-generate" type="button" class="brief-submit">Промпт жасау</button></div><p id="brief-error" class="error" role="status"></p></div>
 <div class="brief-tools"><span>Дайын материал бар ма?</span><button type="button" id="open-url-audit">↗ Сайтты талдау</button><button type="button" id="open-pdf-audit">▤ PDF талдау</button></div>
@@ -672,6 +675,9 @@ const uiTranslations={
 'Қою қызыл':['Тёмно-красный','Dark red'],
 "Сайтқа не презентацияға арналған промпт жасаңыз немесе дайын жұмысты талдаңыз.":["Создайте промт для сайта или презентации, либо проверьте готовую работу.","Generate prompts for websites and presentations, or audit your existing work."],
 "Жеке портфолио":["Личное портфолио","Personal portfolio"],
+"Қызмет көрсету сайты":["Сайт услуг","Services website"],
+"Қазақстан тарихы":["История Казахстана","History of Kazakhstan"],
+"Табиғатты қорғау":["Охрана природы","Nature conservation"],
 "IT стартап презентациясы":["Презентация IT-стартапа","IT startup pitch deck"],
 "Онлайн дүкен лендингі":["Лендинг интернет-магазина","E-commerce landing page"],
 "Жаңа нәтижелер мен промпттар осы браузерде сақталады. Браузер деректерін тазаласаңыз, олар өшеді.":["Новые результаты и промты сохраняются в этом браузере. При очистке данных они будут удалены.","New results and prompts are saved locally in this browser. Clearing browser data will remove them."],
@@ -965,7 +971,11 @@ const briefExamples={
  ru:{site:'Например: сайт-портфолио с моими проектами, информацией обо мне и контактами.',presentation:'Например: презентация из 10 слайдов об охране природы с фотографиями и основными фактами.'},
  en:{site:'For example: a personal portfolio website with my projects, about section, and contact details.',presentation:'For example: a 10-slide presentation about nature conservation with photos and key facts.'}
 };
-function updateBriefExample(){let lang=preferences.lang in briefExamples?preferences.lang:'kk';$('#brief-text').placeholder=briefExamples[lang][briefKind]||briefExamples[lang].site}
+function updateBriefExample(){
+ const examples=briefExamples[uiLanguage()];
+ $('#brief-text').placeholder=examples[briefKind]||examples.site;
+ $$('[data-starter-kind]').forEach(button=>{button.hidden=button.dataset.starterKind!==briefKind});
+}
 updateBriefExample();
 
 let selectedLength='short';
@@ -1179,26 +1189,34 @@ function showBrief(){resetPromptCopyFeedback();document.body.classList.add('brie
 function restoreBrief(d){briefKind=d.briefKind;generatedBriefKind=d.briefKind;generatedBriefText=d.brief||'';updateBriefExample();$('#brief-text').value=d.brief||'';$$('[data-brief-kind]').forEach(x=>x.classList.toggle('active',x.dataset.briefKind===briefKind));showBrief();window.scrollTo({top:0,behavior:'smooth'})}
 $$('[data-brief-kind]').forEach(b=>b.addEventListener('click',()=>{briefKind=b.dataset.briefKind;updateBriefExample();$$('[data-brief-kind]').forEach(x=>{x.classList.toggle('active',x===b);x.setAttribute('aria-pressed',String(x===b))})}));
 const starters={
- portfolio:['site','UX дизайнерге арналған қазақша жеке портфолио сайтын жаса. Басты бетте қысқа таныстыру мен байланыс батырмасы болсын. Үш жобаны міндеті, шешімі және нәтижесімен көрсет. Өзім туралы және байланыс бөлімдерін қос. Телефонда мәтін оқуға ыңғайлы, мәзір мен батырмалар пернетақтамен қолжетімді болсын. Жоба деректері берілмесе, орнын анық белгіле.'],
- startup:['presentation','Шағын бизнеске арналған қойма есебін автоматтандыратын IT стартап туралы қазақша 8 слайдтық таныстырылым жаса. Мәселені, шешімді, өнімнің жұмысын, мақсатты нарықты, бизнес моделін, бәсекелік артықшылықты және даму жоспарын көрсет. Соңғы слайдта серіктеске ұсынысты жаз. Нақты дерек жоқ тұста ойдан сан қоспа.'],
- shop:['site','Қазақстандағы шағын онлайн дүкенге қазақша лендинг жаса. Басты экранда құндылық ұсынысы мен каталог батырмасы болсын. Тауар санаттарын, танымал тауарларды, жеткізу мен қайтару шарттарын және жиі қойылатын сұрақтарды орналастыр. Телефоннан тауарды таңдау мен тапсырысқа өту оңай болсын. Баға мен пікір деректері берілмесе, үлгі екенін белгіле.']
+ portfolio:'UX дизайнерге арналған қазақша жеке портфолио сайтын жаса. Басты бетте қысқа таныстыру мен байланыс батырмасы болсын. Үш жобаны міндеті, шешімі және нәтижесімен көрсет. Өзім туралы және байланыс бөлімдерін қос. Телефонда мәтін оқуға ыңғайлы, мәзір мен батырмалар пернетақтамен қолжетімді болсын. Жоба деректері берілмесе, орнын анық белгіле.',
+ startup:'Шағын бизнеске арналған қойма есебін автоматтандыратын IT стартап туралы қазақша 8 слайдтық таныстырылым жаса. Мәселені, шешімді, өнімнің жұмысын, мақсатты нарықты, бизнес моделін, бәсекелік артықшылықты және даму жоспарын көрсет. Соңғы слайдта серіктеске ұсынысты жаз. Нақты дерек жоқ тұста ойдан сан қоспа.',
+ shop:'Қазақстандағы шағын онлайн дүкенге қазақша лендинг жаса. Басты экранда құндылық ұсынысы мен каталог батырмасы болсын. Тауар санаттарын, танымал тауарларды, жеткізу мен қайтару шарттарын және жиі қойылатын сұрақтарды орналастыр. Телефоннан тауарды таңдау мен тапсырысқа өту оңай болсын. Баға мен пікір деректері берілмесе, үлгі екенін белгіле.',
+ services:'Қазақша қызмет көрсету сайтын жаса. Басты бетте қызметтің кімге арналғанын түсіндір. Қызметтер, жұмыс тәртібі, жиі қойылатын сұрақтар және байланыс бөлімдерін қос. Телефоннан өтінім беру оңай болсын. Байланыс деректері берілмесе, оларды ойдан шығарма.',
+ history:'Қазақ хандығының құрылуы туралы қазақша 8 беттік PDF презентация жаса. Тарихи жағдайды, Керей мен Жәнібектің рөлін, оқиғалардың реті мен тарихи маңызын түсіндір. Даулы даталарды дәлелденген деректерден ажырат.',
+ nature:'Қазақстандағы табиғатты қорғау туралы қазақша 8 беттік PDF презентация жаса. Қорықтарды, қорғалатын жануарларды, негізгі қауіптерді және оқушылар жасай алатын нақты әрекеттерді мысалдармен түсіндір. Дереккөздерді көрсет.'
 };
 const translatedStarters={
  ru:{
+  services:'Создай русскоязычный сайт услуг. Объясни на главной, кому подходят услуги, добавь список услуг, этапы работы, ответы на частые вопросы и контакты. Сделай заявку удобной с телефона. Не выдумывай контактные данные.',
+  history:'Создай PDF-презентацию на русском языке из 8 страниц об образовании Казахского ханства. Объясни исторический контекст, роль Керея и Жанибека, хронологию и значение событий. Отдели спорные даты от подтверждённых фактов.',
+  nature:'Создай PDF-презентацию на русском языке из 8 страниц об охране природы Казахстана. Покажи заповедники, охраняемых животных, основные угрозы и практические действия для школьников. Укажи источники.',
   portfolio:'Создай сайт-портфолио UX-дизайнера на русском языке. Добавь краткое представление, три кейса с задачей, решением и результатом, раздел «Обо мне» и контакты. Адаптируй сайт для телефона и клавиатурной навигации. Явно обозначь отсутствующие данные.',
   startup:'Создай презентацию на русском из 8 слайдов для стартапа по автоматизации учёта товаров у малого бизнеса. Опиши проблему, решение, работу продукта, целевой рынок, бизнес-модель, преимущества и план развития. Заверши предложением для партнёров. Не выдумывай цифры.',
   shop:'Создай лендинг на русском для небольшого интернет-магазина. Добавь понятное предложение с переходом в каталог, категории товаров, популярные позиции, условия доставки и возврата и ответы на частые вопросы. Сделай оформление заказа удобным на телефоне. Отметь демонстрационные цены и отзывы.'
  },
  en:{
+  services:'Build an English services website. Explain who the services are for, list the services and work process, and include FAQs and contact options. Make inquiries easy on mobile. Do not invent contact details.',
+  history:'Create an eight-page English PDF presentation about the founding of the Kazakh Khanate. Explain the historical context, the roles of Kerei and Janibek, the timeline, and why the founding mattered. Distinguish disputed dates from established facts.',
+  nature:'Create an eight-page English PDF presentation about nature conservation in Kazakhstan. Cover reserves, protected wildlife, key threats, and practical actions students can take. Include source credits.',
   portfolio:'Build an English portfolio site for a UX designer. Include a concise introduction, three case studies with the problem, solution, and outcome, an About section, and contact details. Make it mobile-friendly and keyboard-accessible. Mark missing case-study data clearly.',
   startup:'Create an eight-slide pitch deck in English for a startup automating inventory for small businesses. Explain the problem, solution, product workflow, target market, business model, competitive advantage, and roadmap. Close with a concrete ask for partners. Do not invent figures.',
   shop:'Build an English landing page for a small online store. Include a clear value proposition, a catalog button, product categories, featured products, delivery and return terms, and FAQs. Make mobile ordering straightforward. Mark example prices and reviews as examples.'
  }
 };
 $$('[data-starter]').forEach(button=>button.addEventListener('click',()=>{
- const [kind,fallback]=starters[button.dataset.starter];
- const text=translatedStarters[uiLanguage()]?.[button.dataset.starter]||fallback;
- $('[data-brief-kind="'+kind+'"]').click();
+ if(button.dataset.starterKind!==briefKind)return;
+ const text=translatedStarters[uiLanguage()]?.[button.dataset.starter]||starters[button.dataset.starter];
  $('#brief-text').value=text;
  $('#brief-error').textContent='';
  $('#brief-text').focus();
