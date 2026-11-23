@@ -189,7 +189,6 @@ body .sidebar,body[data-theme] .sidebar{background:var(--theme-sidebar);border-c
 body .top{background:var(--theme-top);border-color:var(--theme-border)}
 body .nav-status,body .side-history-item{background:var(--theme-panel);border-color:var(--theme-border)}
 body .sidebar .side-button:hover,body .sidebar .side-button:focus-visible,body .sidebar .side-button.current{background:var(--theme-selected);border-color:var(--theme-border)}
-body.brief-mode .sidebar .side-new{background:var(--theme-selected);border-color:var(--theme-border);border-left:2px solid #a99aff}
 body .brief-card,body .brief-result,body .card,body[data-theme] .card{background:var(--theme-panel);border-color:var(--theme-border)}
 body .brief-card textarea,body .brief-result pre,body .urlbox,body textarea,body .drop{background:var(--theme-panel-deep)}
 body .brief-types button,body .brief-models button,body .brief-tools button{background:var(--theme-panel-deep);border-color:var(--theme-border)}
@@ -524,7 +523,6 @@ body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) :is(.t
 }
 body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) .top-language svg{stroke:var(--theme-ink)}
 body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) .top-language::after{border-color:var(--theme-ink)}
-body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']).brief-mode .sidebar .side-new{border-left-color:var(--theme-accent)}
 body:is([data-theme='black'],[data-theme='warm'],[data-theme='burgundy']) :is(.history-search input,.top-language,.brief-card textarea,.urlbox,.drop,.settings-card,.tier-card,.photo-source-options label,.demo-card,.prompt-controls a):is(:hover,:focus-within){
  border-color:var(--theme-accent);
 }
@@ -636,10 +634,6 @@ body[data-theme='light'] :is(.brief-submit,.primary,.settings-footer .settings-c
 .prompt-choice-row label>span{display:flex;gap:5px;align-items:center;min-height:40px;padding:5px 8px;border:1px solid var(--theme-border);border-radius:9px;background:var(--theme-panel-deep);font-size:.76rem;font-weight:650}
 .prompt-choice-row input:checked+span{background:var(--theme-selected);border-color:var(--theme-accent,#7362bf)}
 .prompt-choice-row input:focus-visible+span{outline:2px solid var(--theme-accent,#7362bf);outline-offset:2px}
-.prompt-swatch{width:11px;height:11px;flex:none;border-radius:50%;background:var(--swatch);outline:1px solid #8b8496}
-#brief-palette-preview{margin-top:8px;padding:6px;background:var(--preview-bg,#0b0f19);color:var(--preview-text,#f8fafc);border:1px solid var(--theme-border);border-radius:10px}
-#brief-palette-preview>div{display:flex;gap:8px;align-items:center;justify-content:space-between;background:var(--preview-card,#131a2a);padding:6px 9px;border-radius:6px;font-size:.75rem}
-#brief-palette-preview i{width:23px;height:8px;border-radius:6px;background:var(--preview-accent,#6366f1)}
 .prompt-safety-message:not(:empty){padding:9px 12px;border:1px solid currentColor;border-radius:8px}
 @media(max-width:767px){.prompt-choice-row label>span{min-height:44px}}
 
@@ -672,6 +666,17 @@ body .sidebar :is(#new-audit,#side-audit,#side-lab,#open-settings) {
  .top .brand .brand-icon{display:block;width:25px;height:25px}
  .top .brand span{display:none}
 }
+
+body .sidebar :is(#new-audit,#side-audit,#side-lab,#open-settings) {
+ display:flex;align-items:center;gap:11px;
+ font:750 calc(.93rem * var(--type-scale))/1.35 Manrope,'Noto Sans',system-ui,sans-serif;
+ letter-spacing:0;color:var(--theme-ink,var(--white));
+}
+.sidebar .side-nav-icon {width:17px;height:17px;flex:none}
+body .sidebar :is(#new-audit,#side-audit,#side-lab,#open-settings)[aria-current='page'] {
+ background:var(--theme-selected);border-color:var(--theme-border);
+ border-inline-start-color:var(--theme-accent,var(--purple));
+}
 </style>
 <link rel="manifest" href="/static/manifest.webmanifest?v=4"><meta name="theme-color" content="#10131d"><link rel="apple-touch-icon" href="/static/vibeprompt-v-192.png?v=4"><noscript><style>.splash{display:none}</style></noscript><link rel="icon" type="image/png" sizes="192x192" href="/static/vibeprompt-v-192.png?v=4"><meta name="apple-mobile-web-app-title" content="VibePrompt AI"></head>
 <body class="brief-mode">
@@ -689,7 +694,7 @@ body .sidebar :is(#new-audit,#side-audit,#side-lab,#open-settings) {
 </svg>
 <div class="side-overlay" id="side-overlay"></div><aside class="sidebar" id="sidebar" aria-label="Қосымша навигация"><div class="sidebar-top"><button type="button" class="page-reload" aria-label="Жаңарту" title="Жаңарту">
  <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 6.7M20 5v6h-6"/></svg>
-</button><a class="brand" href="#"><img class="brand-icon" src="/static/vibeprompt-v.svg?v=4" alt="" aria-hidden="true"><span>VibePrompt <em>AI</em></span></a><button type="button" class="side-close" id="close-menu" aria-label="Мәзірді жабу">×</button></div><div class="sidebar-qairu"><span class="qairu-logo" role="img" aria-label="QAIRU — Qazaq AI Research University"></span></div><button type="button" class="side-button side-new" id="new-audit">⌂ &nbsp; Басты бет</button><div><button type="button" class="side-button current" id="side-audit">◈ &nbsp; Аудит</button><button type="button" class="side-button" id="side-lab">▦ &nbsp; Оқытушы режимі</button></div><div class="side-history"><div class="side-label">СОҢҒЫ АУДИТТЕР</div><div class="history-search" role="search"><input id="history-search" type="search" aria-label="Аудит атауын іздеу" placeholder="Аудит атауын іздеу" aria-controls="sidebar-history" autocomplete="off"><span id="history-search-status" class="history-search-status" role="status"></span></div><div id="sidebar-history"><p class="note">Тарих жүктелуде...</p></div></div><div class="side-bottom"><button type="button" class="side-button" id="open-settings">⚙ &nbsp; Баптаулар</button><p class="note" style="margin:8px 10px">Жаңа нәтижелер мен промпттар осы браузерде сақталады. Браузер деректерін тазаласаңыз, олар өшеді. </p></div></aside><div class="workspace">
+</button><a class="brand" href="#"><img class="brand-icon" src="/static/vibeprompt-v.svg?v=4" alt="" aria-hidden="true"><span>VibePrompt <em>AI</em></span></a><button type="button" class="side-close" id="close-menu" aria-label="Мәзірді жабу">×</button></div><div class="sidebar-qairu"><span class="qairu-logo" role="img" aria-label="QAIRU — Qazaq AI Research University"></span></div><button type="button" class="side-button side-new" id="new-audit"><svg class="side-nav-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7v10h-6v-6H9v6H3z"/></svg><span>Басты бет</span></button><div><button type="button" class="side-button current" id="side-audit"><svg class="side-nav-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h16M6 15v-4m6 4V5m6 10V8"/></svg><span>Аудит</span></button><button type="button" class="side-button" id="side-lab"><svg class="side-nav-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10h16m-10 0v10"/></svg><span>Оқытушы режимі</span></button></div><div class="side-history"><div class="side-label">СОҢҒЫ АУДИТТЕР</div><div class="history-search" role="search"><input id="history-search" type="search" aria-label="Аудит атауын іздеу" placeholder="Аудит атауын іздеу" aria-controls="sidebar-history" autocomplete="off"><span id="history-search-status" class="history-search-status" role="status"></span></div><div id="sidebar-history"><p class="note">Тарих жүктелуде...</p></div></div><div class="side-bottom"><button type="button" class="side-button" id="open-settings"><svg class="side-nav-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 17h16"/><circle cx="8" cy="7" r="2.5" fill="var(--theme-sidebar)"/><circle cx="16" cy="17" r="2.5" fill="var(--theme-sidebar)"/></svg><span>Баптаулар</span></button><p class="note" style="margin:8px 10px">Жаңа нәтижелер мен промпттар осы браузерде сақталады. Браузер деректерін тазаласаңыз, олар өшеді. </p></div></aside><div class="workspace">
 <dialog class="settings-modal" id="settings-dialog" aria-labelledby="settings-title"><div class="settings-inner"><div class="settings-header"><div><button type="button" class="page-reload" aria-label="Жаңарту" title="Жаңарту">
  <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 6.7M20 5v6h-6"/></svg>
 </button><span class="qairu-logo" role="img" aria-label="QAIRU — Qazaq AI Research University"></span><div class="mini">ЖҰМЫС КЕҢІСТІГІ</div><h2 id="settings-title">Баптаулар</h2></div><button type="button" class="side-close" id="close-settings-top" aria-label="Баптауларды жабу">×</button></div><div class="settings-body"><div class="settings-card"><label for="default-ai">Әдепкі AI нұсқасы</label><small>Промптты ашқанда көрсетілетін модельді таңдаңыз.</small><select id="default-ai" class="select"><option value="chatgpt">ChatGPT</option><option value="gemini">Gemini</option><option value="claude">Claude</option></select></div><div class="settings-card"><label for="theme-choice">Фон түсі</label><small>Жұмыс кеңістігінің өзіңізге ыңғайлы түсін таңдаңыз.</small><select id="theme-choice" class="select"><option value="black">Қара</option><option value="navy">Қою көк</option><option value="warm">Қоңыр</option><option value="light">Ақ</option><option value="burgundy">Қою қызыл</option></select></div><div class="settings-card"><label for="language-choice">Интерфейс тілі</label><small>Негізгі мәзір мен басқару элементтерінің тілі.</small><select id="language-choice" class="select"><option value="kk">Қазақша</option><option value="ru">Русский</option><option value="en">English</option></select></div><div class="settings-card"><label for="text-scale">Масштаб</label><small>Әр ашылғанда масштаб 100% болады. Өзгеріс осы бетке қолданылады.</small><select id="text-scale" class="select"><option value="90">90%</option><option value="100">100%</option><option value="120">120%</option><option value="150">150%</option></select></div><p class="note">Баптаулар мен аудит тарихы осы браузерде сақталады. Браузер деректерін тазаласаңыз, олар өшеді.</p></div><div class="settings-footer"><button type="button" class="copy settings-close" id="close-settings">Дайын</button></div></div></dialog>
@@ -724,19 +729,6 @@ body .sidebar :is(#new-audit,#side-audit,#side-lab,#open-settings) {
  <div class="prompt-choice-row">
   <label><input type="radio" name="output-format" value="pdf" checked><span>PDF құжат</span></label>
   <label><input type="radio" name="output-format" value="pptx"><span>PowerPoint (PPTX)</span></label>
- </div>
-</fieldset>
-<fieldset class="prompt-choice">
- <legend>Түс үйлесімін таңдаңыз</legend>
- <div class="prompt-choice-row" id="palette-choices">
-  <label><input type="radio" name="prompt-palette" value="auto" checked><span>Авто</span></label>
-  {% for id, palette in prompt_options.palettes.items() %}
-  {% set swatches = palette.get('swatches', [palette.colors[0], palette.colors[2]]) %}
-  <label><input type="radio" name="prompt-palette" value="{{ id }}"><span><i class="prompt-swatch" style="--swatch:{{ swatches[0] }}" aria-hidden="true"></i><b aria-hidden="true">×</b><i class="prompt-swatch" style="--swatch:{{ swatches[1] }}" aria-hidden="true"></i><span>{{ palette.names[0] }}</span></span></label>
-  {% endfor %}
- </div>
- <div id="brief-palette-preview" aria-label="Түс үйлесімінің көрінісі">
-  <div><strong>Түс үйлесімінің көрінісі</strong><i aria-hidden="true"></i></div>
  </div>
 </fieldset>
 <div class="brief-actions"><button id="brief-generate" type="button" class="brief-submit">Промпт жасау</button></div><p id="brief-error" class="error" role="status"></p></div>
@@ -845,8 +837,8 @@ body .sidebar :is(#new-audit,#side-audit,#side-lab,#open-settings) {
 <style>#audit-photo-export{margin-block:12px}#audit-photo-export label{display:block;margin-block:10px 4px}#photo-export-json{display:block;width:100%;margin-bottom:8px}</style>
 <script src="/static/audit-photos.js?v=3"></script>
 <script src="/static/design-presets.js?v=3"></script>
-<script src="/static/production-prompts.js?v=5"></script>
-<script type="application/json" id="workspace-prompt-options">{{ prompt_options|tojson }}</script>
+<script src="/static/production-prompts.js?v=6"></script>
+<script type="application/json" id="workspace-prompt-options">{{ {"safety": prompt_options.safety}|tojson }}</script>
 <script>
 let mode='URL', radarChart=null, current=null, typingTimer=null, promptModel='chatgpt';
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
@@ -880,7 +872,7 @@ document.addEventListener('keydown',event=>{
  else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first?.focus()}
 });
 $('#side-audit').addEventListener('click',()=>{view('audit');closeMenu()});$('#side-lab').addEventListener('click',()=>{view('academic');closeMenu()});
-$('#new-audit').addEventListener('click',()=>{document.body.classList.add('brief-mode');closeMenu();window.scrollTo(0,0);$('#brief-text').focus()});
+$('#new-audit').addEventListener('click',()=>{document.body.classList.add('brief-mode');syncSidebarNavigation();closeMenu();window.scrollTo(0,0);$('#brief-text').focus()});
 let preferences={};try{preferences=JSON.parse(localStorage.getItem('vibe-preferences')||'{}')}catch{};if(['chatgpt','gemini','claude'].includes(preferences.ai))promptModel=preferences.ai;
 function savePreferences(){try{localStorage.setItem('vibe-preferences',JSON.stringify(preferences))}catch{}}
 function applyTextScale(value='100'){
@@ -894,16 +886,13 @@ $('#text-scale').addEventListener('change',e=>{
 });
 window.addEventListener('pageshow',event=>{if(event.persisted)applyTextScale()});
 applyTextScale();
-$('#open-settings').addEventListener('click',()=>{closeMenu();$('#theme-choice').value=document.body.dataset.theme||'navy';$('#language-choice').value=preferences.lang||'kk';$('#default-ai').value=promptModel;$('#settings-dialog').showModal()});
+$('#open-settings').addEventListener('click',()=>{closeMenu();$('#theme-choice').value=document.body.dataset.theme||'navy';$('#language-choice').value=preferences.lang||'kk';$('#default-ai').value=promptModel;$('#settings-dialog').showModal();syncSidebarNavigation()});
 $('#close-settings').addEventListener('click',()=>$('#settings-dialog').close());$('#close-settings-top').addEventListener('click',()=>$('#settings-dialog').close());$('#default-ai').addEventListener('change',e=>{preferences.ai=e.target.value;savePreferences();$(`[data-prompt-model="${preferences.ai}"]`).click()});
 const uiTranslations={
+"Басты бет":["Главная","Home"],
 "Шығыс пішімі":["Формат результата","Output format"],
-"Түс үйлесімін таңдаңыз":["Выберите сочетание цветов","Choose color combination"],
-"Түс үйлесімінің көрінісі":["Предпросмотр сочетания цветов","Color combination preview"],
-"Авто":["Авто","Auto"],
 "PDF құжат":["PDF документ","PDF document"],
 "Жаңарту":["Обновить","Refresh"],
-...Object.fromEntries(Object.values(JSON.parse(document.querySelector('#workspace-prompt-options').textContent).palettes).map(entry=>[entry.names[0],entry.names.slice(1)])),
 'Талдау кезегі босай салысымен файл жүктеледі…':['Файл загрузится, как только освободится очередь…','Your file will upload as soon as an audit slot is open…'],
  'Фотолары бар PDF жасау':['Создать PDF с фотографиями','Create PDF with photos'],
 'PDF мәтіні мен интернет каталогындағы фотолар қолданылады.':['Будут использованы текст PDF и фотографии из интернет-каталога.','Uses the PDF text and photos from the web catalog.'],
@@ -1133,7 +1122,17 @@ const desktopLanguage=$('#desktop-language');
 function hideSplash(){$('#splash').classList.add('done')}if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)hideSplash();else setTimeout(hideSplash,3000);
 $$('[data-prompt-model]').forEach(b=>{const active=b.dataset.promptModel===promptModel;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active))});
 
-function view(name){document.body.classList.remove('brief-mode');$('#side-audit').classList.toggle('current',name==='audit');$('#side-lab').classList.toggle('current',name==='academic');$$('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.view===name));$$('main > section').forEach(x=>x.classList.toggle('active',x.id===name));window.scrollTo({top:0,behavior:'smooth'})}
+function syncSidebarNavigation(){
+ const active=$('#settings-dialog').open?'open-settings':document.body.classList.contains('brief-mode')?'new-audit':
+  $('#academic').classList.contains('active')?'side-lab':'side-audit';
+ ['new-audit','side-audit','side-lab','open-settings'].forEach(id=>{
+  const button=document.getElementById(id),selected=id===active;
+  button.classList.toggle('current',selected);
+  if(selected)button.setAttribute('aria-current','page');
+  else button.removeAttribute('aria-current');
+ });
+}
+function view(name){document.body.classList.remove('brief-mode');$('#side-audit').classList.toggle('current',name==='audit');$('#side-lab').classList.toggle('current',name==='academic');$$('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.view===name));$$('main > section').forEach(x=>x.classList.toggle('active',x.id===name));window.scrollTo({top:0,behavior:'smooth'});syncSidebarNavigation()}
 $$('.nav button').forEach(b=>b.addEventListener('click',()=>view(b.dataset.view)));
 $('#run-chrome-import').addEventListener('click',async()=>{
  const button=$('#run-chrome-import'),status=$('#chrome-audit-status'),input=$('#chrome-audit-code');
@@ -1343,28 +1342,15 @@ function showPromptSafety(node){
  node.classList.add('prompt-safety-message');
  node.textContent=workspacePromptOptions.safety.warnings[uiLanguage()];
 }
-const paletteRoles=['background','card','accent','text'];
-let generatedPalette='auto',generatedFormat=null;
-function selectedPalette(id){
- const entry=workspacePromptOptions.palettes[id];
- return entry?Object.fromEntries(paletteRoles.map((key,i)=>[key,entry.colors[i]])):null;
-}
+let generatedFormat=null;
 function syncWorkspaceOptions(){
  $('#brief-format-options').hidden=briefKind!=='presentation';
- const id=$('[name="prompt-palette"]:checked').value;
- const brief=$('#brief-text').value;
- const auto=window.VibeDesignPresets.select({topic:brief}).palette;
- const colors=selectedPalette(id)||{background:auto.background,card:auto.card,accent:auto['primary accent'],text:auto.text};
- const preview=$('#brief-palette-preview');
- paletteRoles.forEach(key=>preview.style.setProperty('--preview-'+(key==='background'?'bg':key),colors[key]));
 }
-$('#palette-choices').addEventListener('change',syncWorkspaceOptions);
-$('#brief-text').addEventListener('input',syncWorkspaceOptions);
 syncWorkspaceOptions();
 
 function buildBriefPrompt(model){
  return window.VibeProductionPrompts.build({kind:generatedBriefKind,brief:generatedBriefText,
-  tier:selectedLength,source:photoSource(),model,language:uiLanguage(),paletteOverride:selectedPalette(generatedPalette),outputFormat:generatedFormat});
+  tier:selectedLength,source:photoSource(),model,language:uiLanguage(),outputFormat:generatedFormat});
 }
 function refreshBriefPrompt(){
  const prompt=generatedBriefText?buildBriefPrompt(briefModel):'';
@@ -1500,9 +1486,8 @@ async function refreshAuditPrompt(){
  }
 }
 
-function showBrief(){resetPromptCopyFeedback();document.body.classList.add('brief-mode');$('#brief-result').classList.remove('hidden');syncBriefTierControls();refreshBriefPrompt();updateAiLink('brief-ai-link',briefModel);$$('[data-brief-model]').forEach(x=>{const active=x.dataset.briefModel===briefModel;x.classList.toggle('active',active);x.setAttribute('aria-pressed',String(active))})}
-function restoreBrief(d){briefKind=d.briefKind;generatedBriefKind=d.briefKind;generatedBriefText=d.brief||'';generatedPalette=selectedPalette(d.palette)?d.palette:'auto';generatedFormat=['pdf','pptx'].includes(d.outputFormat)?d.outputFormat:null;
- $('[name="prompt-palette"]').forEach(input=>{input.checked=input.value===generatedPalette});
+function showBrief(){resetPromptCopyFeedback();document.body.classList.add('brief-mode');syncSidebarNavigation();$('#brief-result').classList.remove('hidden');syncBriefTierControls();refreshBriefPrompt();updateAiLink('brief-ai-link',briefModel);$$('[data-brief-model]').forEach(x=>{const active=x.dataset.briefModel===briefModel;x.classList.toggle('active',active);x.setAttribute('aria-pressed',String(active))})}
+function restoreBrief(d){briefKind=d.briefKind;generatedBriefKind=d.briefKind;generatedBriefText=d.brief||'';generatedFormat=['pdf','pptx'].includes(d.outputFormat)?d.outputFormat:null;
  $('[name="output-format"]').forEach(input=>{input.checked=input.value===(generatedFormat||'pdf')});
  updateBriefExample();$('#brief-text').value=d.brief||'';syncWorkspaceOptions();$$('[data-brief-kind]').forEach(x=>x.classList.toggle('active',x.dataset.briefKind===briefKind));showBrief();window.scrollTo({top:0,behavior:'smooth'})}
 $$('[data-brief-kind]').forEach(button=>button.addEventListener('click',()=>{
@@ -1558,7 +1543,7 @@ $$('[data-starter]').forEach(button=>button.addEventListener('click',()=>{
  $('#brief-text').focus();
 }));
 $$('[data-brief-model]').forEach(b=>b.addEventListener('click',()=>{briefModel=b.dataset.briefModel;showBrief()}));
-$('#brief-generate').addEventListener('click',()=>{let text=$('#brief-text').value.trim();if(isBlockedPrompt(text)){showPromptSafety($('#brief-error'));return}if(text.length<10){$('#brief-error').textContent=uiText('Жобаңызды кемінде 10 таңбамен сипаттаңыз.');return}$('#brief-error').textContent='';generatedBriefText=text;generatedBriefKind=briefKind;generatedPalette=$('[name="prompt-palette"]:checked').value;generatedFormat=briefKind==='presentation'?$('[name="output-format"]:checked').value:null;briefModel=Object.hasOwn(AI_LINKS,preferences.ai)?preferences.ai:'chatgpt';saveAudit({kind:'BRIEF',briefKind,brief:text,palette:generatedPalette,outputFormat:generatedFormat,prompts:Object.fromEntries(Object.keys(AI_LINKS).map(model=>[model,buildBriefPrompt(model)])),features:{},score:null},text);showSavedAudits();showBrief();$('#brief-result').scrollIntoView({behavior:'smooth',block:'start'})});
+$('#brief-generate').addEventListener('click',()=>{let text=$('#brief-text').value.trim();if(isBlockedPrompt(text)){showPromptSafety($('#brief-error'));return}if(text.length<10){$('#brief-error').textContent=uiText('Жобаңызды кемінде 10 таңбамен сипаттаңыз.');return}$('#brief-error').textContent='';generatedBriefText=text;generatedBriefKind=briefKind;generatedFormat=briefKind==='presentation'?$('[name="output-format"]:checked').value:null;briefModel=Object.hasOwn(AI_LINKS,preferences.ai)?preferences.ai:'chatgpt';saveAudit({kind:'BRIEF',briefKind,brief:text,outputFormat:generatedFormat,prompts:Object.fromEntries(Object.keys(AI_LINKS).map(model=>[model,buildBriefPrompt(model)])),features:{},score:null},text);showSavedAudits();showBrief();$('#brief-result').scrollIntoView({behavior:'smooth',block:'start'})});
 $('#brief-copy').addEventListener('click',()=>copyWithFeedback($('#brief-copy'),()=>$('#brief-output').textContent));
 function openAudit(kind){document.body.classList.remove('brief-mode');view('audit');document.querySelector('[data-mode="'+kind+'"]').click();$('#audit-form').scrollIntoView({behavior:'smooth',block:'center'})}
 $('#open-url-audit').addEventListener('click',()=>openAudit('URL'));$('#open-pdf-audit').addEventListener('click',()=>openAudit('PDF'));
@@ -1695,7 +1680,7 @@ stopAuditButton.addEventListener('click',()=>activeAudit?.abort());
 function resetWorkspace(){
  activeAudit?.abort();
  current=null;
- generatedBriefText='';generatedPalette='auto';generatedFormat=null;insertedStarter='';
+ generatedBriefText='';generatedFormat=null;insertedStarter='';
  $('#brief-text').value='';$('#brief-output').textContent='';$('#brief-error').textContent='';
  $('#brief-result').classList.add('hidden');$('#audit').classList.remove('has-results');
  $('#preview-shot').removeAttribute('src');$('#preview-shot').classList.add('hidden');
@@ -1703,10 +1688,9 @@ function resetWorkspace(){
  $('#preview-desc').textContent=uiText('Дереккөзді қосыңыз. Нәтижелеріңіз осы жерде пайда болады.');
  $('#stat-score').textContent='—';$('#stat-class').textContent='—';$('#url').value='';$('#goal').value='';$('#error').textContent='';
  $('#chrome-audit-code').value='';$('#chrome-audit-status').textContent='';
- $('[name="prompt-palette"][value="auto"]').checked=true;
  $('[name="output-format"][value="pdf"]').checked=true;
  refreshAuditPrompt();selectPdf(null);view('audit');
- document.body.classList.add('brief-mode');syncWorkspaceOptions();
+ document.body.classList.add('brief-mode');syncSidebarNavigation();syncWorkspaceOptions();
 }
 
 async function run(url,body,demo=false){
@@ -1799,6 +1783,8 @@ $('#audit-form').addEventListener('submit',event=>{
 });
 $$('[data-copy]').forEach(b=>b.addEventListener('click',()=>{if(current)copyWithFeedback(b,()=>b.dataset.copy==='prompt'?$('#full-prompt-text').textContent:current[b.dataset.copy])}));refreshHistory();
 
+$('#settings-dialog').addEventListener('close',syncSidebarNavigation);
+syncSidebarNavigation();
 const reloadStateKey='vibeprompt-reload-view';
 $$('.page-reload').forEach(button=>button.addEventListener('click',()=>{
  const section=document.body.classList.contains('brief-mode')?'home':

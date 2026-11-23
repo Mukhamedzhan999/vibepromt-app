@@ -119,6 +119,29 @@
   return lines.filter(Boolean).join('\n');
  }
 
+ const paletteDirection = {
+  editorial_warm: 'For history, culture and literature, use warm parchment for reading surfaces, sand for archival notes, muted copper for dates and labels, and deep navy for headings. Preserve natural archival tones and use the richer accent on sparse section markers.',
+  tech_dark: 'For technology and startup topics, use midnight for the canvas, a lifted slate surface for panels, indigo for primary actions and green for positive signals. Use green with a label on metrics, and place code or dense specification blocks on slate with light text.',
+  corporate_clean: 'For business, finance and education, give tables and charts a pale canvas, use navy for hierarchy and key actions, and reserve blue for selected comparisons or callouts. Label chart values, units and changes directly.',
+  clinical_fresh: 'For science, medicine and ecology, use the light mint canvas to separate observations, the white card color for data, and emerald or teal for sources, results and evidence markers. Use dark forest text over light surfaces for readable explanations.',
+  modern_bold: 'For portfolios, marketing and shops, pair warm cream with near-black typography and use raspberry for the primary action, featured products or chapter markers. Keep source imagery and product colors natural.'
+ };
+
+ function productionPass(site, pptx, audit) {
+  if (site) return [
+   'Give each route one visitor goal, a clear entry point and a meaningful next action. Include the main navigation and the core user journey from first visit through completion.',
+   'For each key screen, describe section order, component hierarchy and the content it needs. Specify keyboard focus, input labels and the relevant loading, empty, success and error states.',
+   'Review the primary journey at mobile and desktop widths. Confirm navigation, responsive layout, image fit and the main interaction in the delivered project.'
+  ].join(' ');
+  return [
+   'Create a page-by-page plan before building the file. For each page give the headline, key takeaway, evidence, layout type and the visual slot allowed by the selected tier.',
+   'Build an opening that states the purpose, sequence the evidence, then close with a specific conclusion. Put short explanations beside the visuals and vary page layouts according to the material.',
+   pptx ? 'Open the final deck and check slide order, native text editability, picture framing and alignment.'
+    : 'Open the final PDF and check the page count, text legibility, image framing and page breaks.',
+   audit ? 'Apply the audit findings to the observed pages and keep the verified source facts.' : ''
+  ].filter(Boolean).join(' ');
+ }
+
  function visualGuide(level, source, site) {
   const unit = site ? 'section' : 'page';
   if (level === 'short') return 'Use text-only layouts: clear headings, short sections and tables for comparisons.';
@@ -130,7 +153,7 @@
    ' suited to the topic. Pair each visual with a brief explanation; use photography, illustration or SVG according to your available tools.';
  }
 
- function build({kind, model = 'chatgpt', tier = 'full', source = 'web', language = 'kk', brief = '', audit = null, paletteOverride = null, outputFormat = null}) {
+ function build({kind, model = 'chatgpt', tier = 'full', source = 'web', language = 'kk', brief = '', audit = null, outputFormat = null}) {
   const site = kind === 'site';
   const level = Object.hasOwn(EVIDENCE_LIMITS, tier) ? tier : 'full';
   const observed = auditContext(audit, site ? 'site' : 'presentation', level);
@@ -146,11 +169,10 @@
   const direction = level === 'full' ? fullDirection(site, preset, topic + ' ' + observed.title + ' ' + observed.topic) : null;
   const goal = 'As a ' + (site ? 'UX designer and frontend developer' : 'presentation designer and editor') +
    ', ' + (audit ? 'redesign the supplied work as ' : 'create ') + deliverable + ' in ' + lang + '.';
-  const colors = ['background', 'card', 'accent', 'text'];
-  const override = colors.every(key => typeof paletteOverride?.[key] === 'string' && /^#[0-9a-f]{6}$/i.test(paletteOverride[key]));
-  const palette = Object.entries(override ? Object.fromEntries(colors.map(key => [key,paletteOverride[key]])) : preset.palette).map(([name, hex]) => name + ' ' + hex).join(', ');
+  const palette = Object.entries(preset.palette).map(([name, hex])=>name+' '+hex).join(', ');
+  const colorGuide = paletteDirection[preset.id];
   const {heading, body, mono} = preset.fonts;
-  const design = palette + '. Use ' + heading + ' for headings, ' + body + ' for body text' +
+  const design = palette + '. ' + colorGuide + ' Set body text on the contrasting background or card surface and use accents selectively. Use ' + heading + ' for headings, ' + body + ' for body text' +
    (mono ? ' and ' + mono + ' for code' : '') + ', with Cyrillic Extended (cyrillic-ext) and Noto Sans for Kazakh glyphs.' +
    (level === 'short' ? '' : ' ' + preset.mood) +
    (level !== 'full' ? '' : site
@@ -170,12 +192,19 @@
    level === 'full' && (site
     ? 'Shape each substantive section around a visitor question, one concrete supporting detail and a relevant next action.'
     : 'Shape each page around a specific title, its main claim, supporting evidence and a short visual caption.'),
+   level === 'full' && productionPass(site,pptx,Boolean(audit)),
+   level === 'full' && 'Cross-check factual claims against the supplied material or credible sources and attach source notes where the reader needs to verify a claim.',
    topic && 'Brief: ' + topic, audit && observed.title && 'Source: ' + observed.title,
    evidence && 'Use these observations to guide the redesign:\n' + evidence].filter(Boolean).join('\n');
   const framing = !site && level !== 'short'
    ? 'Match every image to its container: 16:9 for full-bleed covers, 4:3, 1:1 or 3:4 for split layouts and cards, and 16:9 or 21:9 for wide banners. Center the subject with safe margins around faces, objects and text. Fit the whole image when preserving detail matters.'
    : '';
-  const visuals = [visualGuide(level, source, site), direction?.visual, framing].filter(Boolean).join(' ');
+  const visualCompletion = level === 'full'
+   ? site
+    ? 'Give informative images meaningful alternative text. Use a consistent visual treatment and reserve each image slot for a specific message.'
+    : 'Assign a distinct topic-specific visual to each required page and place a short source note or caption beside it. Reopen the final file and check that all required visual slots are present and readable.'
+   : '';
+  const visuals = [visualGuide(level, source, site), direction?.visual, framing, visualCompletion].filter(Boolean).join(' ');
   const parts = [['Goal', goal], ['Design', design], ['Content', content], ['Visuals', visuals]];
   return parts.map(([name, value]) => {
    const tag = name.toLowerCase();
