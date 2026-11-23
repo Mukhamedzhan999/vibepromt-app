@@ -18,6 +18,29 @@ VibePrompt AI — **QAIRU қорытынды жобасы**. Қосымша жа
 
 ## Қосымша көрінісі
 
+### Ноутбуктегі интерфейс
+
+**Басты бет** · Сайт немесе презентация идеясын енгізу.
+
+![Ноутбуктегі VibePrompt AI басты беті](docs/images/desktop-home.jpg)
+
+| Аудит | Оқытушы режимі |
+| --- | --- |
+| <img src="docs/images/desktop-audit.jpg" width="460" alt="Ноутбуктегі веб-сайт пен PDF аудиті нысаны"> | <img src="docs/images/desktop-teaching.jpg" width="460" alt="Оқытушы режиміндегі QAIRU тақырыптары мен Chrome кеңейтімі"> |
+
+**Дайын промпт** · Модельді, промпт көлемін таңдау және дайын мәтінді көшіру.
+
+![Қазақстан тарихы тақырыбындағы дайын промпт экраны](docs/images/desktop-prompt.jpg)
+
+<details>
+<summary>Баптаулар көрінісі</summary>
+
+![Тіл, фон, модель және масштаб баптаулары](docs/images/desktop-settings.jpg)
+
+</details>
+
+### Телефондағы интерфейс
+
 | Телефондағы басты бет | Телефондағы PDF аудиті |
 | :---: | :---: |
 | <img src="docs/images/mobile-home.jpg" width="300" alt="VibePrompt AI мобильді басты бетінің демонстрациясы"> | <img src="docs/images/mobile-pdf-audit.jpg" width="300" alt="Телефондағы PDF жүктеу мен аудит нәтижесінің көрінісі"> |
