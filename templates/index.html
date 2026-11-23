@@ -843,7 +843,7 @@ body .sidebar :is(#new-audit,#side-audit,#side-lab,#open-settings)[aria-current=
 <style>#audit-photo-export{margin-block:12px}#audit-photo-export label{display:block;margin-block:10px 4px}#photo-export-json{display:block;width:100%;margin-bottom:8px}</style>
 <script src="/static/audit-photos.js?v=3"></script>
 <script src="/static/design-presets.js?v=3"></script>
-<script src="/static/production-prompts.js?v=9"></script>
+<script src="/static/production-prompts.js?v=10"></script>
 <script type="application/json" id="workspace-prompt-options">{{ {"safety": prompt_options.safety}|tojson }}</script>
 <script>
 let mode='URL', radarChart=null, current=null, typingTimer=null, promptModel='chatgpt';
@@ -1426,9 +1426,10 @@ function syncWorkspaceOptions(){
 }
 syncWorkspaceOptions();
 
-function buildBriefPrompt(model){
- return window.VibeProductionPrompts.build({kind:generatedBriefKind,brief:generatedBriefText,
-  tier:selectedLength,source:photoSource('brief'),model,language:uiLanguage(),outputFormat:generatedFormat});
+function workspacePrompt(options,snapshot){
+ const engine=window.VibeProductionPrompts;
+ const saved=savedPrompt(snapshot,options.model,options.tier,options.source);
+ return saved?engine.refreshSavedWebsitePrompt(saved,options):engine.build(options);
 }
 function savedPrompt(snapshot,model,tier,source){
  const settings=snapshot?.promptSettings;
@@ -1436,7 +1437,8 @@ function savedPrompt(snapshot,model,tier,source){
  return typeof snapshot.prompts?.[model]==='string'?snapshot.prompts[model]:'';
 }
 function briefPrompt(model){
- return savedPrompt(briefSnapshot,model,selectedLength,photoSource('brief'))||buildBriefPrompt(model);
+ return workspacePrompt({kind:generatedBriefKind,brief:generatedBriefText,tier:selectedLength,
+  source:photoSource('brief'),model,language:uiLanguage(),outputFormat:generatedFormat},briefSnapshot);
 }
 function briefPromptData(){
  return {promptSettings:{tier:selectedLength,source:photoSource('brief'),language:uiLanguage(),model:briefModel},
@@ -1562,7 +1564,7 @@ async function refreshAuditPrompt(){
  photoExportAudit=audit;photoExportPrompt='';photoExport.hidden=true;photoExportDraft=null;automaticPhotoExport.hidden=true;
  syncPhotoSource('audit',Boolean(audit));
  updateAiLink('audit-ai-link',model);
- const prompt=audit?(savedPrompt(auditSnapshot,model,'full',source)||buildAuditPrompt(audit,model,source)):'';
+ const prompt=audit?buildAuditPrompt(audit,model,source,auditSnapshot):'';
  renderPrompt(prompt);
  $$('[data-copy="prompt"]').forEach(button=>button.disabled=!prompt);
  window.VibeReport?.prompt(prompt,model);
@@ -1588,9 +1590,9 @@ async function refreshAuditPrompt(){
  }
 }
 
-function buildAuditPrompt(audit,model,source){
- return window.VibeProductionPrompts.build({kind:audit.kind==='PDF'?'presentation':'site',
-  audit,tier:'full',source,model,language:uiLanguage()});
+function buildAuditPrompt(audit,model,source,snapshot){
+ return workspacePrompt({kind:audit.kind==='PDF'?'presentation':'site',
+  audit,tier:'full',source,model,language:uiLanguage()},snapshot);
 }
 function historySnapshot(data,tier,model){
  const settings=data.promptSettings||{};
@@ -1712,8 +1714,7 @@ function renderPrompt(text){resetPromptCopyFeedback();clearInterval(typingTimer)
 function renderPriorities(d){let list=(d.checks||[]).filter(c=>c.status==='fail');if(!list.length)list=(d.checks||[]).filter(c=>c.status==='unknown');if(!list.length && !d.checks)list=(d.issues||[]).map(x=>({status:'fail',title:'Ұсыныс',evidence:x,recommendation:''}));list=list.slice(0,3);$('#priority-card').classList.toggle('hidden',!list.length);$('#priority-items').innerHTML=list.map(c=>`<div class="priority-item"><strong>${c.status==='fail'?'Мәселе':'Тексеру керек'} · ${esc(c.title)}</strong>${esc(c.evidence)}<br>${esc(c.recommendation)}</div>`).join('')}
 function auditPromptData(data,source,snapshot){
  return {promptSettings:{tier:'full',source,language:uiLanguage(),model:promptModel},
-  prompts:Object.fromEntries(Object.keys(AI_LINKS).map(model=>[model,
-   savedPrompt(snapshot,model,'full',source)||buildAuditPrompt(data,model,source)]))};
+  prompts:Object.fromEntries(Object.keys(AI_LINKS).map(model=>[model,buildAuditPrompt(data,model,source,snapshot)]))};
 }
 function saveAuditResult(data,source){
  Object.assign(data,auditPromptData(data,preferences.photoSource==='ai'?'ai':'web'));
