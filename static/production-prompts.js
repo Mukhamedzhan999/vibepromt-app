@@ -211,7 +211,7 @@
   const visualCompletion = level === 'full'
    ? site
     ? 'For each visual, define the subject and what it helps the visitor understand. Embed or include the assets in the runnable project, provide meaningful alternative text and check crops at mobile and desktop widths.'
-    : 'For every required page, select a distinct subject, choose its frame and pair it with a caption that explains what it shows and why it belongs there. Prefer real, relevant photography when the selected source is the web. Embed the finished assets in the exported file and check the cover, the middle and the final page for visual continuity.'
+    : 'For every required page, select a distinct subject, choose its frame and pair it with a caption that explains what it shows and why it belongs there. Prefer real, relevant photography when the selected source is the web. Embed the actual assets in the exported PDF or PPTX. Reopen the file and review every page in order. Confirm each required photo is visible, proportionate and accompanied by its caption. If a photo is unavailable, select another relevant source and check its placement before delivery.'
    : '';
   const visuals = [visualGuide(level, source, site), direction?.visual, framing, visualCompletion].filter(Boolean).join(' ');
   const parts = [['Goal', goal], ['Design', design], ['Content', content], ['Visuals', visuals]];
