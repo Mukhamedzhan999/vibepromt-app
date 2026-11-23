@@ -17,7 +17,7 @@ fileInput.addEventListener('change', async () => {
   if (!file) return;
   fileInput.disabled = true;
   try {
-    if (file.size > 6000000) throw new Error('Тарих файлы тым үлкен.');
+    if (file.size > 16000000) throw new Error('Тарих файлы тым үлкен.');
     const backup = JSON.parse(await file.text());
     if (backup?.format !== 'vibepromt-audits' || backup.version !== 1 ||
         !Array.isArray(backup.audits) || !backup.audits.every(isAudit)) {
@@ -30,7 +30,7 @@ fileInput.addEventListener('change', async () => {
     }
     const ordered = [...merged.values()].sort((a, b) => String(b.date).localeCompare(String(a.date)));
     const serialized = JSON.stringify(ordered);
-    if (ordered.length > 12 || serialized.length > 3000000) {
+    if (ordered.length > 30 || serialized.length > 4000000) {
       throw new Error('Браузер тарихында орын жеткіліксіз.');
     }
     localStorage.setItem(storageKey, serialized);

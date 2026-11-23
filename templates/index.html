@@ -1199,10 +1199,23 @@ for(const eventName of ['dragenter','dragover','dragleave','drop']){
 }
 function esc(s){const d=document.createElement('div');d.textContent=String(s);return d.innerHTML.replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
 function pct(x){return Math.round(x*100)+'%'}
-const HISTORY_KEY='vibe-saved-audits-v1',HISTORY_LIMIT=12,HISTORY_MAX_CHARS=3000000;
+const HISTORY_KEY='vibe-saved-audits-v1',HISTORY_LIMIT=30,HISTORY_MAX_CHARS=4000000;
 let historyWarning='';
 function getSavedAudits(){try{let data=JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]');return Array.isArray(data)?data:[]}catch{return []}}
-function saveAudit(data,source){try{let list=getSavedAudits();if(list.length>=HISTORY_LIMIT){historyWarning='Тарих толды. Жаңа нәтижені сақтау үшін бір аудитті өшіріңіз.';return false}let saved={...data,screenshot:null};let entry={id:(globalThis.crypto&&crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2)),source:String(source||data.kind||'Аудит').slice(0,250),kind:data.kind,score:data.score,date:new Date().toISOString(),data:saved};let text=JSON.stringify([entry,...list]);if(text.length>HISTORY_MAX_CHARS){historyWarning='Нәтиже бұл браузер тарихына сыймады; оны көшіру арқылы сақтаңыз.';return false}localStorage.setItem(HISTORY_KEY,text);historyWarning='';return true}catch{historyWarning='Браузерде сақтауға орын жоқ немесе сақтау өшірілген. Промптты көшіріп алыңыз.';return false}}
+function compactHistoryEntry(entry){
+ const data=entry?.data;
+ if(!data||typeof data!=='object')return entry;
+ const canRebuild=(data.kind==='BRIEF'&&typeof data.brief==='string'&&['site','presentation'].includes(data.briefKind))||
+  (['URL','PDF'].includes(data.kind)&&data.evidence&&typeof data.evidence==='object');
+ if(!canRebuild)return entry;
+ // The history view regenerates model prompts from the saved brief or audit evidence.
+ const snapshot={...data,screenshot:null,prompts:{}};
+ delete snapshot.prompt;
+ return {...entry,data:snapshot};
+}
+function saveAudit(data,source){try{let list=getSavedAudits();if(list.length>=HISTORY_LIMIT){historyWarning='Тарих толды. Жаңа нәтижені сақтау үшін бір аудитті өшіріңіз.';return false}let saved={...data,screenshot:null};let entry={id:(globalThis.crypto&&crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2)),source:String(source||data.kind||'Аудит').slice(0,250),kind:data.kind,score:data.score,date:new Date().toISOString(),data:saved};const next=[entry,...list];let text=JSON.stringify(next);
+ if(text.length>HISTORY_MAX_CHARS)text=JSON.stringify(next.map(compactHistoryEntry));
+ if(text.length>HISTORY_MAX_CHARS){historyWarning='Нәтиже бұл браузер тарихына сыймады; оны көшіру арқылы сақтаңыз.';return false}localStorage.setItem(HISTORY_KEY,text);historyWarning='';return true}catch{historyWarning='Браузерде сақтауға орын жоқ немесе сақтау өшірілген. Промптты көшіріп алыңыз.';return false}}
 function showSavedAudits(){
  const labels={
   kk:['Бүгін','Кеше','Соңғы 7 күн','Бұрын','Сақталған аудит жоқ.','Аудитті өшіру'],
