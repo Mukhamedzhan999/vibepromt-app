@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="kk">
+<head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <title>VibePrompt AI</title>
+ <style>
+  * {box-sizing:border-box}
+  [hidden] {display:none!important}
+  :root {color-scheme:dark;font:14px/1.5 system-ui,sans-serif;color:#f4f1ff;background:#100e1b}
+  body {width:348px;margin:0;padding:16px;background:radial-gradient(ellipse at 100% 0,#282049,transparent 58%)}
+  header {display:flex;gap:11px;align-items:center;padding-bottom:13px}
+  header img {border-radius:10px;border:1px solid #6655a1}
+  h1 {font-size:16px;line-height:1.2;margin:0}
+  header p {font-size:12px;color:#c3b9dc;margin:3px 0 0}
+  main {border:1px solid #3e3558;border-radius:14px;padding:14px;background:#191625}
+  h2 {font-size:15px;margin:0}
+  .description {margin:5px 0 12px;color:#cfc7e5;font-size:12px}
+  button {font:inherit;font-weight:720;cursor:pointer}
+  button:focus-visible,a:focus-visible {outline:2px solid #d9cdff;outline-offset:3px}
+  button:disabled {cursor:wait;opacity:.72}
+  #capture {width:100%;min-height:44px;border:1px solid #d6c8ff;border-radius:9px;background:#d3c3ff;color:#251742}
+  #capture:not(:disabled):hover {background:#e1d6ff}
+  .ready {display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:11px;padding:8px 9px;border:1px solid #504475;border-radius:9px;background:#241d39}
+  .ready strong {display:block;font-size:13px}
+  .ready p {margin:1px 0 0;font-size:11px;color:#d0c4eb}
+  #copy {display:grid;flex:none;place-items:center;width:44px;height:44px;border-radius:9px;border:1px solid #7761b0;background:#342753;color:#f0e7ff}
+  #copy:hover {background:#493571}
+  #copy[data-copied="true"] {background:#193c36;border-color:#54a795;color:#baf4df}
+  #copy .check-icon,#copy[data-copied="true"] .copy-icon {display:none}
+  #copy[data-copied="true"] .check-icon {display:block}
+  #status {font-size:12px;color:#d0c4eb;margin:10px 0 0}
+  #status:empty {display:none}
+  #status[data-kind="error"] {color:#ffbbc7}
+  footer {margin-top:12px;font-size:12px}
+  footer a {color:#e4d7ff;text-underline-offset:3px}
+ </style>
+</head>
+<body>
+ <header>
+  <img src="icon.png" width="38" height="38" alt="">
+  <div><h1>VibePrompt AI</h1><p>Chrome аудиті</p></div>
+ </header>
+ <main>
+  <h2>Ашық бетті талдау</h2>
+  <p class="description">Қазіргі қойындыны өлшеп, VibePrompt AI-ға арналған аудит кодын жасаңыз.</p>
+  <button id="capture" type="button">Аудит кодын жасау</button>
+  <div id="ready" class="ready" hidden>
+   <div><strong id="copy-label">Код дайын</strong><p id="copy-hint">Кодты көшіріп алыңыз.</p></div>
+   <button id="copy" type="button" aria-label="Аудит кодын көшіру" title="Аудит кодын көшіру">
+    <svg class="copy-icon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
+    <svg class="check-icon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>
+   </button>
+  </div>
+  <p id="status" role="status"></p>
+ </main>
+ <footer><a href="https://vibeprompt-ai-eta.vercel.app/" target="_blank" rel="noopener noreferrer">VibePrompt AI-ды ашу ↗</a></footer>
+ <script src="popup.js"></script>
+</body>
+</html>
