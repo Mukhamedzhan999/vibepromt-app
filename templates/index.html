@@ -627,6 +627,23 @@ body[data-theme='light'] :is(.brief-submit,.primary,.settings-footer .settings-c
 }
 .chrome-download.copy:is(:hover,:focus-visible) {outline:2px solid var(--theme-accent,var(--purple));outline-offset:2px}
 .chrome-download svg {flex-shrink:0}
+
+.prompt-choice{border:0;min-width:0;margin:14px 0 0;padding:0}
+.prompt-choice legend{font-size:.86rem;font-weight:700;margin-bottom:6px}
+.prompt-choice-row{display:flex;flex-wrap:wrap;gap:6px}
+.prompt-choice-row label{position:relative;cursor:pointer}
+.prompt-choice-row input{position:absolute;opacity:0;width:1px;height:1px}
+.prompt-choice-row label>span{display:flex;gap:5px;align-items:center;min-height:40px;padding:5px 8px;border:1px solid var(--theme-border);border-radius:9px;background:var(--theme-panel-deep);font-size:.76rem;font-weight:650}
+.prompt-choice-row input:checked+span{background:var(--theme-selected);border-color:var(--theme-accent,#7362bf)}
+.prompt-choice-row input:focus-visible+span{outline:2px solid var(--theme-accent,#7362bf);outline-offset:2px}
+.prompt-swatch{width:11px;height:11px;flex:none;border-radius:50%;background:var(--swatch);outline:1px solid #8b8496}
+#brief-palette-preview{margin-top:8px;padding:6px;background:var(--preview-bg,#0b0f19);color:var(--preview-text,#f8fafc);border:1px solid var(--theme-border);border-radius:10px}
+#brief-palette-preview>div{display:flex;gap:8px;align-items:center;justify-content:space-between;background:var(--preview-card,#131a2a);padding:6px 9px;border-radius:6px;font-size:.75rem}
+#brief-palette-preview i{width:23px;height:8px;border-radius:6px;background:var(--preview-accent,#6366f1)}
+.workspace-reset{display:inline-flex;align-items:center;gap:6px;min-height:40px}
+.audit-reset-row{display:flex;justify-content:flex-end;margin-bottom:8px}
+.prompt-safety-message:not(:empty){padding:9px 12px;border:1px solid currentColor;border-radius:8px}
+@media(max-width:767px){.prompt-choice-row label>span,.workspace-reset{min-height:44px}}
 </style>
 <link rel="manifest" href="/static/manifest.webmanifest?v=4"><meta name="theme-color" content="#10131d"><link rel="apple-touch-icon" href="/static/vibeprompt-v-192.png?v=4"><noscript><style>.splash{display:none}</style></noscript><link rel="icon" type="image/png" sizes="192x192" href="/static/vibeprompt-v-192.png?v=4"><meta name="apple-mobile-web-app-title" content="VibePrompt AI"></head>
 <body class="brief-mode">
@@ -642,7 +659,6 @@ body[data-theme='light'] :is(.brief-submit,.primary,.settings-footer .settings-c
   </filter>
  </defs>
 </svg>
-{% set chrome_extension_zip = "data:application/zip;base64,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" %}
 <div class="side-overlay" id="side-overlay"></div><aside class="sidebar" id="sidebar" aria-label="Қосымша навигация"><div class="sidebar-top"><a class="brand" href="#"><img class="brand-icon" src="/static/vibeprompt-v.svg?v=4" alt="" aria-hidden="true"><span>VibePrompt <em>AI</em></span></a><button type="button" class="side-close" id="close-menu" aria-label="Мәзірді жабу">×</button></div><div class="sidebar-qairu"><span class="qairu-logo" role="img" aria-label="QAIRU — Qazaq AI Research University"></span></div><button type="button" class="side-button side-new" id="new-audit">⌂ &nbsp; Басты бет</button><div><button type="button" class="side-button current" id="side-audit">◈ &nbsp; Аудит</button><button type="button" class="side-button" id="side-lab">▦ &nbsp; Оқытушы режимі</button></div><div class="side-history"><div class="side-label">СОҢҒЫ АУДИТТЕР</div><div class="history-search" role="search"><input id="history-search" type="search" aria-label="Аудит атауын іздеу" placeholder="Аудит атауын іздеу" aria-controls="sidebar-history" autocomplete="off"><span id="history-search-status" class="history-search-status" role="status"></span></div><div id="sidebar-history"><p class="note">Тарих жүктелуде...</p></div></div><div class="side-bottom"><button type="button" class="side-button" id="open-settings">⚙ &nbsp; Баптаулар</button><p class="note" style="margin:8px 10px">Жаңа нәтижелер мен промпттар осы браузерде сақталады. Браузер деректерін тазаласаңыз, олар өшеді. </p></div></aside><div class="workspace">
 <dialog class="settings-modal" id="settings-dialog" aria-labelledby="settings-title"><div class="settings-inner"><div class="settings-header"><div><span class="qairu-logo" role="img" aria-label="QAIRU — Qazaq AI Research University"></span><div class="mini">ЖҰМЫС КЕҢІСТІГІ</div><h2 id="settings-title">Баптаулар</h2></div><button type="button" class="side-close" id="close-settings-top" aria-label="Баптауларды жабу">×</button></div><div class="settings-body"><div class="settings-card"><label for="default-ai">Әдепкі AI нұсқасы</label><small>Промптты ашқанда көрсетілетін модельді таңдаңыз.</small><select id="default-ai" class="select"><option value="chatgpt">ChatGPT</option><option value="gemini">Gemini</option><option value="claude">Claude</option></select></div><div class="settings-card"><label for="theme-choice">Фон түсі</label><small>Жұмыс кеңістігінің өзіңізге ыңғайлы түсін таңдаңыз.</small><select id="theme-choice" class="select"><option value="black">Қара</option><option value="navy">Қою көк</option><option value="warm">Қоңыр</option><option value="light">Ақ</option><option value="burgundy">Қою қызыл</option></select></div><div class="settings-card"><label for="language-choice">Интерфейс тілі</label><small>Негізгі мәзір мен басқару элементтерінің тілі.</small><select id="language-choice" class="select"><option value="kk">Қазақша</option><option value="ru">Русский</option><option value="en">English</option></select></div><div class="settings-card"><label for="text-scale">Масштаб</label><small>Әр ашылғанда масштаб 100% болады. Өзгеріс осы бетке қолданылады.</small><select id="text-scale" class="select"><option value="90">90%</option><option value="100">100%</option><option value="120">120%</option><option value="150">150%</option></select></div><p class="note">Баптаулар мен аудит тарихы осы браузерде сақталады. Браузер деректерін тазаласаңыз, олар өшеді.</p></div><div class="settings-footer"><button type="button" class="copy settings-close" id="close-settings">Дайын</button></div></div></dialog>
 <header class="top"><div class="shell"><button type="button" class="menu-toggle" id="menu-toggle" aria-label="Мәзірді ашу" aria-controls="sidebar" aria-expanded="false">☰</button><a href="#" class="brand"><img class="brand-icon" src="/static/vibeprompt-v.svg?v=4" alt="" aria-hidden="true"><span>VibePrompt <em>AI</em></span></a><div class="top-qairu"><span class="qairu-logo" role="img" aria-label="QAIRU — Qazaq AI Research University"></span></div><nav class="nav" aria-label="Негізгі навигация"><button class="active" data-view="audit">✦ &nbsp; Аудит</button><button data-view="academic">▦ &nbsp; Оқытушы режимі</button></nav><div class="top-language"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 4 6 4 9s-1 6-4 9c-3-3-4-6-4-9s1-6 4-9Z"/></svg><select id="home-language" aria-label="Интерфейс тілі"><option value="kk">ҚАЗ</option><option value="ru">РУС</option><option value="en">ENG</option></select><details class="desktop-language" id="desktop-language">
@@ -669,7 +685,27 @@ body[data-theme='light'] :is(.brief-submit,.primary,.settings-footer .settings-c
 <button type="button" data-starter="startup" data-starter-kind="presentation" hidden>IT стартап презентациясы</button>
 <button type="button" data-starter="nature" data-starter-kind="presentation" hidden>Табиғатты қорғау</button>
 </div>
-<div class="brief-actions"><button id="brief-generate" type="button" class="brief-submit">Промпт жасау</button></div><p id="brief-error" class="error" role="status"></p></div>
+<fieldset id="brief-format-options" class="prompt-choice" hidden>
+ <legend>Шығыс пішімі</legend>
+ <div class="prompt-choice-row">
+  <label><input type="radio" name="output-format" value="pdf" checked><span>PDF құжат</span></label>
+  <label><input type="radio" name="output-format" value="pptx"><span>PowerPoint (PPTX)</span></label>
+ </div>
+</fieldset>
+<fieldset class="prompt-choice">
+ <legend>Түс үйлесімін таңдаңыз</legend>
+ <div class="prompt-choice-row" id="palette-choices">
+  <label><input type="radio" name="prompt-palette" value="auto" checked><span>Авто</span></label>
+  {% for id, palette in prompt_options.palettes.items() %}
+  {% set swatches = palette.get('swatches', [palette.colors[0], palette.colors[2]]) %}
+  <label><input type="radio" name="prompt-palette" value="{{ id }}"><span><i class="prompt-swatch" style="--swatch:{{ swatches[0] }}" aria-hidden="true"></i><b aria-hidden="true">×</b><i class="prompt-swatch" style="--swatch:{{ swatches[1] }}" aria-hidden="true"></i><span>{{ palette.names[0] }}</span></span></label>
+  {% endfor %}
+ </div>
+ <div id="brief-palette-preview" aria-label="Түс үйлесімінің көрінісі">
+  <div><strong>Түс үйлесімінің көрінісі</strong><i aria-hidden="true"></i></div>
+ </div>
+</fieldset>
+<div class="brief-actions"><button type="button" class="copy workspace-reset"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 11a8 8 0 1 0-3 7m3-7V4m0 7h-7"/></svg><span>Жаңарту</span></button><button id="brief-generate" type="button" class="brief-submit">Промпт жасау</button></div><p id="brief-error" class="error" role="status"></p></div>
 <div class="brief-tools"><span>Дайын материал бар ма?</span><button type="button" id="open-url-audit">↗ Сайтты талдау</button><button type="button" id="open-pdf-audit">▤ PDF талдау</button></div>
 <div id="brief-result" class="brief-result hidden" aria-live="polite"><div class="brief-result-head"><div><span class="mini">ДАЙЫН НӘТИЖЕ</span><h2>Сіздің промптыңыз</h2></div><button id="brief-copy" class="copy" data-copy-label="brief">Промптты көшіру</button></div><div class="brief-models" role="group" aria-label="AI нұсқасы"><button type="button" data-brief-model="chatgpt" class="active">ChatGPT</button><button type="button" data-brief-model="gemini">Gemini</button><button type="button" data-brief-model="claude">Claude</button></div><fieldset id="presentation-tiers" class="presentation-tiers" hidden>
 <legend>Промпт көлемі</legend>
@@ -688,10 +724,10 @@ body[data-theme='light'] :is(.brief-submit,.primary,.settings-footer .settings-c
 <section id="audit" class="audit active">
 <div class="hero"><div class="eyebrow"><span class="dot"></span> ИНТЕРФЕЙСТІ АҚЫЛДЫ ТАЛДАУ</div><h1>Жақсы дизайн кездейсоқ<br><span>пайда болмайды.</span></h1><p>Сайтыңызды немесе PDF макетіңізді талдап, нақты ұсыныстар мен дайын AI промпт алыңыз.</p></div>
 <div class="layout"><section class="card input-card"><div class="card-head"><div><h2>Жаңа аудит</h2><p>Талдау үшін дереккөзді таңдаңыз</p></div><span class="step">01 / 02</span></div>
-<form id="audit-form"><div class="tabs" role="group" aria-label="Дереккөз түрі"><button type="button" class="active" data-mode="URL">↗ &nbsp; Сайт / PDF сілтемесі</button><button type="button" data-mode="PDF">▤ &nbsp; PDF құжат</button></div>
+<form id="audit-form"><div class="audit-reset-row"><button type="button" class="copy workspace-reset"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 11a8 8 0 1 0-3 7m3-7V4m0 7h-7"/></svg><span>Жаңарту</span></button></div><div class="tabs" role="group" aria-label="Дереккөз түрі"><button type="button" class="active" data-mode="URL">↗ &nbsp; Сайт / PDF сілтемесі</button><button type="button" data-mode="PDF">▤ &nbsp; PDF құжат</button></div>
 <div id="url-field"><label class="label" for="url">САЙТ МЕКЕНЖАЙЫ <span>URL</span></label><div class="urlbox"><span class="chain">↗</span><input id="url" name="url" type="text" inputmode="url" autocapitalize="none" spellcheck="false" placeholder="youtube.com немесе example.com/page" autocomplete="url"></div><details class="card" style="margin-top:15px;padding:14px">
  <summary style="cursor:pointer;font-weight:700">Chrome-да ашылған бетті талдау</summary>
- <a class="copy chrome-download" download="VibePrompt-Chrome.zip" href="{{ chrome_extension_zip }}">
+ <a class="copy chrome-download" download="VibePrompt-Chrome.zip" href="/downloads/VibePrompt-Chrome.zip">
   <span>Chrome кеңейтімін жүктеу</span>
   <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
    <path d="M12 3v12m-5-5 5 5 5-5M4 15v5h16v-5"/>
@@ -754,7 +790,7 @@ body[data-theme='light'] :is(.brief-submit,.primary,.settings-footer .settings-c
  </div>
  <div class="lab-section card" style="padding:clamp(16px,3vw,28px)">
   <div class="chrome-download-heading"><h2>Chrome кеңейтімін орнату</h2>
-  <a class="copy chrome-download" download="VibePrompt-Chrome.zip" href="{{ chrome_extension_zip }}">
+  <a class="copy chrome-download" download="VibePrompt-Chrome.zip" href="/downloads/VibePrompt-Chrome.zip">
   <span>Chrome кеңейтімін жүктеу</span>
   <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
    <path d="M12 3v12m-5-5 5 5 5-5M4 15v5h16v-5"/>
@@ -775,7 +811,8 @@ body[data-theme='light'] :is(.brief-submit,.primary,.settings-footer .settings-c
 <style>#audit-photo-export{margin-block:12px}#audit-photo-export label{display:block;margin-block:10px 4px}#photo-export-json{display:block;width:100%;margin-bottom:8px}</style>
 <script src="/static/audit-photos.js?v=3"></script>
 <script src="/static/design-presets.js?v=3"></script>
-<script src="/static/production-prompts.js?v=4"></script>
+<script src="/static/production-prompts.js?v=5"></script>
+<script type="application/json" id="workspace-prompt-options">{{ prompt_options|tojson }}</script>
 <script>
 let mode='URL', radarChart=null, current=null, typingTimer=null, promptModel='chatgpt';
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
@@ -826,6 +863,13 @@ applyTextScale();
 $('#open-settings').addEventListener('click',()=>{closeMenu();$('#theme-choice').value=document.body.dataset.theme||'navy';$('#language-choice').value=preferences.lang||'kk';$('#default-ai').value=promptModel;$('#settings-dialog').showModal()});
 $('#close-settings').addEventListener('click',()=>$('#settings-dialog').close());$('#close-settings-top').addEventListener('click',()=>$('#settings-dialog').close());$('#default-ai').addEventListener('change',e=>{preferences.ai=e.target.value;savePreferences();$(`[data-prompt-model="${preferences.ai}"]`).click()});
 const uiTranslations={
+"Шығыс пішімі":["Формат результата","Output format"],
+"Түс үйлесімін таңдаңыз":["Выберите сочетание цветов","Choose color combination"],
+"Түс үйлесімінің көрінісі":["Предпросмотр сочетания цветов","Color combination preview"],
+"Авто":["Авто","Auto"],
+"PDF құжат":["PDF документ","PDF document"],
+"Жаңарту":["Обновить","Refresh"],
+...Object.fromEntries(Object.values(JSON.parse(document.querySelector('#workspace-prompt-options').textContent).palettes).map(entry=>[entry.names[0],entry.names.slice(1)])),
 'Талдау кезегі босай салысымен файл жүктеледі…':['Файл загрузится, как только освободится очередь…','Your file will upload as soon as an audit slot is open…'],
  'Фотолары бар PDF жасау':['Создать PDF с фотографиями','Create PDF with photos'],
 'PDF мәтіні мен интернет каталогындағы фотолар қолданылады.':['Будут использованы текст PDF и фотографии из интернет-каталога.','Uses the PDF text and photos from the web catalog.'],
@@ -1255,9 +1299,38 @@ $('#language-choice').addEventListener('change',()=>{
  if(current)refreshAuditPrompt();
 });
 
+const workspacePromptOptions=JSON.parse($('#workspace-prompt-options').textContent);
+const safetyPatterns=workspacePromptOptions.safety.patterns.map(rule=>new RegExp('(?:^| )(?:'+rule+')(?= |$)','u'));
+function isBlockedPrompt(value){
+ const normalized=String(value??'').normalize('NFKC').toLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim();
+ return safetyPatterns.some(pattern=>pattern.test(normalized));
+}
+function showPromptSafety(node){
+ node.classList.add('prompt-safety-message');
+ node.textContent=workspacePromptOptions.safety.warnings[uiLanguage()];
+}
+const paletteRoles=['background','card','accent','text'];
+let generatedPalette='auto',generatedFormat=null;
+function selectedPalette(id){
+ const entry=workspacePromptOptions.palettes[id];
+ return entry?Object.fromEntries(paletteRoles.map((key,i)=>[key,entry.colors[i]])):null;
+}
+function syncWorkspaceOptions(){
+ $('#brief-format-options').hidden=briefKind!=='presentation';
+ const id=$('[name="prompt-palette"]:checked').value;
+ const brief=$('#brief-text').value;
+ const auto=window.VibeDesignPresets.select({topic:brief}).palette;
+ const colors=selectedPalette(id)||{background:auto.background,card:auto.card,accent:auto['primary accent'],text:auto.text};
+ const preview=$('#brief-palette-preview');
+ paletteRoles.forEach(key=>preview.style.setProperty('--preview-'+(key==='background'?'bg':key),colors[key]));
+}
+$('#palette-choices').addEventListener('change',syncWorkspaceOptions);
+$('#brief-text').addEventListener('input',syncWorkspaceOptions);
+syncWorkspaceOptions();
+
 function buildBriefPrompt(model){
  return window.VibeProductionPrompts.build({kind:generatedBriefKind,brief:generatedBriefText,
-  tier:selectedLength,source:photoSource(),model,language:uiLanguage()});
+  tier:selectedLength,source:photoSource(),model,language:uiLanguage(),paletteOverride:selectedPalette(generatedPalette),outputFormat:generatedFormat});
 }
 function refreshBriefPrompt(){
  const prompt=generatedBriefText?buildBriefPrompt(briefModel):'';
@@ -1282,6 +1355,9 @@ async function downloadPhotoPdf(button,status,body,automatic){
  button.disabled=true;status.hidden=false;
  status.textContent=uiText('Фотолар жүктеліп, PDF жасалып жатыр…');
  try{
+  if(body.draft && [body.draft.title,...(body.draft.pages||[]).flatMap(row=>[row.title,row.body,row.caption])].some(isBlockedPrompt)){
+   throw Error(workspacePromptOptions.safety.warnings[uiLanguage()]);
+  }
   const result=await fetch('/api/audit-photo-pdf',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
   if(!result.ok){const detail=await result.json().catch(()=>null);throw Error(detail?.error||'')}
   const file=await result.blob();
@@ -1391,7 +1467,10 @@ async function refreshAuditPrompt(){
 }
 
 function showBrief(){resetPromptCopyFeedback();document.body.classList.add('brief-mode');$('#brief-result').classList.remove('hidden');syncBriefTierControls();refreshBriefPrompt();updateAiLink('brief-ai-link',briefModel);$$('[data-brief-model]').forEach(x=>{const active=x.dataset.briefModel===briefModel;x.classList.toggle('active',active);x.setAttribute('aria-pressed',String(active))})}
-function restoreBrief(d){briefKind=d.briefKind;generatedBriefKind=d.briefKind;generatedBriefText=d.brief||'';updateBriefExample();$('#brief-text').value=d.brief||'';$$('[data-brief-kind]').forEach(x=>x.classList.toggle('active',x.dataset.briefKind===briefKind));showBrief();window.scrollTo({top:0,behavior:'smooth'})}
+function restoreBrief(d){briefKind=d.briefKind;generatedBriefKind=d.briefKind;generatedBriefText=d.brief||'';generatedPalette=selectedPalette(d.palette)?d.palette:'auto';generatedFormat=['pdf','pptx'].includes(d.outputFormat)?d.outputFormat:null;
+ $('[name="prompt-palette"]').forEach(input=>{input.checked=input.value===generatedPalette});
+ $('[name="output-format"]').forEach(input=>{input.checked=input.value===(generatedFormat||'pdf')});
+ updateBriefExample();$('#brief-text').value=d.brief||'';syncWorkspaceOptions();$$('[data-brief-kind]').forEach(x=>x.classList.toggle('active',x.dataset.briefKind===briefKind));showBrief();window.scrollTo({top:0,behavior:'smooth'})}
 $$('[data-brief-kind]').forEach(button=>button.addEventListener('click',()=>{
  const nextKind=button.dataset.briefKind;
  if(nextKind!==briefKind){
@@ -1399,6 +1478,7 @@ $$('[data-brief-kind]').forEach(button=>button.addEventListener('click',()=>{
   insertedStarter='';
   $('#brief-error').textContent='';
   briefKind=nextKind;
+  syncWorkspaceOptions();
  }
  updateBriefExample();
  $$('[data-brief-kind]').forEach(option=>{
@@ -1407,7 +1487,7 @@ $$('[data-brief-kind]').forEach(button=>button.addEventListener('click',()=>{
   option.setAttribute('aria-pressed',String(active));
  });
 }));
-$('#brief-text').addEventListener('input',()=>{insertedStarter='';});
+$('#brief-text').addEventListener('input',()=>{insertedStarter='';$('#brief-error').textContent='';});
 const starters={
  portfolio:'UX дизайнерге арналған қазақша жеке портфолио сайтын жаса. Басты бетте қысқа таныстыру мен байланыс батырмасы болсын. Үш жобаны міндеті, шешімі және нәтижесімен көрсет. Өзім туралы және байланыс бөлімдерін қос. Телефонда мәтін оқуға ыңғайлы, мәзір мен батырмалар пернетақтамен қолжетімді болсын. Жоба деректері берілмесе, орнын анық белгіле.',
  startup:'Шағын бизнеске арналған қойма есебін автоматтандыратын IT стартап туралы қазақша 8 слайдтық таныстырылым жаса. Мәселені, шешімді, өнімнің жұмысын, мақсатты нарықты, бизнес моделін, бәсекелік артықшылықты және даму жоспарын көрсет. Соңғы слайдта серіктеске ұсынысты жаз. Нақты дерек жоқ тұста ойдан сан қоспа.',
@@ -1439,11 +1519,12 @@ $$('[data-starter]').forEach(button=>button.addEventListener('click',()=>{
  const text=translatedStarters[uiLanguage()]?.[button.dataset.starter]||starters[button.dataset.starter];
  insertedStarter=text;
  $('#brief-text').value=text;
+ syncWorkspaceOptions();
  $('#brief-error').textContent='';
  $('#brief-text').focus();
 }));
 $$('[data-brief-model]').forEach(b=>b.addEventListener('click',()=>{briefModel=b.dataset.briefModel;showBrief()}));
-$('#brief-generate').addEventListener('click',()=>{let text=$('#brief-text').value.trim();if(text.length<10){$('#brief-error').textContent=uiText('Жобаңызды кемінде 10 таңбамен сипаттаңыз.');return}$('#brief-error').textContent='';generatedBriefText=text;generatedBriefKind=briefKind;briefModel=Object.hasOwn(AI_LINKS,preferences.ai)?preferences.ai:'chatgpt';saveAudit({kind:'BRIEF',briefKind,brief:text,prompts:Object.fromEntries(Object.keys(AI_LINKS).map(model=>[model,buildBriefPrompt(model)])),features:{},score:null},text);showSavedAudits();showBrief();$('#brief-result').scrollIntoView({behavior:'smooth',block:'start'})});
+$('#brief-generate').addEventListener('click',()=>{let text=$('#brief-text').value.trim();if(isBlockedPrompt(text)){showPromptSafety($('#brief-error'));return}if(text.length<10){$('#brief-error').textContent=uiText('Жобаңызды кемінде 10 таңбамен сипаттаңыз.');return}$('#brief-error').textContent='';generatedBriefText=text;generatedBriefKind=briefKind;generatedPalette=$('[name="prompt-palette"]:checked').value;generatedFormat=briefKind==='presentation'?$('[name="output-format"]:checked').value:null;briefModel=Object.hasOwn(AI_LINKS,preferences.ai)?preferences.ai:'chatgpt';saveAudit({kind:'BRIEF',briefKind,brief:text,palette:generatedPalette,outputFormat:generatedFormat,prompts:Object.fromEntries(Object.keys(AI_LINKS).map(model=>[model,buildBriefPrompt(model)])),features:{},score:null},text);showSavedAudits();showBrief();$('#brief-result').scrollIntoView({behavior:'smooth',block:'start'})});
 $('#brief-copy').addEventListener('click',()=>copyWithFeedback($('#brief-copy'),()=>$('#brief-output').textContent));
 function openAudit(kind){document.body.classList.remove('brief-mode');view('audit');document.querySelector('[data-mode="'+kind+'"]').click();$('#audit-form').scrollIntoView({behavior:'smooth',block:'center'})}
 $('#open-url-audit').addEventListener('click',()=>openAudit('URL'));$('#open-pdf-audit').addEventListener('click',()=>openAudit('PDF'));
@@ -1577,9 +1658,29 @@ const stopAuditButton=$('#stop-audit');
 let activeAudit=null;
 stopAuditButton.addEventListener('click',()=>activeAudit?.abort());
 
+function resetWorkspace(){
+ activeAudit?.abort();
+ current=null;
+ generatedBriefText='';generatedPalette='auto';generatedFormat=null;insertedStarter='';
+ $('#brief-text').value='';$('#brief-output').textContent='';$('#brief-error').textContent='';
+ $('#brief-result').classList.add('hidden');$('#audit').classList.remove('has-results');
+ $('#preview-shot').removeAttribute('src');$('#preview-shot').classList.add('hidden');
+ $('#preview-title').textContent=uiText('Талдауға дайын');
+ $('#preview-desc').textContent=uiText('Дереккөзді қосыңыз. Нәтижелеріңіз осы жерде пайда болады.');
+ $('#stat-score').textContent='—';$('#stat-class').textContent='—';$('#url').value='';$('#goal').value='';$('#error').textContent='';
+ $('#chrome-audit-code').value='';$('#chrome-audit-status').textContent='';
+ $('[name="prompt-palette"][value="auto"]').checked=true;
+ $('[name="output-format"][value="pdf"]').checked=true;
+ refreshAuditPrompt();selectPdf(null);view('audit');
+ document.body.classList.add('brief-mode');syncWorkspaceOptions();
+}
+$$('.workspace-reset').forEach(button=>button.addEventListener('click',()=>{resetWorkspace();$('#brief-text').focus({preventScroll:true})}));
+
 async function run(url,body,demo=false){
  const submit=$('#submit');
  if(submit.disabled)return;
+ if(isBlockedPrompt(body.get('prompt'))){showPromptSafety($('#error'));return}
+ body.set('language',uiLanguage());
  const isPdf=!demo&&body.get('kind')==='PDF';
  const controller=new AbortController();
  const {signal}=controller;

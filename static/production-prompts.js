@@ -130,7 +130,7 @@
    ' suited to the topic. Pair each visual with a brief explanation; use photography, illustration or SVG according to your available tools.';
  }
 
- function build({kind, model = 'chatgpt', tier = 'full', source = 'web', language = 'kk', brief = '', audit = null}) {
+ function build({kind, model = 'chatgpt', tier = 'full', source = 'web', language = 'kk', brief = '', audit = null, paletteOverride = null, outputFormat = null}) {
   const site = kind === 'site';
   const level = Object.hasOwn(EVIDENCE_LIMITS, tier) ? tier : 'full';
   const observed = auditContext(audit, site ? 'site' : 'presentation', level);
@@ -139,32 +139,43 @@
   const preset = designPresets.select({title: observed.title, topic: topic + ' ' + observed.topic, domain: observed.domain});
   const lang = Object.hasOwn(LANGUAGES, language) ? LANGUAGES[language] : LANGUAGES.kk;
   const count = requestedCount(topic) || observed.count || (audit ? null : 8);
-  const pptx = /\b(?:pptx|powerpoint)\b/i.test(topic);
-  const format = pptx ? 'editable PowerPoint presentation' + (/\bpdf\b/i.test(topic) ? ' with a PDF export' : '') : 'presentation as a downloadable PDF';
+  const explicitFormat = outputFormat === 'pdf' || outputFormat === 'pptx';
+  const pptx = explicitFormat ? outputFormat === 'pptx' : /\b(?:pptx|powerpoint)\b/i.test(topic);
+  const format = pptx ? 'editable PowerPoint presentation' + (!explicitFormat && /\bpdf\b/i.test(topic) ? ' with a PDF export' : '') : 'presentation as a downloadable PDF';
   const deliverable = site ? 'a responsive website' : (pptx ? 'an ' : 'a ') + format + (count ? ' with ' + count + (pptx ? ' slides' : ' pages') : '');
   const direction = level === 'full' ? fullDirection(site, preset, topic + ' ' + observed.title + ' ' + observed.topic) : null;
   const goal = 'As a ' + (site ? 'UX designer and frontend developer' : 'presentation designer and editor') +
    ', ' + (audit ? 'redesign the supplied work as ' : 'create ') + deliverable + ' in ' + lang + '.';
-  const palette = Object.entries(preset.palette).map(([name, hex]) => name + ' ' + hex).join(', ');
+  const colors = ['background', 'card', 'accent', 'text'];
+  const override = colors.every(key => typeof paletteOverride?.[key] === 'string' && /^#[0-9a-f]{6}$/i.test(paletteOverride[key]));
+  const palette = Object.entries(override ? Object.fromEntries(colors.map(key => [key,paletteOverride[key]])) : preset.palette).map(([name, hex]) => name + ' ' + hex).join(', ');
   const {heading, body, mono} = preset.fonts;
   const design = palette + '. Use ' + heading + ' for headings, ' + body + ' for body text' +
    (mono ? ' and ' + mono + ' for code' : '') + ', with Cyrillic Extended (cyrillic-ext) and Noto Sans for Kazakh glyphs.' +
    (level === 'short' ? '' : ' ' + preset.mood) +
    (level !== 'full' ? '' : site
     ? ' Establish a clear hero and primary action, then vary the page with feature cards and comparison sections. Reflow these layouts into a readable single column on phones.'
-    : ' Use a clear cover, then rotate photo-and-text spreads, timelines and data layouts as the material calls for them. Keep each visual within half the page width, with its explanation alongside.');
+    : ' Use a clear cover, then rotate photo-and-text spreads, timelines and data layouts as the material calls for them. Place each split-layout visual beside its explanation, within half the page width.');
   const evidence = sourceNotes(observed.data);
   const content = ['Write in natural ' + lang + ' and ground each main point in a fact, date or example.',
+   !site && (pptx
+    ? 'Deliver a native .pptx with editable text boxes on 13.333 × 7.5 in slides and proportioned image frames.'
+    : 'Deliver a print-ready PDF with exact page breaks and crisp, selectable text.'),
    direction?.content ?? subjectFlows[preset.id], site ? 'Guide visitors toward the main action.' : 'Give each page one clear takeaway.',
    level === 'full' && (site
     ? 'Deliver the working project files. Use the requested stack or semantic HTML, CSS and lightweight JavaScript when none is specified.'
-    : 'Deliver the finished document using your presentation or file tools. Print-ready HTML/CSS is a useful source format when direct file export is unavailable.'),
+    : pptx
+     ? 'Use the available presentation tools or PptxGenJS to build the editable deck.'
+     : 'Deliver the finished document using your presentation or file tools. Print-ready HTML/CSS is a useful source format when direct file export is unavailable.'),
    level === 'full' && (site
     ? 'Shape each substantive section around a visitor question, one concrete supporting detail and a relevant next action.'
     : 'Shape each page around a specific title, its main claim, supporting evidence and a short visual caption.'),
    topic && 'Brief: ' + topic, audit && observed.title && 'Source: ' + observed.title,
    evidence && 'Use these observations to guide the redesign:\n' + evidence].filter(Boolean).join('\n');
-  const visuals = [visualGuide(level, source, site), direction?.visual].filter(Boolean).join(' ');
+  const framing = !site && level !== 'short'
+   ? 'Match every image to its container: 16:9 for full-bleed covers, 4:3, 1:1 or 3:4 for split layouts and cards, and 16:9 or 21:9 for wide banners. Center the subject with safe margins around faces, objects and text. Fit the whole image when preserving detail matters.'
+   : '';
+  const visuals = [visualGuide(level, source, site), direction?.visual, framing].filter(Boolean).join(' ');
   const parts = [['Goal', goal], ['Design', design], ['Content', content], ['Visuals', visuals]];
   return parts.map(([name, value]) => {
    const tag = name.toLowerCase();

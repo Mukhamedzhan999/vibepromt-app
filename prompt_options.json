@@ -1,0 +1,26 @@
+{
+  "palettes": {
+    "black-indigo": {"names":["Қара × Индиго","Чёрный × Индиго","Black × Indigo"],"colors":["#0B0F19","#131A2A","#6366F1","#F8FAFC"]},
+    "black-white": {"names":["Қара × Ақ","Чёрный × Белый","Black × White"],"colors":["#0D0D0D","#1A1A1A","#FFFFFF","#F5F5F5"]},
+    "white-blue": {"names":["Ақ × Көк","Белый × Синий","White × Blue"],"colors":["#FFFFFF","#F5F5F7","#0071E3","#1D1D1F"]},
+    "beige-brown": {"names":["Беж × Қоңыр","Бежевый × Коричневый","Beige × Brown"],"colors":["#F1E5D6","#E4D2BE","#79513A","#201817"]},
+    "black-green": {"names":["Қара × Жасыл","Чёрный × Зелёный","Black × Green"],"colors":["#121212","#1E1E1E","#1DB954","#FFFFFF"]},
+    "black-gold": {"names":["Қара × Алтын","Чёрный × Золотой","Black × Gold"],"colors":["#0D0D0D","#1A1A1A","#D4AF37","#F5F5F0"]},
+    "white-navy": {"names":["Ақ × Қою көк","Белый × Тёмно-синий","White × Navy"],"colors":["#F8FAFC","#FFFFFF","#1E3A8A","#0F172A"]},
+    "black-pink": {"names":["Қара × Қызғылт","Чёрный × Розовый","Black × Pink"],"colors":["#09090B","#18181B","#EC4899","#FAFAFA"]},
+    "green-white": {"names":["Жасыл × Ақ","Зелёный × Белый","Green × White"],"colors":["#F0FDF4","#FFFFFF","#059669","#064E3B"],"swatches":["#059669","#FFFFFF"]},
+    "cream-red": {"names":["Крем × Қызыл","Кремовый × Красный","Cream × Red"],"colors":["#FAF7F2","#EFE9DF","#E11D48","#18181B"]}
+  },
+  "safety": {
+    "warnings": {
+      "kk":"Қауіпсіздік ережелеріне сәйкес, зорлық-зомбылық, зиян келтіру немесе әдепсіз мазмұндағы сұраныстарға промт жасалмайды.",
+      "ru":"Согласно правилам безопасности, промты для контента с насилием, причинением вреда или непристойным содержанием не создаются.",
+      "en":"According to safety guidelines, prompts involving violence, harm, or explicit content cannot be generated."
+    },
+    "patterns": [
+      "violence|murder[^ ]*|kill (?:someone|people|a person|myself)|hurt (?:someone|people|myself)|self harm|suicid[^ ]*|hate speech|racial slurs?|nsfw|porn[^ ]*|sexually explicit|explicit sex|illegal acts?|commit (?:a crime|fraud)|how to steal|steal (?:money|passwords?)",
+      "насили[^ ]*|убийств[^ ]*|убить (?:человека|людей|себя)|причинить вред|самоповрежден[^ ]*|суицид[^ ]*|самоубийств[^ ]*|язык ненависти|разжигание ненависти|порн[^ ]*|откровенн[^ ]* сексуальн[^ ]*|незаконн[^ ]* действ[^ ]*|как украсть|совершить преступление",
+      "зорлық(?: зомбылық[^ ]*)?|адам өлтір[^ ]*|кісі өлтір[^ ]*|зиян келтір[^ ]*|өзіме зиян|өзіне қол жұмса[^ ]*|өзімді өлтір[^ ]*|жеккөрініш тіл[^ ]*|өшпенділік қоздыр[^ ]*|порн[^ ]*|әдепсіз мазмұн[^ ]*|заңсыз әрекет[^ ]*|қылмыс жаса[^ ]*|қалай ұрлау"
+    ]
+  }
+}

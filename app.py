@@ -1,3 +1,4 @@
+import unicodedata
 import os, re, io, csv, math, socket, ipaddress, sqlite3, random, time, json, secrets, hmac, threading
 from zipfile import ZipFile
 from collections import Counter
@@ -28,6 +29,26 @@ import photo_catalog
 import photo_pdf
 
 BASE = os.path.dirname(os.path.abspath(__file__))
+
+with open(os.path.join(BASE, 'prompt_options.json'), encoding='utf-8') as options_file:
+    PROMPT_OPTIONS = json.load(options_file)
+
+PROMPT_SAFETY = tuple(re.compile(r'(?:^| )(?:' + rule + r')(?= |$)') for rule in PROMPT_OPTIONS['safety']['patterns'])
+
+
+def blocked_prompt(value):
+    if not isinstance(value, str):
+        return False
+    normalized = ' '.join(''.join(char if char.isalnum() else ' ' for char in
+                                  unicodedata.normalize('NFKC', value).lower()).split())
+    return any(pattern.search(normalized) for pattern in PROMPT_SAFETY)
+
+
+def safety_response(language='kk'):
+    warnings = PROMPT_OPTIONS['safety']['warnings']
+    notice = warnings.get(language, warnings['kk']) if isinstance(language, str) else warnings['kk']
+    return jsonify(error=notice, code='prompt_safety'), 422
+
 DATA = os.path.join(BASE, 'ui_audit_dataset.csv')
 DB = os.path.join(BASE, 'vibe_audit.db')
 VERCEL = os.environ.get('VIBEAUDIT_VERCEL') == '1'
@@ -363,7 +384,7 @@ def service_worker():
     return response
 
 @app.get('/')
-def index(): return render_template('index.html', extension_dir=os.path.join(BASE,'chrome-extension'), vercel_pdf_upload=VERCEL)
+def index(): return render_template('index.html', extension_dir=os.path.join(BASE,'chrome-extension'), vercel_pdf_upload=VERCEL, prompt_options=PROMPT_OPTIONS)
 
 
 @app.get('/history-transfer')
@@ -371,6 +392,12 @@ def history_transfer():
     if not VERCEL:
         return '', 404
     return render_template('history_transfer.html')
+
+
+@app.get('/downloads/VibePrompt-Chrome.zip')
+def chrome_extension_download():
+    from flask import send_from_directory
+    return send_from_directory(app.static_folder, 'VibePrompt-Chrome.zip', as_attachment=True)
 
 
 def _local_app_request():
@@ -484,6 +511,8 @@ def optimize_project_prompt():
             or not isinstance(language, str) or language not in languages):
         return jsonify(error='Промпт деректері жарамсыз.'), 400
 
+    if blocked_prompt(task) or blocked_prompt(topic):
+        return safety_response(language)
     response = jsonify(prompt_engine.optimize_prompt(
         task, model, languages[language], match_text=topic
     ))
@@ -536,7 +565,10 @@ def audit_photo_pdf():
     plan = payload["draft"] if automatic else payload
     try:
         if automatic:
-            photo_pdf.validate_plan(plan)
+            title, pages = photo_pdf.validate_plan(plan)
+            if blocked_prompt(title) or any(blocked_prompt(row.get(field)) for row in pages
+                                            for field in ('title', 'body', 'caption')):
+                return safety_response(payload.get('language'))
         provider = payload.get("provider") if automatic else None
         provider = provider if isinstance(provider, str) else None
         ready, method = photo_pdf.prepare_plan(plan, provider, payload.get("language")) if automatic else (plan, "manual")
@@ -743,6 +775,8 @@ def start_pdf_job():
     if VERCEL:
         return '', 404
     prompt = request.form.get('prompt', '')
+    if blocked_prompt(prompt):
+        return safety_response(request.form.get('language'))
     if len(prompt) > 5000:
         return jsonify(error='Сипаттама 5000 таңбадан аспауы керек.'), 400
     try:
@@ -892,6 +926,7 @@ def read_site(value):
 def audit():
     try:
         kind=request.form.get('kind'); prompt=request.form.get('prompt','')
+        if blocked_prompt(prompt): return safety_response(request.form.get('language'))
         if len(prompt)>5000: raise ValueError('Сипаттама 5000 таңбадан аспауы керек.')
         if kind=='URL':
             features,meta,final=read_site(request.form.get('url',''))
