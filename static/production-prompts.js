@@ -155,7 +155,8 @@
    : 'illustrate every ' + unit;
   const preferred = source === 'ai' ? 'original AI visuals' : 'real photographs from the web';
   return 'For this ' + (site ? 'website' : 'presentation') + ', ' + cadence + '. Favor ' + preferred +
-   ' suited to the topic. Pair each visual with a brief explanation; use photography, illustration or SVG according to your available tools.';
+   ' suited to the topic. Pair each visual with a brief explanation.' +
+   (source === 'ai' ? ' Use your available image-generation or illustration tools.' : ' Use illustrations as supporting graphics and label them separately from photographs.');
  }
 
  function build({kind, model = 'chatgpt', tier = 'full', source = 'web', language = 'kk', brief = '', audit = null, outputFormat = null}) {
@@ -212,7 +213,7 @@
    : '';
   const visualCompletion = level === 'full'
    ? site
-    ? 'Place a topic-specific hero photograph, plus separate visuals beside substantive sections where imagery supports the message. Match the chosen photo source: for web photos, search for real images and identify the original source. Deliver working image assets in the project when possible, or use direct image URLs from a source that permits embedding. Give every asset an appropriate ratio, meaningful alt text and a caption or credit when needed. Open the rendered page and check that the hero and supporting images load. If a source fails, replace it with a verified topic-relevant photo. If web access is unavailable, use a clearly identified visual fallback and report the image limitation.'
+    ? 'Give the hero and each topic section an identifiable subject, its own image frame, descriptive alt text and a credit when applicable. For web photos, find a real photo of that exact subject and retain its source page. Prefer a local image asset when you can download it. When you can find a verified direct image URL but the chat preview blocks external images, deliver a standalone index.html file using those URLs so the user can open it in a regular browser. Keep credits linked to their source pages. Review every photo slot, and report which images you actually checked. If you cannot locate real photographs, label the missing photo slots explicitly and list the subjects still needed.'
     : 'For every required page, select a distinct subject, choose its frame and pair it with a caption that explains what it shows and why it belongs there. Prefer real, relevant photography when the selected source is the web. Embed the actual assets in the exported PDF or PPTX. Reopen the file and review every page in order. Confirm each required photo is visible, proportionate and accompanied by its caption. If a photo is unavailable, select another relevant source and check its placement before delivery.'
    : '';
   const visuals = [visualGuide(level, source, site), direction?.visual, framing, visualCompletion].filter(Boolean).join(' ');
