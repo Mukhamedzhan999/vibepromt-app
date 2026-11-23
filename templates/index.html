@@ -640,10 +640,38 @@ body[data-theme='light'] :is(.brief-submit,.primary,.settings-footer .settings-c
 #brief-palette-preview{margin-top:8px;padding:6px;background:var(--preview-bg,#0b0f19);color:var(--preview-text,#f8fafc);border:1px solid var(--theme-border);border-radius:10px}
 #brief-palette-preview>div{display:flex;gap:8px;align-items:center;justify-content:space-between;background:var(--preview-card,#131a2a);padding:6px 9px;border-radius:6px;font-size:.75rem}
 #brief-palette-preview i{width:23px;height:8px;border-radius:6px;background:var(--preview-accent,#6366f1)}
-.workspace-reset{display:inline-flex;align-items:center;gap:6px;min-height:40px}
-.audit-reset-row{display:flex;justify-content:flex-end;margin-bottom:8px}
 .prompt-safety-message:not(:empty){padding:9px 12px;border:1px solid currentColor;border-radius:8px}
-@media(max-width:767px){.prompt-choice-row label>span,.workspace-reset{min-height:44px}}
+@media(max-width:767px){.prompt-choice-row label>span{min-height:44px}}
+
+.page-reload {
+ display:inline-grid;place-items:center;flex:none;
+ inline-size:36px;block-size:36px;padding:0;
+ border:1px solid var(--theme-border);border-radius:9px;
+ background:var(--theme-panel-deep);color:var(--theme-ink,var(--white));cursor:pointer;
+}
+.page-reload:is(:hover,:focus-visible){background:var(--theme-selected)}
+.page-reload:focus-visible{outline:2px solid var(--theme-accent,#8978df);outline-offset:2px}
+.sidebar-top{justify-content:flex-start;gap:9px}
+.sidebar-top .side-close{margin-inline-start:auto}
+.top .page-reload{display:none}
+.settings-header .page-reload{margin-bottom:8px}
+body .sidebar :is(#new-audit,#side-audit,#side-lab,#open-settings) {
+ font-family:Inter,'Noto Sans',system-ui,sans-serif;
+ font-size:calc(.9rem * var(--type-scale));font-weight:700;line-height:1.4;letter-spacing:0;
+}
+@media(max-width:767px){
+ .top .page-reload{display:inline-grid;inline-size:40px;min-height:44px}
+ .sidebar-top .page-reload,.settings-header .page-reload{inline-size:44px;block-size:44px}
+}
+@media(max-width:390px){
+ .top .brand .brand-icon{display:none}
+ .top .page-reload{inline-size:36px}
+ .top .top-language select{width:70px}
+}
+@media(max-width:360px){
+ .top .brand .brand-icon{display:block;width:25px;height:25px}
+ .top .brand span{display:none}
+}
 </style>
 <link rel="manifest" href="/static/manifest.webmanifest?v=4"><meta name="theme-color" content="#10131d"><link rel="apple-touch-icon" href="/static/vibeprompt-v-192.png?v=4"><noscript><style>.splash{display:none}</style></noscript><link rel="icon" type="image/png" sizes="192x192" href="/static/vibeprompt-v-192.png?v=4"><meta name="apple-mobile-web-app-title" content="VibePrompt AI"></head>
 <body class="brief-mode">
@@ -659,9 +687,15 @@ body[data-theme='light'] :is(.brief-submit,.primary,.settings-footer .settings-c
   </filter>
  </defs>
 </svg>
-<div class="side-overlay" id="side-overlay"></div><aside class="sidebar" id="sidebar" aria-label="Қосымша навигация"><div class="sidebar-top"><a class="brand" href="#"><img class="brand-icon" src="/static/vibeprompt-v.svg?v=4" alt="" aria-hidden="true"><span>VibePrompt <em>AI</em></span></a><button type="button" class="side-close" id="close-menu" aria-label="Мәзірді жабу">×</button></div><div class="sidebar-qairu"><span class="qairu-logo" role="img" aria-label="QAIRU — Qazaq AI Research University"></span></div><button type="button" class="side-button side-new" id="new-audit">⌂ &nbsp; Басты бет</button><div><button type="button" class="side-button current" id="side-audit">◈ &nbsp; Аудит</button><button type="button" class="side-button" id="side-lab">▦ &nbsp; Оқытушы режимі</button></div><div class="side-history"><div class="side-label">СОҢҒЫ АУДИТТЕР</div><div class="history-search" role="search"><input id="history-search" type="search" aria-label="Аудит атауын іздеу" placeholder="Аудит атауын іздеу" aria-controls="sidebar-history" autocomplete="off"><span id="history-search-status" class="history-search-status" role="status"></span></div><div id="sidebar-history"><p class="note">Тарих жүктелуде...</p></div></div><div class="side-bottom"><button type="button" class="side-button" id="open-settings">⚙ &nbsp; Баптаулар</button><p class="note" style="margin:8px 10px">Жаңа нәтижелер мен промпттар осы браузерде сақталады. Браузер деректерін тазаласаңыз, олар өшеді. </p></div></aside><div class="workspace">
-<dialog class="settings-modal" id="settings-dialog" aria-labelledby="settings-title"><div class="settings-inner"><div class="settings-header"><div><span class="qairu-logo" role="img" aria-label="QAIRU — Qazaq AI Research University"></span><div class="mini">ЖҰМЫС КЕҢІСТІГІ</div><h2 id="settings-title">Баптаулар</h2></div><button type="button" class="side-close" id="close-settings-top" aria-label="Баптауларды жабу">×</button></div><div class="settings-body"><div class="settings-card"><label for="default-ai">Әдепкі AI нұсқасы</label><small>Промптты ашқанда көрсетілетін модельді таңдаңыз.</small><select id="default-ai" class="select"><option value="chatgpt">ChatGPT</option><option value="gemini">Gemini</option><option value="claude">Claude</option></select></div><div class="settings-card"><label for="theme-choice">Фон түсі</label><small>Жұмыс кеңістігінің өзіңізге ыңғайлы түсін таңдаңыз.</small><select id="theme-choice" class="select"><option value="black">Қара</option><option value="navy">Қою көк</option><option value="warm">Қоңыр</option><option value="light">Ақ</option><option value="burgundy">Қою қызыл</option></select></div><div class="settings-card"><label for="language-choice">Интерфейс тілі</label><small>Негізгі мәзір мен басқару элементтерінің тілі.</small><select id="language-choice" class="select"><option value="kk">Қазақша</option><option value="ru">Русский</option><option value="en">English</option></select></div><div class="settings-card"><label for="text-scale">Масштаб</label><small>Әр ашылғанда масштаб 100% болады. Өзгеріс осы бетке қолданылады.</small><select id="text-scale" class="select"><option value="90">90%</option><option value="100">100%</option><option value="120">120%</option><option value="150">150%</option></select></div><p class="note">Баптаулар мен аудит тарихы осы браузерде сақталады. Браузер деректерін тазаласаңыз, олар өшеді.</p></div><div class="settings-footer"><button type="button" class="copy settings-close" id="close-settings">Дайын</button></div></div></dialog>
-<header class="top"><div class="shell"><button type="button" class="menu-toggle" id="menu-toggle" aria-label="Мәзірді ашу" aria-controls="sidebar" aria-expanded="false">☰</button><a href="#" class="brand"><img class="brand-icon" src="/static/vibeprompt-v.svg?v=4" alt="" aria-hidden="true"><span>VibePrompt <em>AI</em></span></a><div class="top-qairu"><span class="qairu-logo" role="img" aria-label="QAIRU — Qazaq AI Research University"></span></div><nav class="nav" aria-label="Негізгі навигация"><button class="active" data-view="audit">✦ &nbsp; Аудит</button><button data-view="academic">▦ &nbsp; Оқытушы режимі</button></nav><div class="top-language"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 4 6 4 9s-1 6-4 9c-3-3-4-6-4-9s1-6 4-9Z"/></svg><select id="home-language" aria-label="Интерфейс тілі"><option value="kk">ҚАЗ</option><option value="ru">РУС</option><option value="en">ENG</option></select><details class="desktop-language" id="desktop-language">
+<div class="side-overlay" id="side-overlay"></div><aside class="sidebar" id="sidebar" aria-label="Қосымша навигация"><div class="sidebar-top"><button type="button" class="page-reload" aria-label="Жаңарту" title="Жаңарту">
+ <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 6.7M20 5v6h-6"/></svg>
+</button><a class="brand" href="#"><img class="brand-icon" src="/static/vibeprompt-v.svg?v=4" alt="" aria-hidden="true"><span>VibePrompt <em>AI</em></span></a><button type="button" class="side-close" id="close-menu" aria-label="Мәзірді жабу">×</button></div><div class="sidebar-qairu"><span class="qairu-logo" role="img" aria-label="QAIRU — Qazaq AI Research University"></span></div><button type="button" class="side-button side-new" id="new-audit">⌂ &nbsp; Басты бет</button><div><button type="button" class="side-button current" id="side-audit">◈ &nbsp; Аудит</button><button type="button" class="side-button" id="side-lab">▦ &nbsp; Оқытушы режимі</button></div><div class="side-history"><div class="side-label">СОҢҒЫ АУДИТТЕР</div><div class="history-search" role="search"><input id="history-search" type="search" aria-label="Аудит атауын іздеу" placeholder="Аудит атауын іздеу" aria-controls="sidebar-history" autocomplete="off"><span id="history-search-status" class="history-search-status" role="status"></span></div><div id="sidebar-history"><p class="note">Тарих жүктелуде...</p></div></div><div class="side-bottom"><button type="button" class="side-button" id="open-settings">⚙ &nbsp; Баптаулар</button><p class="note" style="margin:8px 10px">Жаңа нәтижелер мен промпттар осы браузерде сақталады. Браузер деректерін тазаласаңыз, олар өшеді. </p></div></aside><div class="workspace">
+<dialog class="settings-modal" id="settings-dialog" aria-labelledby="settings-title"><div class="settings-inner"><div class="settings-header"><div><button type="button" class="page-reload" aria-label="Жаңарту" title="Жаңарту">
+ <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 6.7M20 5v6h-6"/></svg>
+</button><span class="qairu-logo" role="img" aria-label="QAIRU — Qazaq AI Research University"></span><div class="mini">ЖҰМЫС КЕҢІСТІГІ</div><h2 id="settings-title">Баптаулар</h2></div><button type="button" class="side-close" id="close-settings-top" aria-label="Баптауларды жабу">×</button></div><div class="settings-body"><div class="settings-card"><label for="default-ai">Әдепкі AI нұсқасы</label><small>Промптты ашқанда көрсетілетін модельді таңдаңыз.</small><select id="default-ai" class="select"><option value="chatgpt">ChatGPT</option><option value="gemini">Gemini</option><option value="claude">Claude</option></select></div><div class="settings-card"><label for="theme-choice">Фон түсі</label><small>Жұмыс кеңістігінің өзіңізге ыңғайлы түсін таңдаңыз.</small><select id="theme-choice" class="select"><option value="black">Қара</option><option value="navy">Қою көк</option><option value="warm">Қоңыр</option><option value="light">Ақ</option><option value="burgundy">Қою қызыл</option></select></div><div class="settings-card"><label for="language-choice">Интерфейс тілі</label><small>Негізгі мәзір мен басқару элементтерінің тілі.</small><select id="language-choice" class="select"><option value="kk">Қазақша</option><option value="ru">Русский</option><option value="en">English</option></select></div><div class="settings-card"><label for="text-scale">Масштаб</label><small>Әр ашылғанда масштаб 100% болады. Өзгеріс осы бетке қолданылады.</small><select id="text-scale" class="select"><option value="90">90%</option><option value="100">100%</option><option value="120">120%</option><option value="150">150%</option></select></div><p class="note">Баптаулар мен аудит тарихы осы браузерде сақталады. Браузер деректерін тазаласаңыз, олар өшеді.</p></div><div class="settings-footer"><button type="button" class="copy settings-close" id="close-settings">Дайын</button></div></div></dialog>
+<header class="top"><div class="shell"><button type="button" class="page-reload" aria-label="Жаңарту" title="Жаңарту">
+ <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 6.7M20 5v6h-6"/></svg>
+</button><button type="button" class="menu-toggle" id="menu-toggle" aria-label="Мәзірді ашу" aria-controls="sidebar" aria-expanded="false">☰</button><a href="#" class="brand"><img class="brand-icon" src="/static/vibeprompt-v.svg?v=4" alt="" aria-hidden="true"><span>VibePrompt <em>AI</em></span></a><div class="top-qairu"><span class="qairu-logo" role="img" aria-label="QAIRU — Qazaq AI Research University"></span></div><nav class="nav" aria-label="Негізгі навигация"><button class="active" data-view="audit">✦ &nbsp; Аудит</button><button data-view="academic">▦ &nbsp; Оқытушы режимі</button></nav><div class="top-language"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 4 6 4 9s-1 6-4 9c-3-3-4-6-4-9s1-6 4-9Z"/></svg><select id="home-language" aria-label="Интерфейс тілі"><option value="kk">ҚАЗ</option><option value="ru">РУС</option><option value="en">ENG</option></select><details class="desktop-language" id="desktop-language">
  <summary id="desktop-language-trigger" aria-label="Интерфейс тілі"><span id="desktop-language-code">ҚАЗ</span></summary>
  <div class="desktop-language-options" role="group" aria-label="Интерфейс тілі">
   <button type="button" data-ui-lang="kk" lang="kk" aria-pressed="true">Қазақша</button>
@@ -705,7 +739,7 @@ body[data-theme='light'] :is(.brief-submit,.primary,.settings-footer .settings-c
   <div><strong>Түс үйлесімінің көрінісі</strong><i aria-hidden="true"></i></div>
  </div>
 </fieldset>
-<div class="brief-actions"><button type="button" class="copy workspace-reset"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 11a8 8 0 1 0-3 7m3-7V4m0 7h-7"/></svg><span>Жаңарту</span></button><button id="brief-generate" type="button" class="brief-submit">Промпт жасау</button></div><p id="brief-error" class="error" role="status"></p></div>
+<div class="brief-actions"><button id="brief-generate" type="button" class="brief-submit">Промпт жасау</button></div><p id="brief-error" class="error" role="status"></p></div>
 <div class="brief-tools"><span>Дайын материал бар ма?</span><button type="button" id="open-url-audit">↗ Сайтты талдау</button><button type="button" id="open-pdf-audit">▤ PDF талдау</button></div>
 <div id="brief-result" class="brief-result hidden" aria-live="polite"><div class="brief-result-head"><div><span class="mini">ДАЙЫН НӘТИЖЕ</span><h2>Сіздің промптыңыз</h2></div><button id="brief-copy" class="copy" data-copy-label="brief">Промптты көшіру</button></div><div class="brief-models" role="group" aria-label="AI нұсқасы"><button type="button" data-brief-model="chatgpt" class="active">ChatGPT</button><button type="button" data-brief-model="gemini">Gemini</button><button type="button" data-brief-model="claude">Claude</button></div><fieldset id="presentation-tiers" class="presentation-tiers" hidden>
 <legend>Промпт көлемі</legend>
@@ -724,7 +758,7 @@ body[data-theme='light'] :is(.brief-submit,.primary,.settings-footer .settings-c
 <section id="audit" class="audit active">
 <div class="hero"><div class="eyebrow"><span class="dot"></span> ИНТЕРФЕЙСТІ АҚЫЛДЫ ТАЛДАУ</div><h1>Жақсы дизайн кездейсоқ<br><span>пайда болмайды.</span></h1><p>Сайтыңызды немесе PDF макетіңізді талдап, нақты ұсыныстар мен дайын AI промпт алыңыз.</p></div>
 <div class="layout"><section class="card input-card"><div class="card-head"><div><h2>Жаңа аудит</h2><p>Талдау үшін дереккөзді таңдаңыз</p></div><span class="step">01 / 02</span></div>
-<form id="audit-form"><div class="audit-reset-row"><button type="button" class="copy workspace-reset"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 11a8 8 0 1 0-3 7m3-7V4m0 7h-7"/></svg><span>Жаңарту</span></button></div><div class="tabs" role="group" aria-label="Дереккөз түрі"><button type="button" class="active" data-mode="URL">↗ &nbsp; Сайт / PDF сілтемесі</button><button type="button" data-mode="PDF">▤ &nbsp; PDF құжат</button></div>
+<form id="audit-form"><div class="tabs" role="group" aria-label="Дереккөз түрі"><button type="button" class="active" data-mode="URL">↗ &nbsp; Сайт / PDF сілтемесі</button><button type="button" data-mode="PDF">▤ &nbsp; PDF құжат</button></div>
 <div id="url-field"><label class="label" for="url">САЙТ МЕКЕНЖАЙЫ <span>URL</span></label><div class="urlbox"><span class="chain">↗</span><input id="url" name="url" type="text" inputmode="url" autocapitalize="none" spellcheck="false" placeholder="youtube.com немесе example.com/page" autocomplete="url"></div><details class="card" style="margin-top:15px;padding:14px">
  <summary style="cursor:pointer;font-weight:700">Chrome-да ашылған бетті талдау</summary>
  <a class="copy chrome-download" download="VibePrompt-Chrome.zip" href="/downloads/VibePrompt-Chrome.zip">
@@ -1674,7 +1708,6 @@ function resetWorkspace(){
  refreshAuditPrompt();selectPdf(null);view('audit');
  document.body.classList.add('brief-mode');syncWorkspaceOptions();
 }
-$$('.workspace-reset').forEach(button=>button.addEventListener('click',()=>{resetWorkspace();$('#brief-text').focus({preventScroll:true})}));
 
 async function run(url,body,demo=false){
  const submit=$('#submit');
@@ -1765,4 +1798,24 @@ $('#audit-form').addEventListener('submit',event=>{
  run('/api/audit',body);
 });
 $$('[data-copy]').forEach(b=>b.addEventListener('click',()=>{if(current)copyWithFeedback(b,()=>b.dataset.copy==='prompt'?$('#full-prompt-text').textContent:current[b.dataset.copy])}));refreshHistory();
+
+const reloadStateKey='vibeprompt-reload-view';
+$$('.page-reload').forEach(button=>button.addEventListener('click',()=>{
+ const section=document.body.classList.contains('brief-mode')?'home':
+  ($('main > section.active')?.id || 'audit');
+ try{sessionStorage.setItem(reloadStateKey,JSON.stringify({
+  section, mode, settings:$('#settings-dialog').open, briefKind
+ }))}catch{}
+ window.location.reload();
+}));
+try{
+ const saved=JSON.parse(sessionStorage.getItem(reloadStateKey)||'null');
+ sessionStorage.removeItem(reloadStateKey);
+ if(saved){
+  if(saved.section==='academic'||saved.section==='audit')view(saved.section);
+  if(saved.section==='home'&&saved.briefKind==='presentation')$('[data-brief-kind="presentation"]').click();
+  if(saved.section==='audit'&&saved.mode==='PDF')$('[data-mode="PDF"]').click();
+  if(saved.settings)$('#open-settings').click();
+ }
+}catch{}
 </script><script>if ('serviceWorker' in navigator && window.isSecureContext) navigator.serviceWorker.register('/sw.js').catch(()=>{});</script></body></html>
