@@ -1,10 +1,34 @@
-# VibePrompt AI
+<p align="center">
+  <img src="static/vibeprompt-v-192.png" width="80" height="80" alt="VibePrompt AI логотипі">
+</p>
 
-**Веб-сайт пен презентацияға промпт дайындайтын және дайын жұмысты талдайтын QAIRU қорытынды жобасы.**
+<h1 align="center">VibePrompt AI</h1>
 
-[**Қосымшаны ашу**](https://vibeprompt-ai-eta.vercel.app/) · [Chrome кеңейтімін жүктеу](https://vibeprompt-ai-eta.vercel.app/downloads/VibePrompt-Chrome.zip)
+<p align="center"><strong>Сайт пен PDF аудиті және үш AI моделіне арналған промпт генераторы</strong></p>
 
-VibePrompt AI идеяны сайтқа немесе презентацияға арналған нақты тапсырмаға айналдырады. Дайын сайтты URL арқылы, ал құжатты PDF жүктеп тексеруге болады. Қосымша байқаған құрылым, оқылым және контраст мәселелерін көрсетіп, оларды түзетуге арналған бөлек ChatGPT, Claude және Gemini промпттарын ұсынады.
+<p align="center">
+  <a href="https://vibeprompt-ai-eta.vercel.app/"><strong>Қосымшаны ашу</strong></a>
+  · <a href="https://vibeprompt-ai-eta.vercel.app/downloads/VibePrompt-Chrome.zip">Chrome кеңейтімі</a>
+  · <a href="https://vibeprompt-ai-eta.vercel.app/static/photo-export.html#khanate-medium">Фотосуретті PDF үлгісі</a>
+</p>
+
+---
+
+VibePrompt AI — **QAIRU қорытынды жобасы**. Қосымша жаңа сайт немесе презентация идеясын ChatGPT, Claude және Gemini үшін нақты промптқа айналдырады. Дайын сайт пен PDF-ті тексеріп, құрылым, оқылым және контраст бойынша түзету ұсыныстарын береді.
+
+## Қосымша көрінісі
+
+| Телефондағы басты бет | Телефондағы PDF аудиті |
+| :---: | :---: |
+| <img src="docs/images/mobile-home.jpg" width="300" alt="VibePrompt AI мобильді басты бетінің демонстрациясы"> | <img src="docs/images/mobile-pdf-audit.jpg" width="300" alt="Телефондағы PDF жүктеу мен аудит нәтижесінің көрінісі"> |
+
+Бұл скриншоттар интерфейстің демонстрациялық түсірілімдері. Жарияланған нұсқа жоғарыдағы сілтемеде ашылады.
+
+### Фотосуреті бар PDF үлгісі
+
+«Қазақ хандығының құрылуы» презентациясының орташа визуал тәртібінде фото 1, 3, 5 және 7-беттерде орналасады. Әр архив фотосының жанында қазақша түсіндірме бар. [Үлгіні сайтта ашу](https://vibeprompt-ai-eta.vercel.app/static/photo-export.html#khanate-medium)
+
+![Қазақ хандығы туралы PDF-тің фотосуреті мен түсіндірмесі бар төрт беті](docs/images/history-pdf.jpg)
 
 ## Қосымша қалай жұмыс істейді
 
@@ -37,20 +61,6 @@ VibePrompt AI идеяны сайтқа немесе презентацияға 
 
 Код сайттың шығу тегі мен интерфейс өлшемдерін қамтиды. Форма мәндері, cookie және беттің мәтіні кодқа кірмейді.
 
-## Скриншоттар
-
-| Телефондағы басты бет | Телефондағы PDF аудиті |
-| :---: | :---: |
-| <img src="docs/images/mobile-home.jpg" width="300" alt="VibePrompt AI мобильді басты бетінің демонстрациясы"> | <img src="docs/images/mobile-pdf-audit.jpg" width="300" alt="Телефондағы PDF жүктеу мен аудит нәтижесінің көрінісі"> |
-
-Бұл скриншоттар интерфейстің демонстрациялық түсірілімдері. Жарияланған нұсқа жоғарыдағы сілтемеде ашылады.
-
-### Фотосуреті бар PDF үлгісі
-
-«Қазақ хандығының құрылуы» презентациясының орташа визуал тәртібінде фото 1, 3, 5 және 7-беттерде орналасады. Әр архив фотосының жанында қазақша түсіндірме бар. [Үлгіні сайтта ашу](https://vibeprompt-ai-eta.vercel.app/static/photo-export.html#khanate-medium)
-
-![Қазақ хандығы туралы PDF-тің фотосуреті мен түсіндірмесі бар төрт беті](docs/images/history-pdf.jpg)
-
 ## QAIRU жобасының AI тақырыптары
 
 | Тақырып | Кодтағы қолданылуы |
@@ -76,22 +86,6 @@ VibePrompt AI идеяны сайтқа немесе презентацияға 
 | [photo_pdf.py](photo_pdf.py) | Фото мен түсіндірмесі бар PDF экспорттау |
 | [chrome-extension](chrome-extension/) | Chrome кеңейтімінің бастапқы коды |
 | [templates/index.html](templates/index.html) | Негізгі веб-интерфейс |
-
-## Компьютерде іске қосу
-
-Windows PowerShell мен Python 3.12 арқылы:
-
-```powershell
-git clone https://github.com/Mukhamedzhan999/vibepromt-app.git
-Set-Location vibepromt-app
-py -3.12 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements-vercel.txt
-.\.venv\Scripts\python.exe -m playwright install chromium
-$env:VIBEAUDIT_VERCEL = '1'
-.\.venv\Scripts\python.exe app.py
-```
-
-Браузерден [http://127.0.0.1:5000](http://127.0.0.1:5000) мекенжайын ашыңыз. Бұл командалар жергілікті демонстрация үшін жарияланым режимін пайдаланады. Vercel-дегі құрастыру ортасы [Dockerfile.vercel](Dockerfile.vercel) файлында сипатталған.
 
 ## Тестілеу
 
