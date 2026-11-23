@@ -128,18 +128,21 @@
  };
 
  function productionPass(site, pptx, audit) {
-  if (site) return [
-   'Give each route one visitor goal, a clear entry point and a meaningful next action. Include the main navigation and the core user journey from first visit through completion.',
-   'For each key screen, describe section order, component hierarchy and the content it needs. Specify keyboard focus, input labels and the relevant loading, empty, success and error states.',
-   'Review the primary journey at mobile and desktop widths. Confirm navigation, responsive layout, image fit and the main interaction in the delivered project.'
-  ].join(' ');
-  return [
-   'Create a page-by-page plan before building the file. For each page give the headline, key takeaway, evidence, layout type and the visual slot allowed by the selected tier.',
-   'Build an opening that states the purpose, sequence the evidence, then close with a specific conclusion. Put short explanations beside the visuals and vary page layouts according to the material.',
-   pptx ? 'Open the final deck and check slide order, native text editability, picture framing and alignment.'
-    : 'Open the final PDF and check the page count, text legibility, image framing and page breaks.',
-   audit ? 'Apply the audit findings to the observed pages and keep the verified source facts.' : ''
-  ].filter(Boolean).join(' ');
+  const steps = site ? [
+   'Translate the brief into an audience, a primary visitor goal and a visible completion state. Plan the routes that serve that goal, then give every route a section order, a clear headline and a next action.',
+   'Write final interface copy. Show the offer or information early, put evidence beside the claim it supports, and make forms, prices, dates and contact details explicit wherever relevant. For an unspecified detail, use a clearly labeled editable field.',
+   'Implement the main journey from entry through completion. Give interactive controls working behavior and accessible labels. Where the project calls for them, implement loading, empty, validation, error and success states. Preserve established routes and working actions in a redesign.',
+   'Deliver the runnable project with a short launch note. Check the primary journey at phone and desktop widths, keyboard focus order, image fit and completion of the main action. Report the checks you actually ran.'
+  ] : [
+   'Start with a one-line story for the intended audience. Use the requested page count and structure the story around context, evidence and a concrete conclusion or decision.',
+   'Assign every page a distinct job. Draft a claim-led headline, one takeaway, the actual supporting evidence, an appropriate layout and the visual or caption required by the tier. Use a timeline for sequence, a table for exact comparison and a labeled chart for trends.',
+   'Write finished text for each page. Prefer short sentences and precise names, dates, units and source notes. Fit the copy to the chosen layout by editing it before reducing type size. The conclusion should answer the question introduced at the beginning.',
+   pptx ? 'Build the editable deck, reopen it, and review slide order, editable text boxes, picture framing and layout at normal viewing size.'
+    : 'Export the complete PDF, reopen it, and review page count, page breaks, selectable text, readable glyphs and picture framing.'
+  ];
+  if (audit) steps.splice(1, 0,
+   'Use the observations below as source material. For each documented issue, identify the affected page or route, give the observed evidence, and implement a visible correction. Prioritize problems that block reading or the primary action. Keep source facts and working interactions intact, and mark unobserved areas as open questions.');
+  return steps.map((step, index) => (index + 1) + '. ' + step).join('\n');
  }
 
  function visualGuide(level, source, site) {
@@ -176,8 +179,8 @@
    (mono ? ' and ' + mono + ' for code' : '') + ', with Cyrillic Extended (cyrillic-ext) and Noto Sans for Kazakh glyphs.' +
    (level === 'short' ? '' : ' ' + preset.mood) +
    (level !== 'full' ? '' : site
-    ? ' Establish a clear hero and primary action, then vary the page with feature cards and comparison sections. Reflow these layouts into a readable single column on phones.'
-    : ' Use a clear cover, then rotate photo-and-text spreads, timelines and data layouts as the material calls for them. Place each split-layout visual beside its explanation, within half the page width.');
+    ? '\nApply the palette as reusable tokens for background, surface, text, actions and focus. Use a fluid grid and readable text widths. Give each screen one visual focal point and let related sections share a spacing rhythm. Validate text contrast and keep the main action easy to reach on phones.'
+    : '\nSet a consistent title, body, caption and source hierarchy with generous margins and enough contrast for projection or print. Rotate editorial spreads, timelines and data layouts to fit the topic. In split layouts, keep the visual within half the page width and put its explanation alongside.');
   const evidence = sourceNotes(observed.data);
   const content = ['Write in natural ' + lang + ' and ground each main point in a fact, date or example.',
    !site && (pptx
@@ -193,16 +196,22 @@
     ? 'Shape each substantive section around a visitor question, one concrete supporting detail and a relevant next action.'
     : 'Shape each page around a specific title, its main claim, supporting evidence and a short visual caption.'),
    level === 'full' && productionPass(site,pptx,Boolean(audit)),
-   level === 'full' && 'Cross-check factual claims against the supplied material or credible sources and attach source notes where the reader needs to verify a claim.',
-   topic && 'Brief: ' + topic, audit && observed.title && 'Source: ' + observed.title,
-   evidence && 'Use these observations to guide the redesign:\n' + evidence].filter(Boolean).join('\n');
+   level === 'medium' && (site
+    ? 'Write the core pages in visitor order, tie each section to a distinct question and provide working navigation and a clear completion state for the main action.'
+    : 'Give every page a distinct headline, one claim and one supporting example. Use the visual pages to show a specific subject and the alternating text-led pages for comparisons or evidence.'),
+   level === 'short' && (site
+    ? 'Deliver the main visitor journey with a clear headline, a concrete offer and a working next action.'
+    : 'Place one claim and its strongest supporting fact on each page. Use comparison tables for exact values and a concise conclusion to tie the pages together.'),
+   level === 'full' && 'Cross-check specific factual claims against the supplied material or credible sources. Make assumptions visible, preserve uncertainty where evidence is incomplete and add source notes where readers need to check a claim.',
+   topic && 'Project brief\n' + topic, audit && observed.title && 'Source: ' + observed.title,
+   evidence && 'Audit observations\n' + evidence].filter(Boolean).join('\n');
   const framing = !site && level !== 'short'
    ? 'Match every image to its container: 16:9 for full-bleed covers, 4:3, 1:1 or 3:4 for split layouts and cards, and 16:9 or 21:9 for wide banners. Center the subject with safe margins around faces, objects and text. Fit the whole image when preserving detail matters.'
    : '';
   const visualCompletion = level === 'full'
    ? site
-    ? 'Give informative images meaningful alternative text. Use a consistent visual treatment and reserve each image slot for a specific message.'
-    : 'Assign a distinct topic-specific visual to each required page and place a short source note or caption beside it. Reopen the final file and check that all required visual slots are present and readable.'
+    ? 'For each visual, define the subject and what it helps the visitor understand. Embed or include the assets in the runnable project, provide meaningful alternative text and check crops at mobile and desktop widths.'
+    : 'For every required page, select a distinct subject, choose its frame and pair it with a caption that explains what it shows and why it belongs there. Prefer real, relevant photography when the selected source is the web. Embed the finished assets in the exported file and check the cover, the middle and the final page for visual continuity.'
    : '';
   const visuals = [visualGuide(level, source, site), direction?.visual, framing, visualCompletion].filter(Boolean).join(' ');
   const parts = [['Goal', goal], ['Design', design], ['Content', content], ['Visuals', visuals]];
