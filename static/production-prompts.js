@@ -130,6 +130,8 @@
  function productionPass(site, pptx, audit) {
   const steps = site ? [
    'Translate the brief into an audience, a primary visitor goal and a visible completion state. Plan the routes that serve that goal, then give every route a section order, a clear headline and a next action.',
+   'Build a complete first screen: identifiable brand, short navigation, specific headline, one-line value proposition and a primary action that leads to the next step. Follow with substantive sections suited to the brief, such as case studies, product categories, service details, comparisons or a process walkthrough. Finish with a working contact or conversion path and footer.',
+   'Build each key section from a headline, a specific detail and useful content the visitor can evaluate. For case studies show the problem, approach and outcome. For products show distinguishing features and supplied terms. For services explain what is included and how to get started. Use concrete sample content labeled as sample when project facts are unavailable.',
    'Write final interface copy. Show the offer or information early, put evidence beside the claim it supports, and make forms, prices, dates and contact details explicit wherever relevant. For an unspecified detail, use a clearly labeled editable field.',
    'Implement the main journey from entry through completion. Give interactive controls working behavior and accessible labels. Where the project calls for them, implement loading, empty, validation, error and success states. Preserve established routes and working actions in a redesign.',
    'Deliver the runnable project with a short launch note. Check the primary journey at phone and desktop widths, keyboard focus order, image fit and completion of the main action. Report the checks you actually ran.'
@@ -179,7 +181,7 @@
    (mono ? ' and ' + mono + ' for code' : '') + ', with Cyrillic Extended (cyrillic-ext) and Noto Sans for Kazakh glyphs.' +
    (level === 'short' ? '' : ' ' + preset.mood) +
    (level !== 'full' ? '' : site
-    ? '\nApply the palette as reusable tokens for background, surface, text, actions and focus. Use a fluid grid and readable text widths. Give each screen one visual focal point and let related sections share a spacing rhythm. Validate text contrast and keep the main action easy to reach on phones.'
+    ? '\nApply the palette as reusable tokens for background, surface, text, actions and focus. Use a fluid page container and comfortable reading widths. Plan a distinct hero composition, detailed content sections, a focused comparison or editorial grid when useful, and a clear closing action. Use a coherent heading scale, 16 px or larger body text, visible keyboard focus and whitespace between sections. Reflow split layouts into a readable single column on phones.'
     : '\nSet a consistent title, body, caption and source hierarchy with generous margins and enough contrast for projection or print. Rotate editorial spreads, timelines and data layouts to fit the topic. In split layouts, keep the visual within half the page width and put its explanation alongside.');
   const evidence = sourceNotes(observed.data);
   const content = ['Write in natural ' + lang + ' and ground each main point in a fact, date or example.',
@@ -210,7 +212,7 @@
    : '';
   const visualCompletion = level === 'full'
    ? site
-    ? 'For each visual, define the subject and what it helps the visitor understand. Embed or include the assets in the runnable project, provide meaningful alternative text and check crops at mobile and desktop widths.'
+    ? 'Place a topic-specific hero photograph, plus separate visuals beside substantive sections where imagery supports the message. Match the chosen photo source: for web photos, search for real images and identify the original source. Deliver working image assets in the project when possible, or use direct image URLs from a source that permits embedding. Give every asset an appropriate ratio, meaningful alt text and a caption or credit when needed. Open the rendered page and check that the hero and supporting images load. If a source fails, replace it with a verified topic-relevant photo. If web access is unavailable, use a clearly identified visual fallback and report the image limitation.'
     : 'For every required page, select a distinct subject, choose its frame and pair it with a caption that explains what it shows and why it belongs there. Prefer real, relevant photography when the selected source is the web. Embed the actual assets in the exported PDF or PPTX. Reopen the file and review every page in order. Confirm each required photo is visible, proportionate and accompanied by its caption. If a photo is unavailable, select another relevant source and check its placement before delivery.'
    : '';
   const visuals = [visualGuide(level, source, site), direction?.visual, framing, visualCompletion].filter(Boolean).join(' ');

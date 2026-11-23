@@ -837,7 +837,7 @@ body .sidebar :is(#new-audit,#side-audit,#side-lab,#open-settings)[aria-current=
 <style>#audit-photo-export{margin-block:12px}#audit-photo-export label{display:block;margin-block:10px 4px}#photo-export-json{display:block;width:100%;margin-bottom:8px}</style>
 <script src="/static/audit-photos.js?v=3"></script>
 <script src="/static/design-presets.js?v=3"></script>
-<script src="/static/production-prompts.js?v=7"></script>
+<script src="/static/production-prompts.js?v=8"></script>
 <script type="application/json" id="workspace-prompt-options">{{ {"safety": prompt_options.safety}|tojson }}</script>
 <script>
 let mode='URL', radarChart=null, current=null, typingTimer=null, promptModel='chatgpt';
@@ -1500,7 +1500,7 @@ async function refreshAuditPrompt(){
 }
 
 function showBrief(){resetPromptCopyFeedback();document.body.classList.add('brief-mode');syncSidebarNavigation();$('#brief-result').classList.remove('hidden');syncBriefTierControls();refreshBriefPrompt();updateAiLink('brief-ai-link',briefModel);$$('[data-brief-model]').forEach(x=>{const active=x.dataset.briefModel===briefModel;x.classList.toggle('active',active);x.setAttribute('aria-pressed',String(active))})}
-function restoreBrief(d){briefKind=d.briefKind;generatedBriefKind=d.briefKind;generatedBriefText=d.brief||'';generatedFormat=['pdf','pptx'].includes(d.outputFormat)?d.outputFormat:null;
+function restoreBrief(d){briefKind=d.briefKind;generatedBriefKind=d.briefKind;generatedBriefText=d.brief||'';if(briefKind==='site')selectedLength='full';generatedFormat=['pdf','pptx'].includes(d.outputFormat)?d.outputFormat:null;
  $('[name="output-format"]').forEach(input=>{input.checked=input.value===(generatedFormat||'pdf')});
  updateBriefExample();$('#brief-text').value=d.brief||'';syncWorkspaceOptions();$$('[data-brief-kind]').forEach(x=>x.classList.toggle('active',x.dataset.briefKind===briefKind));showBrief();window.scrollTo({top:0,behavior:'smooth'})}
 $$('[data-brief-kind]').forEach(button=>button.addEventListener('click',()=>{
@@ -1556,7 +1556,7 @@ $$('[data-starter]').forEach(button=>button.addEventListener('click',()=>{
  $('#brief-text').focus();
 }));
 $$('[data-brief-model]').forEach(b=>b.addEventListener('click',()=>{briefModel=b.dataset.briefModel;showBrief()}));
-$('#brief-generate').addEventListener('click',()=>{let text=$('#brief-text').value.trim();if(isBlockedPrompt(text)){showPromptSafety($('#brief-error'));return}if(text.length<10){$('#brief-error').textContent=uiText('Жобаңызды кемінде 10 таңбамен сипаттаңыз.');return}$('#brief-error').textContent='';generatedBriefText=text;generatedBriefKind=briefKind;generatedFormat=briefKind==='presentation'?$('[name="output-format"]:checked').value:null;briefModel=Object.hasOwn(AI_LINKS,preferences.ai)?preferences.ai:'chatgpt';saveAudit({kind:'BRIEF',briefKind,brief:text,outputFormat:generatedFormat,prompts:Object.fromEntries(Object.keys(AI_LINKS).map(model=>[model,buildBriefPrompt(model)])),features:{},score:null},text);showSavedAudits();showBrief();$('#brief-result').scrollIntoView({behavior:'smooth',block:'start'})});
+$('#brief-generate').addEventListener('click',()=>{let text=$('#brief-text').value.trim();if(isBlockedPrompt(text)){showPromptSafety($('#brief-error'));return}if(text.length<10){$('#brief-error').textContent=uiText('Жобаңызды кемінде 10 таңбамен сипаттаңыз.');return}$('#brief-error').textContent='';generatedBriefText=text;generatedBriefKind=briefKind;if(briefKind==='site')selectedLength='full';generatedFormat=briefKind==='presentation'?$('[name="output-format"]:checked').value:null;briefModel=Object.hasOwn(AI_LINKS,preferences.ai)?preferences.ai:'chatgpt';saveAudit({kind:'BRIEF',briefKind,brief:text,outputFormat:generatedFormat,prompts:Object.fromEntries(Object.keys(AI_LINKS).map(model=>[model,buildBriefPrompt(model)])),features:{},score:null},text);showSavedAudits();showBrief();$('#brief-result').scrollIntoView({behavior:'smooth',block:'start'})});
 $('#brief-copy').addEventListener('click',()=>copyWithFeedback($('#brief-copy'),()=>$('#brief-output').textContent));
 function openAudit(kind){document.body.classList.remove('brief-mode');view('audit');document.querySelector('[data-mode="'+kind+'"]').click();$('#audit-form').scrollIntoView({behavior:'smooth',block:'center'})}
 $('#open-url-audit').addEventListener('click',()=>openAudit('URL'));$('#open-pdf-audit').addEventListener('click',()=>openAudit('PDF'));
