@@ -159,6 +159,33 @@
    (source === 'ai' ? ' Use your available image-generation or illustration tools.' : ' Use illustrations as supporting graphics and label them separately from photographs.');
  }
 
+ function claudeWebsitePhotos(level, topic, isAudit) {
+  const placement = level === 'medium'
+   ? 'Place one real photo in sections 1, 3, 5 and so on, starting with the hero. Use structured content in intervening sections.'
+   : 'Place a real photo in the hero and each topic section. Choose a subject that supports the section and put a concise explanation beside it.';
+  const codeSite = /\bgit(?:hub|lab)\b|\bsource code\b|\bversion control\b|бағдарламалау|программирован/iu.test(topic);
+  const starter = codeSite
+   ? 'For a code-platform hero, use this real photograph of a laptop displaying code where it fits: https://upload.wikimedia.org/wikipedia/commons/1/17/Laptop_Programmcode.jpg . Credit Negative Space (CC0); source: https://commons.wikimedia.org/wiki/File:Laptop_Programmcode.jpg . For an infrastructure section, use https://upload.wikimedia.org/wikipedia/commons/f/fa/Rack_with_varoius_servers.jpg where relevant; credit Aaron Hall (CC BY-SA 2.0): https://commons.wikimedia.org/wiki/File:Rack_with_varoius_servers.jpg . Describe both as illustrative photos of coding or infrastructure.'
+   : '';
+  return [
+   placement,
+   isAudit && 'Reuse relevant existing photographs from the audited site when their original file URLs and reuse rights are available; fill remaining sections with topic-specific web photos.',
+   'Use Claude web search and image results to choose real photos from the original publisher, a public archive, Wikimedia Commons or a photography collection. Use the direct HTTPS image URL in each HTML img src and link the source page in its caption or credits. Add descriptive alt text, dimensions and responsive cropping.',
+   starter,
+   'Deliver a standalone index.html, or the equivalent runnable project in the requested stack. When file download is available, save the photos under assets/images/ and reference the local files. When only search or the preview is available, put the direct photo URLs straight in img src so the exported site loads them in a regular browser. A screenshot of the preview or a search-result link is insufficient. An ordinary img element loads a remote image without a client-side fetch or crossorigin attribute.',
+   'If a provider link fails, try another relevant photograph or an existing website photo. If one still cannot be sourced, keep that section as a finished text layout, place any blocker in a short delivery note, and preserve the photos in the rest of the site. Keep photo slots out of the layout until they have an actual image source.'
+  ].filter(Boolean).join(' ');
+ }
+
+ function refreshSavedWebsitePrompt(prompt, options) {
+  const {kind, model, tier, source} = options;
+  if (kind !== 'site' || model !== 'claude' || tier === 'short' || source !== 'web') return prompt;
+  const updated = build(options);
+  const visualSection = /<visuals>\n[\s\S]*?\n<\/visuals>$/;
+  const replacement = updated.match(visualSection)?.[0];
+  return replacement && visualSection.test(prompt) ? prompt.replace(visualSection, () => replacement) : updated;
+ }
+
  function build({kind, model = 'chatgpt', tier = 'full', source = 'web', language = 'kk', brief = '', audit = null, outputFormat = null}) {
   const site = kind === 'site';
   const level = Object.hasOwn(EVIDENCE_LIMITS, tier) ? tier : 'full';
@@ -216,7 +243,9 @@
     ? 'Give the hero and each topic section an identifiable subject, its own image frame, descriptive alt text and a credit when applicable. For web photos, find a real photo of that exact subject and retain its source page. Prefer a local image asset when you can download it. When you can find a verified direct image URL but the chat preview blocks external images, deliver a standalone index.html file using those URLs so the user can open it in a regular browser. Keep credits linked to their source pages. Review every photo slot, and report which images you actually checked. If you cannot locate real photographs, label the missing photo slots explicitly and list the subjects still needed.'
     : 'For every required page, select a distinct subject, choose its frame and pair it with a caption that explains what it shows and why it belongs there. Prefer real, relevant photography when the selected source is the web. Embed the actual assets in the exported PDF or PPTX. Reopen the file and review every page in order. Confirm each required photo is visible, proportionate and accompanied by its caption. If a photo is unavailable, select another relevant source and check its placement before delivery.'
    : '';
-  const visuals = [visualGuide(level, source, site), direction?.visual, framing, visualCompletion].filter(Boolean).join(' ');
+  const visuals = (site && model === 'claude' && source === 'web' && level !== 'short'
+   ? [claudeWebsitePhotos(level, [topic, observed.title, observed.topic, observed.data?.url].join(' '), Boolean(audit)), direction?.visual]
+   : [visualGuide(level, source, site), direction?.visual, framing, visualCompletion]).filter(Boolean).join(' ');
   const parts = [['Goal', goal], ['Design', design], ['Content', content], ['Visuals', visuals]];
   return parts.map(([name, value]) => {
    const tag = name.toLowerCase();
@@ -225,5 +254,5 @@
   }).join('\n\n');
  }
 
- return Object.freeze({build});
+ return Object.freeze({build, refreshSavedWebsitePrompt});
 });
